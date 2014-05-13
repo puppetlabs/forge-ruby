@@ -1,0 +1,93 @@
+{
+  "uri": "/v3/releases/puppetlabs-apache-0.0.2",
+  "module": {
+    "uri": "/v3/modules/puppetlabs-apache",
+    "name": "apache",
+    "owner": {
+      "uri": "/v3/users/puppetlabs",
+      "username": "puppetlabs",
+      "gravatar_id": "fdd009b7c1ec96e088b389f773e87aec"
+    }
+  },
+  "version": "0.0.2",
+  "metadata": {
+    "name": "puppetlabs-apache",
+    "dependencies": [
+
+    ],
+    "author": "",
+    "license": "",
+    "version": "0.0.2",
+    "checksums": {
+      "tests/ssl.pp": "191912535199531fd631f911c6329e56",
+      "manifests/params.pp": "f137ab035e6cd5bdbbd50beeac4c68b0",
+      "tests/vhost.pp": "1b91e03c8ef89a7ecb6793831ac18399",
+      "manifests/php.pp": "8a5ca4035b1c22892923f3fde55e3d5e",
+      "lib/puppet/provider/a2mod/a2mod.rb": "18c5bb180b75a2375e95e07f88a94257",
+      "tests/php.pp": "ce7bb9eef69d32b42a32ce32d9653625",
+      "files/httpd": "295f5e924afe6f752d29327e73fe6d0a",
+      "manifests/dev.pp": "bc54a5af648cb04b7b3bb0e3f7be6543",
+      "manifests/ssl.pp": "11ed1861298c72cca3a706480bb0b67c",
+      "files/test.vhost": "0602022c19a7b6b289f218c7b93c1aea",
+      "tests/init.pp": "4eac4a7ef68499854c54a78879e25535",
+      "manifests/vhost.pp": "b43a4d6efb4563341efe8092677aac6f",
+      "lib/puppet/type/a2mod.rb": "0e1b4843431413a10320ac1f6a055d15",
+      "templates/vhost-default.conf.erb": "9055aed946e1111c30ab81fedac2c8b0",
+      "tests/dev.pp": "4cf15c1fecea3ca86009f182b402c7ab",
+      "tests/apache.pp": "4eac4a7ef68499854c54a78879e25535",
+      "Modulefile": "86f48ebf97e079cf0dc395881d87ecef",
+      "manifests/init.pp": "168dfe06fb9ad8d67a2effeea4477f57"
+    },
+    "types": [
+      {
+        "name": "a2mod",
+        "doc": "Manage Apache 2 modules on Debian and Ubuntu",
+        "parameters": [
+          {
+            "name": "name",
+            "doc": "The name of the module to be managed"
+          }
+        ],
+        "providers": [
+          {
+            "name": "a2mod",
+            "doc": "Manage Apache 2 modules on Debian and Ubuntu  Required binaries: ``a2enmod``, ``a2dismod``.    Default for ``operatingsystem`` == ``debianubuntu``.  "
+          }
+        ],
+        "properties": [
+          {
+            "name": "ensure",
+            "doc": "The basic property that the resource should be in.  Valid values are ``present``, ``absent``."
+          }
+        ]
+      }
+    ],
+    "source": ""
+  },
+  "tags": [
+    "apache",
+    "web",
+    "virtualhost",
+    "httpd",
+    "centos",
+    "rhel",
+    "debian",
+    "ubuntu",
+    "apache2",
+    "ssl",
+    "passenger",
+    "wsgi",
+    "proxy",
+    "virtual_host"
+  ],
+  "file_uri": "/v3/files/puppetlabs-apache-0.0.2.tar.gz",
+  "file_size": 4006,
+  "file_md5": "e6bca59ddbe26ae653611935d1f24e70",
+  "downloads": 436,
+  "readme": null,
+  "changelog": null,
+  "license": null,
+  "created_at": "2010-05-23 09:52:55 -0700",
+  "updated_at": "2010-05-23 09:52:55 -0700",
+  "deleted_at": null
+}

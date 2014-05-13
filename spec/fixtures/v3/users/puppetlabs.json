@@ -1,0 +1,10 @@
+{
+  "uri": "/v3/users/puppetlabs",
+  "gravatar_id": "fdd009b7c1ec96e088b389f773e87aec",
+  "username": "puppetlabs",
+  "display_name": "Puppet Labs",
+  "release_count": 422,
+  "module_count": 81,
+  "created_at": "2010-05-19 05:46:26 -0700",
+  "updated_at": "2012-11-12 06:51:00 -0800"
+}

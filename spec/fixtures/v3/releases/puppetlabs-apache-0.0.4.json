@@ -1,0 +1,126 @@
+{
+  "uri": "/v3/releases/puppetlabs-apache-0.0.4",
+  "module": {
+    "uri": "/v3/modules/puppetlabs-apache",
+    "name": "apache",
+    "owner": {
+      "uri": "/v3/users/puppetlabs",
+      "username": "puppetlabs",
+      "gravatar_id": "fdd009b7c1ec96e088b389f773e87aec"
+    }
+  },
+  "version": "0.0.4",
+  "metadata": {
+    "description": "Module for Apache configuration",
+    "checksums": {
+      "tests/ssl.pp": "191912535199531fd631f911c6329e56",
+      "spec/spec_helper.rb": "980111cecb2c99b91ac846d7b0862578",
+      "spec/classes/php_spec.rb": "aa98098c3404325c941ad1aa71295640",
+      "manifests/vhost/redirect.pp": "8fdef0e0e8da73e9fb30f819de2a4464",
+      "manifests/python.pp": "daa8000b529be1fd931538516373afcd",
+      "manifests/params.pp": "27f043698624d6ff5f92f7a220ed8c39",
+      "tests/vhost.pp": "1f627c432582a8fc91b8375460d9794e",
+      "spec/classes/ssl_spec.rb": "d93e4f61548ce6b077bb8947daaae651",
+      "spec/defines/vhost/proxy_spec.rb": "9d3a5a9361d1d49eb82dcbdc51edea80",
+      "lib/puppet/provider/a2mod/modfix.rb": "b689a1c83c9ccd8590399c67f3e588e5",
+      "CHANGELOG": "3705f6d39cde99023ee6de89f40910a1",
+      "manifests/php.pp": "203071fafab369cacc8b7bec80eec481",
+      "LICENSE": "b3f8a01d8699078d82e8c3c992307517",
+      "tests/php.pp": "ce7bb9eef69d32b42a32ce32d9653625",
+      "templates/vhost-redirect.conf.erb": "f12c8165c2e9a688402ec8484ef6c59c",
+      "spec/classes/dev_spec.rb": "e0392f699206ca40a5c66c51b2349ff7",
+      "manifests/mod/wsgi.pp": "90ef340ac19106fe801656091d3f9a4b",
+      "lib/puppet/provider/a2mod/a2mod.rb": "0acf42d3d670a9915c5a3f46ae7335f1",
+      "files/httpd": "295f5e924afe6f752d29327e73fe6d0a",
+      "spec/defines/vhost_spec.rb": "c5d180e4c1db180b296cdcf6e167af6e",
+      "Rakefile": "65bc94e790a918bcfd07686c2d51e043",
+      "spec/classes/apache_spec.rb": "e4aff27ddc0ff9d53f2a701efde12ac0",
+      "manifests/ssl.pp": "00d85958c17bc62f27df8e4ca86043a0",
+      "manifests/mod/python.pp": "d68627ba8c02bcd2cf910e02e45321ee",
+      "manifests/dev.pp": "aecfbf399723a86b00681b03a1cd13d9",
+      "tests/init.pp": "4eac4a7ef68499854c54a78879e25535",
+      "templates/vhost-proxy.conf.erb": "4b67009e57758dcb0ef06fcbda89515c",
+      "spec/classes/params_spec.rb": "384b7b99be6d2bcd684f2ecf54d2df3e",
+      "spec/classes/mod/wsgi_spec.rb": "8e34c9ab7fc445d13d9ed318d0a34cdf",
+      "manifests/vhost.pp": "b4f3cd713a95ead5ad2c7fcdbd8a64c8",
+      "lib/puppet/type/a2mod.rb": "8b3005913ca51cb51e94d568f249880e",
+      "tests/dev.pp": "4cf15c1fecea3ca86009f182b402c7ab",
+      "tests/apache.pp": "4eac4a7ef68499854c54a78879e25535",
+      "templates/vhost-default.conf.erb": "e30ec34eabb2e7a8d57c9842f74cb059",
+      "templates/test.vhost.erb": "2c0ae13f2a32177e128e3ff49c37ffbd",
+      "spec/classes/python_spec.rb": "af7d22879b16d3ce4a5ed70d4d880903",
+      "spec/defines/vhost/redirect_spec.rb": "337fb5c89ab5fc790ecb76f8b169a7e6",
+      "spec/classes/mod/python_spec.rb": "26a3d76a16abf7f2c7c9f7767196ecd1",
+      "Modulefile": "cb1e5a87875ad86a43d6cfdba04eb45b",
+      "manifests/vhost/proxy.pp": "1c774f8370d418b86a6ee08e530305d7",
+      "manifests/init.pp": "cb62a3aba1af2eebb7a08e45ee399065"
+    },
+    "summary": "Puppet module for Apache",
+    "source": "git://github.com/puppetlabs/puppetlabs-apache.git",
+    "dependencies": [
+      {
+        "version_requirement": ">= 0.0.4",
+        "name": "puppetlabs/firewall"
+      }
+    ],
+    "project_page": "https://github.com/puppetlabs/puppetlabs-apache",
+    "author": "puppetlabs",
+    "types": [
+      {
+        "parameters": [
+          {
+            "name": "name",
+            "doc": "The name of the module to be managed"
+          }
+        ],
+        "properties": [
+          {
+            "name": "ensure",
+            "doc": "The basic property that the resource should be in.  Valid values are `present`, `absent`."
+          }
+        ],
+        "providers": [
+          {
+            "name": "a2mod",
+            "doc": "Manage Apache 2 modules on Debian and Ubuntu\n\nRequired binaries: `a2enmod`, `a2dismod`.  Default for `operatingsystem` == `debian, ubuntu`."
+          },
+          {
+            "name": "modfix",
+            "doc": "Dummy provider for A2mod.\n\n    Fake nil resources when there is no crontab binary available. Allows\n    puppetd to run on a bootstrapped machine before a Cron package has been\n    installed. Workaround for: http://projects.puppetlabs.com/issues/2384\n    "
+          }
+        ],
+        "name": "a2mod",
+        "doc": "Manage Apache 2 modules on Debian and Ubuntu"
+      }
+    ],
+    "version": "0.0.4",
+    "name": "puppetlabs-apache",
+    "license": "Apache 2.0"
+  },
+  "tags": [
+    "apache",
+    "web",
+    "virtualhost",
+    "httpd",
+    "centos",
+    "rhel",
+    "debian",
+    "ubuntu",
+    "apache2",
+    "ssl",
+    "passenger",
+    "wsgi",
+    "proxy",
+    "virtual_host"
+  ],
+  "file_uri": "/v3/files/puppetlabs-apache-0.0.4.tar.gz",
+  "file_size": 9707,
+  "file_md5": "5d1d4ec6ce20986d4be3a4bd0ecba07a",
+  "downloads": 6249,
+  "readme": null,
+  "changelog": "<section class=\"plaintext\"><pre>2012-05-08 Puppet Labs &lt;info@puppetlabs.com&gt; - 0.0.4\ne62e362 Fix broken tests for ssl, vhost, vhost::*\n42c6363 Changes to match style guide and pass puppet-lint without error\n42bc8ba changed name =&gt; path for file resources in order to name namevar by it&#x27;s name\n72e13de One end too much\n0739641 style guide fixes: &#x27;true&#x27; &lt;&gt; true, $operatingsystem needs to be $::operatingsystem, etc.\n273f94d fix tests\na35ede5 (#13860) Make a2enmod&#x2F;a2dismo commands optional\n98d774e (#13860) Autorequire Package[&#x27;httpd&#x27;]\n05fcec5 (#13073) Add missing puppet spec tests\n541afda (#6899) Remove virtual a2mod definition\n976cb69 (#13072) Move mod python and wsgi package names to params\n323915a (#13060) Add .gitignore to repo\nfdf40af (#13060) Remove pkg directory from source tree\nfd90015 Add LICENSE file and update the ModuleFile\nd3d0d23 Re-enable local php class\nd7516c7 Make management of firewalls configurable for vhosts\n60f83ba Explicitly lookup scope of apache_name in templates.\nf4d287f (#12581) Add explicit ordering for vdir directory\n88a2ac6 (#11706) puppetlabs-apache depends on puppetlabs-firewall\na776a8b (#11071) Fix to work with latest firewall module\n2b79e8b (#11070) Add support for Scientific Linux\n405b3e9 Fix for a2mod\n57b9048 Commit apache::vhost::redirect Manifest\n8862d01 Commit apache::vhost::proxy Manifest\nd5c1fd0 Commit apache::mod::wsgi Manifest\na825ac7 Commit apache::mod::python Manifest\nb77062f Commit Templates\n9a51b4a Vhost File Declarations\n6cf7312 Defaults for Parameters\n6a5b11a Ensure installed\nf672e46 a2mod fix\n8a56ee9 add pthon support to apache\n</pre></section>",
+  "license": "<section class=\"plaintext\"><pre>Copyright (C) 2012 Puppet Labs Inc\n\nPuppet Labs can be contacted at: info@puppetlabs.com\n\nLicensed under the Apache License, Version 2.0 (the &quot;License&quot;);\nyou may not use this file except in compliance with the License.\nYou may obtain a copy of the License at\n\n    http:&#x2F;&#x2F;www.apache.org&#x2F;licenses&#x2F;LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software\ndistributed under the License is distributed on an &quot;AS IS&quot; BASIS,\nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\nSee the License for the specific language governing permissions and\nlimitations under the License.\n</pre></section>",
+  "created_at": "2012-05-08 16:43:59 -0700",
+  "updated_at": "2012-05-08 16:43:59 -0700",
+  "deleted_at": null
+}

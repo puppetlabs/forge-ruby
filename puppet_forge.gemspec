@@ -6,18 +6,28 @@ require 'puppet_forge/version'
 Gem::Specification.new do |spec|
   spec.name          = "puppet_forge"
   spec.version       = PuppetForge::VERSION
-  spec.authors       = ["Jesse Scott"]
-  spec.email         = ["jesse@puppetlabs.com"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
-  spec.homepage      = ""
-  spec.license       = "MIT"
+  spec.authors       = ["Puppet Labs"]
+  spec.email         = ["forge-team+api@puppetlabs.com"]
+  spec.summary       = "Access and manipulate the Puppet Forge API from Ruby."
+  spec.homepage      = "https://github.com/puppetlabs/puppet_forge"
+  spec.license       = "Apache License, Version 2.0"
 
   spec.files         = `git ls-files -z`.split("\x0")
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
+  spec.required_ruby_version = '>= 1.8.7'
+  spec.extensions = 'ext/mkrf_conf.rb'  # Install 1.8.7-specific dependencies
+
+  spec.add_runtime_dependency "her", "~> 0.6"
+  spec.add_runtime_dependency "typhoeus", "~> 0.6"
+
   spec.add_development_dependency "bundler", "~> 1.6"
   spec.add_development_dependency "rake"
+  spec.add_development_dependency "rspec"
+  spec.add_development_dependency "simplecov"
+  spec.add_development_dependency "cane"
+  spec.add_development_dependency "yard"
+  spec.add_development_dependency "redcarpet"
 end
