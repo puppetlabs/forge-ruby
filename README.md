@@ -130,6 +130,14 @@ user.created_at # => "2010-05-19 05:46:26 -0700"
 This library currently does no response caching of its own, instead opting to
 re-issue every request each time. This will be changed in a later release.
 
+##Reporting Issues
+
+Please report problems, issues, and feature requests on the public
+[Puppet Labs issue tracker][issues] under the FORGE project. You will need
+to create a free account to add new tickets.
+
+[issues]: https://tickets.puppetlabs.com/browse/FORGE
+
 ##Contributing
 
 1. Fork it ( https://github.com/[my-github-username]/forge-ruby/fork )
