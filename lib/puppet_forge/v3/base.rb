@@ -19,9 +19,18 @@ module PuppetForge
       include Her::LazyRelations
 
       use_api begin
+        begin
+          # Use Typhoeus if available.
+          Gem::Specification.find_by_name('typhoeus', '~> 0.6')
+          require 'typhoeus/adapters/faraday'
+          adapter = Faraday::Adapter::Typhoeus
+        rescue Gem::LoadError
+          adapter = Faraday::Adapter::NetHttp
+        end
+
         Her::API.new :url => "#{PuppetForge.host}/v3/" do |c|
           c.use PuppetForge::Middleware::JSONForHer
-          c.use Faraday::Adapter::Typhoeus
+          c.use adapter
         end
       end
 

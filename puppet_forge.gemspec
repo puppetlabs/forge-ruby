@@ -21,7 +21,6 @@ Gem::Specification.new do |spec|
   spec.extensions = 'ext/mkrf_conf.rb'  # Install 1.8.7-specific dependencies
 
   spec.add_runtime_dependency "her", "~> 0.6"
-  spec.add_runtime_dependency "typhoeus", "~> 0.6"
 
   spec.add_development_dependency "bundler", "~> 1.6"
   spec.add_development_dependency "rake"

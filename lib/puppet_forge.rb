@@ -1,9 +1,7 @@
 require 'bundler/setup'
 require 'backports/1.9.1/enumerator/new' if RUBY_VERSION == '1.8.7'
 
-require "puppet_forge/version"
-
-require 'typhoeus/adapters/faraday'
+require 'puppet_forge/version'
 
 module PuppetForge
   class << self
