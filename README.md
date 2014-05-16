@@ -17,6 +17,10 @@ Or install it yourself as:
 
     $ gem install puppet_forge
 
+##Requirements
+
+* Ruby >= 1.9.3
+
 ##Dependencies
 
 * [Her](http://her-rb.org) ~> 0.6
