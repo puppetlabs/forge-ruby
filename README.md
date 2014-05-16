@@ -17,6 +17,15 @@ Or install it yourself as:
 
     $ gem install puppet_forge
 
+##Dependencies
+
+* [Her](http://her-rb.org) ~> 0.6
+* [Typhoeus](https://github.com/typhoeus/typhoeus) ~> 0.6 (optional)
+
+Typhoeus will be used as the HTTP adapter if it is available, otherwise
+Net::HTTP will be used. We recommend using Typhoeus for production-level
+applications.
+
 ##Usage
 
 First, make sure you have imported the Puppet Forge gem into your application:
