@@ -38,6 +38,13 @@ First, make sure you have imported the Puppet Forge gem into your application:
 require 'puppet_forge'
 ```
 
+Next, supply a user-agent string to identify requests sent by your application
+to the Puppet Forge API:
+
+``` ruby
+PuppetForge.user_agent = "MyApp/1.0.0"
+```
+
 Now you can make use of the resource models defined by the gem:
 
 * [PuppetForge::V3::User][user_ref]
