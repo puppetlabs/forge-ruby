@@ -17,8 +17,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.required_ruby_version = '>= 1.8.7'
-  spec.extensions = 'ext/mkrf_conf.rb'  # Install 1.8.7-specific dependencies
+  spec.required_ruby_version = '>= 1.9.3'
 
   spec.add_runtime_dependency "her", "~> 0.6"
 
