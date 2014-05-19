@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Puppet Labs"]
   spec.email         = ["forge-team+api@puppetlabs.com"]
   spec.summary       = "Access and manipulate the Puppet Forge API from Ruby."
-  spec.homepage      = "https://github.com/puppetlabs/puppet_forge"
+  spec.homepage      = "https://github.com/puppetlabs/forge-ruby"
   spec.license       = "Apache License, Version 2.0"
 
   spec.files         = `git ls-files -z`.split("\x0")
