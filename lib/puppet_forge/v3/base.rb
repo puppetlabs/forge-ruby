@@ -69,8 +69,8 @@ module PuppetForge
         # @param parsed_data [Hash<(:data, :errors)>] the parsed response data
         # @return [PaginatedCollection] the collection
         def new_collection(parsed_data)
-          col = super :data =>     parsed_data[:data][:results],
-                      :metadata => parsed_data[:data][:pagination],
+          col = super :data =>     parsed_data[:data][:results] || [],
+                      :metadata => parsed_data[:data][:pagination] || { limit: 10, total: 0, offset: 0 },
                       :errors =>   parsed_data[:errors]
 
           PaginatedCollection.new(self, col.to_a, col.metadata, col.errors)
