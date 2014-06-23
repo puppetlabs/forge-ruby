@@ -27,8 +27,10 @@ module StubbingHer
   end
 
   def load_fixture(path)
+    xplatform_path = path.to_s.gsub('?', '__')
+
     [ 404 ].tap do |response|
-      local = File.join(PROJECT_ROOT, 'spec', 'fixtures', path.to_s)
+      local = File.join(PROJECT_ROOT, 'spec', 'fixtures', xplatform_path)
 
       if File.exists?("#{local}.headers") && File.exists?("#{local}.json")
         File.open("#{local}.headers") do |file|
