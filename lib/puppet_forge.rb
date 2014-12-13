@@ -1,9 +1,3 @@
-begin
-  Gem::Specification.find_by_name('bundler', '~> 1.6')
-  require 'bundler/setup'
-rescue Gem::LoadError
-end
-
 require 'puppet_forge/version'
 
 module PuppetForge
