@@ -30,6 +30,7 @@ module PuppetForge
 
         Her::API.new :url => "#{PuppetForge.host}/v3/" do |c|
           c.use PuppetForge::Middleware::JSONForHer
+          c.use Faraday::Request::Retry
           c.use adapter
         end
       end
