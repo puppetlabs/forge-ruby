@@ -13,11 +13,11 @@ describe PuppetForge::V3::User do
     let(:missing_user) { PuppetForge::V3::User.find('absent') }
 
     it 'can find users that exist' do
-      user.username.should == 'puppetlabs'
+      expect(user.username).to eq('puppetlabs')
     end
 
     it 'returns nil for non-existent users' do
-      missing_user.should be_nil
+      expect(missing_user).to be_nil
     end
   end
 

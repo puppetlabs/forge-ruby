@@ -39,12 +39,12 @@ describe Her::LazyAccessors do
   subject { klass.new(local_data) }
 
   it 'does not call methods to #inspect' do
-    subject.should_not_receive(:shadow)
+    expect(subject).not_to receive(:shadow)
     subject.inspect
   end
 
   describe 'local attributes' do
-    before { klass.should_not_receive(:request) }
+    before { expect(klass).not_to receive(:request) }
 
     example 'allow access to local attributes' do
       expect(subject.local).to eql('data')
@@ -101,7 +101,7 @@ describe Her::LazyAccessors do
     end
 
     example 'allow multiple instances to access remote attributes' do
-      klass.should_receive(:request).exactly(9).times.and_call_original
+      expect(klass).to receive(:request).exactly(9).times.and_call_original
       9.times { expect(klass.new(local_data).remote).to eql('DATA') }
     end
 

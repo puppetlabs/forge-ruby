@@ -59,12 +59,12 @@ describe Her::LazyRelations do
     it { should be_a(related_class) }
 
     it 'does not call methods to #inspect' do
-      subject.should_not_receive(:shadow)
+      expect(subject).not_to receive(:shadow)
       subject.inspect
     end
 
     describe 'local attributes' do
-      before { related_class.should_not_receive(:request) }
+      before { expect(related_class).not_to receive(:request) }
 
       example 'allow access to local attributes' do
         expect(subject.local).to eql('data')
@@ -115,7 +115,7 @@ describe Her::LazyRelations do
       end
 
       example 'allow multiple instances to access remote attributes' do
-        related_class.should_receive(:request) \
+        expect(related_class).to receive(:request) \
                      .exactly(9).times \
                      .and_call_original
 
@@ -186,12 +186,12 @@ describe Her::LazyRelations do
     it { should be_a(related_class) }
 
     it 'does not call methods to #inspect' do
-      subject.should_not_receive(:shadow)
+      expect(subject).not_to receive(:shadow)
       subject.inspect
     end
 
     describe 'local attributes' do
-      before { related_class.should_not_receive(:request) }
+      before { expect(related_class).not_to receive(:request) }
 
       example 'allow access to local attributes' do
         expect(subject.local).to eql('data')
@@ -242,7 +242,7 @@ describe Her::LazyRelations do
       end
 
       example 'allow multiple instances to access remote attributes' do
-        related_class.should_receive(:request) \
+        expect(related_class).to receive(:request) \
                      .exactly(9).times \
                      .and_call_original
 
