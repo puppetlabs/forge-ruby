@@ -36,12 +36,12 @@ describe PuppetForge::V3::Release do
     end
 
     it 'grants access to module attributes without an API call' do
-      PuppetForge::V3::Module.should_not_receive(:request)
+      expect(PuppetForge::V3::Module).not_to receive(:request)
       expect(release.module.name).to eql('apache')
     end
 
     it 'transparently makes API calls for other attributes' do
-      PuppetForge::V3::Module.should_receive(:request).once.and_call_original
+      expect(PuppetForge::V3::Module).to receive(:request).once.and_call_original
       expect(release.module.created_at).to_not be nil
     end
   end

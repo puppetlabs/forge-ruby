@@ -5,7 +5,7 @@ describe PuppetForge::V3::Base do
     it 'should handle responses with no results' do
       response_data = { data: {}, errors: "Something bad happened!" }
 
-      PuppetForge::V3::Base.new_collection(response_data).should == []
+      expect(PuppetForge::V3::Base.new_collection(response_data)).to eq([])
     end
 
     it 'should handle responses with no pagination info' do
@@ -13,9 +13,9 @@ describe PuppetForge::V3::Base do
 
       collection = PuppetForge::V3::Base.new_collection(response_data)
 
-      collection.limit.should == 10
-      collection.offset.should == 0
-      collection.total.should == 0
+      expect(collection.limit).to eq(10)
+      expect(collection.offset).to eq(0)
+      expect(collection.total).to eq(0)
     end
   end
 end

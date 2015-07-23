@@ -13,11 +13,11 @@ describe PuppetForge::V3::Module do
     let(:missing_mod) { PuppetForge::V3::Module.find('absent-apache') }
 
     it 'can find modules that exist' do
-      mod.name.should == 'apache'
+      expect(mod.name).to eq('apache')
     end
 
     it 'returns nil for non-existent modules' do
-      missing_mod.should be_nil
+      expect(missing_mod).to be_nil
     end
   end
 
@@ -35,12 +35,12 @@ describe PuppetForge::V3::Module do
     end
 
     it 'grants access to module attributes without an API call' do
-      PuppetForge::V3::User.should_not_receive(:request)
+      expect(PuppetForge::V3::User).not_to receive(:request)
       expect(mod.owner.username).to eql('puppetlabs')
     end
 
     it 'transparently makes API calls for other attributes' do
-      PuppetForge::V3::User.should_receive(:request).once.and_call_original
+      expect(PuppetForge::V3::User).to receive(:request).once.and_call_original
       expect(mod.owner.created_at).to_not be nil
     end
   end
@@ -53,7 +53,7 @@ describe PuppetForge::V3::Module do
     end
 
     it 'grants access to release attributes without an API call' do
-      PuppetForge::V3::Release.should_not_receive(:request)
+      expect(PuppetForge::V3::Release).not_to receive(:request)
       expect(mod.current_release.version).to_not be nil
     end
 
@@ -92,7 +92,7 @@ describe PuppetForge::V3::Module do
     end
 
     it 'grants access to release attributes without an API call' do
-      PuppetForge::V3::Release.should_not_receive(:request)
+      expect(PuppetForge::V3::Release).not_to receive(:request)
       expect(mod.releases.map(&:version)).to_not include nil
     end
 
@@ -100,7 +100,7 @@ describe PuppetForge::V3::Module do
       versions = %w[ 0.0.1 0.0.2 0.0.3 0.0.4 0.1.1 ]
       releases = mod.releases.select { |x| versions.include? x.version }
 
-      PuppetForge::V3::Release.should_receive(:request) \
+      expect(PuppetForge::V3::Release).to receive(:request) \
                         .exactly(5).times \
                         .and_call_original
 
