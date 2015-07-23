@@ -6,8 +6,7 @@ module PuppetForge
 
     # Models a specific release version of a Puppet Module on the Forge.
     class Release < Base
-      lazy :module
-      
+
       # Returns a fully qualified URL for downloading this release from the Forge.
       #
       # @return [String] fully qualified download URL for release
