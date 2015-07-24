@@ -1,10 +1,13 @@
 {
   "uri": "/v3/releases/puppetlabs-apache-0.0.1",
+  "slug": "puppetlabs-apache-0.0.1",
   "module": {
     "uri": "/v3/modules/puppetlabs-apache",
+    "slug": "puppetlabs-apache",
     "name": "apache",
     "owner": {
       "uri": "/v3/users/puppetlabs",
+      "slug": "puppetlabs",
       "username": "puppetlabs",
       "gravatar_id": "fdd009b7c1ec96e088b389f773e87aec"
     }

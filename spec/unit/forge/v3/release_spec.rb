@@ -3,9 +3,9 @@ require 'fileutils'
 
 describe PuppetForge::V3::Release do
   before do
-    stub_api_for(PuppetForge::V3::Release) do |api|
-      stub_fixture(api, :get, '/v3/releases/puppetlabs-apache-0.0.1')
-      stub_fixture(api, :get, '/v3/releases/absent-apache-0.0.1')
+    stub_api_for(PuppetForge::V3::Release) do |stubs|
+      stub_fixture(stubs, :get, '/v3/releases/puppetlabs-apache-0.0.1')
+      stub_fixture(stubs, :get, '/v3/releases/absent-apache-0.0.1')
     end
   end
 
@@ -26,8 +26,8 @@ describe PuppetForge::V3::Release do
     let(:release) { PuppetForge::V3::Release.find('puppetlabs-apache-0.0.1') }
 
     before do
-      stub_api_for(PuppetForge::V3::Module) do |api|
-        stub_fixture(api, :get, '/v3/modules/puppetlabs-apache')
+      stub_api_for(PuppetForge::V3::Module) do |stubs|
+        stub_fixture(stubs, :get, '/v3/modules/puppetlabs-apache')
       end
     end
 
@@ -50,8 +50,8 @@ describe PuppetForge::V3::Release do
     let(:release) { PuppetForge::V3::Release.find('puppetlabs-apache-0.0.1') }
 
     before do
-      stub_api_for(PuppetForge::V3::Release) do |api|
-        stub_fixture(api, :get, '/v3/releases/puppetlabs-apache-0.0.1')
+      stub_api_for(PuppetForge::V3::Release) do |stubs|
+        stub_fixture(stubs, :get, '/v3/releases/puppetlabs-apache-0.0.1')
       end
     end
 
@@ -73,9 +73,9 @@ describe PuppetForge::V3::Release do
     before { FileUtils.rm tarball rescue nil }
     after  { FileUtils.rm tarball rescue nil }
     before do
-      stub_api_for(PuppetForge::V3::Release) do |api|
-        stub_fixture(api, :get, '/v3/releases/puppetlabs-apache-0.0.1')
-        stub_fixture(api, :get, '/v3/files/puppetlabs-apache-0.0.1.tar.gz')
+      stub_api_for(PuppetForge::V3::Release) do |stubs|
+        stub_fixture(stubs, :get, '/v3/releases/puppetlabs-apache-0.0.1')
+        stub_fixture(stubs, :get, '/v3/files/puppetlabs-apache-0.0.1.tar.gz')
       end
     end
 
@@ -90,8 +90,8 @@ describe PuppetForge::V3::Release do
     let(:release) { PuppetForge::V3::Release.find('puppetlabs-apache-0.0.1') }
 
     before do
-      stub_api_for(PuppetForge::V3::Module) do |api|
-        stub_fixture(api, :get, '/v3/modules/puppetlabs-apache')
+      stub_api_for(PuppetForge::V3::Module) do |stubs|
+        stub_fixture(stubs, :get, '/v3/modules/puppetlabs-apache')
       end
     end
 

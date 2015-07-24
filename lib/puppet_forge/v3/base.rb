@@ -1,3 +1,4 @@
+require 'puppet_forge/v3/base/paginated_collection'
 require 'faraday'
 require 'faraday_middleware'
 
@@ -8,6 +9,20 @@ module PuppetForge
     #
     # @api private
     class Base
+
+      def initialize(json_response)
+        @attributes = json_response
+        orm_resp_item json_response
+      end
+
+      def orm_resp_item(json_response)
+        json_response.each do |key, value|
+          unless respond_to? key
+            define_singleton_method(key) { @attributes[key] }
+            define_singleton_method("#{key}=") { |val| @attributes[key] = val }
+          end
+        end
+      end
 
       class << self
 
@@ -23,7 +38,7 @@ module PuppetForge
               adapter = Faraday.default_adapter
             end
 
-            @faraday_api = Faraday.new :url => "#{PuppetForge.host}/v3/" do |c|
+            @faraday_api = Faraday.new :url => "#{PuppetForge.host}/" do |c|
               c.response :json, :content_type => 'application/json'
               c.adapter adapter
             end
@@ -35,7 +50,7 @@ module PuppetForge
         # @private
         def request(resource, item = nil, params = {})
           unless faraday_api.url_prefix =~ /^#{PuppetForge.host}/
-            faraday_api.url_prefix = "#{PuppetForge.host}/v3/"
+            faraday_api.url_prefix = "#{PuppetForge.host}/"
           end
 
           faraday_api.headers["User-Agent"] = %W[
@@ -46,16 +61,24 @@ module PuppetForge
           ].join(' ').strip
 
           if item.nil?
-            uri_path = resource
+            uri_path = "v3/#{resource}"
           else
-            uri_path = "#{resource}/#{item}"
+            uri_path = "v3/#{resource}/#{item}"
           end
 
           faraday_api.get uri_path, params
         end
 
         def find(slug)
-          request("#{self.name.split("::").last.downcase}s", slug)
+          return nil if slug.nil?
+
+          resp = request("#{self.name.split("::").last.downcase}s", slug)
+
+          if resp.status >= 400 || !resp.body['errors'].nil?
+            nil
+          else
+            self.new(resp.body)
+          end
         end
 
         def where(params)

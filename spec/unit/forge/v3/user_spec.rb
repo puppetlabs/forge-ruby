@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe PuppetForge::V3::User do
   before do
-    stub_api_for(PuppetForge::V3::User) do |api|
-      stub_fixture(api, :get, '/v3/users/puppetlabs')
-      stub_fixture(api, :get, '/v3/users/absent')
+    stub_api_for(PuppetForge::V3::User) do |stubs|
+      stub_fixture(stubs, :get, '/v3/users/puppetlabs')
+      stub_fixture(stubs, :get, '/v3/users/absent')
     end
   end
 
@@ -23,8 +23,8 @@ describe PuppetForge::V3::User do
 
   describe '#modules' do
     before do
-      stub_api_for(PuppetForge::V3::Module) do |api|
-        stub_fixture(api, :get, '/v3/modules?owner=puppetlabs')
+      stub_api_for(PuppetForge::V3::Module) do |stubs|
+        stub_fixture(stubs, :get, '/v3/modules?owner=puppetlabs')
       end
     end
 

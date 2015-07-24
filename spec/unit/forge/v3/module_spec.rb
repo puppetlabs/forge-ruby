@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe PuppetForge::V3::Module do
   before do
-    stub_api_for(PuppetForge::V3::Module) do |api|
-      stub_fixture(api, :get, '/v3/modules/puppetlabs-apache')
-      stub_fixture(api, :get, '/v3/modules/absent-apache')
+    stub_api_for(PuppetForge::V3::Module) do |stubs|
+      stub_fixture(stubs, :get, '/v3/modules/puppetlabs-apache')
+      stub_fixture(stubs, :get, '/v3/modules/absent-apache')
     end
   end
 
@@ -25,8 +25,8 @@ describe PuppetForge::V3::Module do
     let(:mod) { PuppetForge::V3::Module.find('puppetlabs-apache') }
 
     before do
-      stub_api_for(PuppetForge::V3::User) do |api|
-        stub_fixture(api, :get, '/v3/users/puppetlabs')
+      stub_api_for(PuppetForge::V3::User) do |stubs|
+        stub_fixture(stubs, :get, '/v3/users/puppetlabs')
       end
     end
 
@@ -40,7 +40,7 @@ describe PuppetForge::V3::Module do
     end
 
     it 'transparently makes API calls for other attributes' do
-      expect(PuppetForge::V3::User).to receive(:request).once.and_call_original
+      expect(PuppetForge::V3::User).to receive(:request).once
       expect(mod.owner.created_at).to_not be nil
     end
   end
@@ -58,8 +58,8 @@ describe PuppetForge::V3::Module do
     end
 
     it 'transparently makes API calls for other attributes' do
-      stub_api_for(PuppetForge::V3::Release) do |api|
-        api.get(mod.current_release.uri) do
+      stub_api_for(PuppetForge::V3::Release) do |stubs|
+        stubs.get(mod.current_release.uri) do
           load_fixture('/v3/releases/puppetlabs-apache-0.0.1')
         end
       end
@@ -73,13 +73,13 @@ describe PuppetForge::V3::Module do
     let(:mod) { PuppetForge::V3::Module.find('puppetlabs-apache') }
 
     before do
-      stub_api_for(PuppetForge::V3::Release) do |api|
-        stub_fixture(api, :get, '/v3/releases/puppetlabs-apache-0.0.1')
-        stub_fixture(api, :get, '/v3/releases/puppetlabs-apache-0.0.2')
-        stub_fixture(api, :get, '/v3/releases/puppetlabs-apache-0.0.3')
-        stub_fixture(api, :get, '/v3/releases/puppetlabs-apache-0.0.4')
-        stub_fixture(api, :get, '/v3/releases/puppetlabs-apache-0.1.1')
-        stub_fixture(api, :get, '/v3/releases?module=puppetlabs-apache')
+      stub_api_for(PuppetForge::V3::Release) do |stubs|
+        stub_fixture(stubs, :get, '/v3/releases/puppetlabs-apache-0.0.1')
+        stub_fixture(stubs, :get, '/v3/releases/puppetlabs-apache-0.0.2')
+        stub_fixture(stubs, :get, '/v3/releases/puppetlabs-apache-0.0.3')
+        stub_fixture(stubs, :get, '/v3/releases/puppetlabs-apache-0.0.4')
+        stub_fixture(stubs, :get, '/v3/releases/puppetlabs-apache-0.1.1')
+        stub_fixture(stubs, :get, '/v3/releases?module=puppetlabs-apache')
       end
     end
 
@@ -101,8 +101,7 @@ describe PuppetForge::V3::Module do
       releases = mod.releases.select { |x| versions.include? x.version }
 
       expect(PuppetForge::V3::Release).to receive(:request) \
-                        .exactly(5).times \
-                        .and_call_original
+                        .exactly(5).times
 
       expect(releases.map(&:created_at)).to_not include nil
     end

@@ -10,18 +10,21 @@ end
 
 require 'puppet_forge'
 
-module StubbingHer
+module StubbingFaraday
+
   def stub_api_for(klass)
-    klass.use_api begin
-      Her::API.new :url => "http://api.example.com" do |c|
-        c.use PuppetForge::Middleware::JSONForHer
+    allow(klass).to receive(:faraday_api) do
+      Faraday.new :url => "http://api.example.com" do |c|
+        c.response :json, :content_type => 'application/json'
         c.adapter(:test) { |s| yield(s) }
       end
     end
+
+    stubs = Faraday::Adapter::Test::Stubs.new
   end
 
-  def stub_fixture(api, method, path)
-    api.send(method, path) do |env|
+  def stub_fixture(stubs, method, path)
+    stubs.send(method, path) do |env|
       load_fixture([ env[:url].path, env[:url].query ].compact.join('?'))
     end
   end
@@ -51,7 +54,7 @@ RSpec.configure do |config|
   config.run_all_when_everything_filtered = true
   config.filter_run :focus
 
-  config.include StubbingHer
+  config.include StubbingFaraday
 
   # Run specs in random order to surface order dependencies. If you find an
   # order dependency and want to debug it, you can fix the order by providing
