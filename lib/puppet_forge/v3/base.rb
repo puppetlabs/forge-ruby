@@ -1,97 +1,66 @@
-require 'her'
-require 'her/lazy_accessors'
-require 'her/lazy_relations'
-
-require 'puppet_forge/middleware/json_for_her'
-require 'puppet_forge/v3/base/paginated_collection'
+require 'faraday'
+require 'faraday_middleware'
 
 module PuppetForge
   module V3
 
-    # Acts as the base class for all PuppetForge::V3::* models. This class provides
-    # some overrides of behaviors from Her, in addition to convenience methods
-    # and abstractions of common behavior.
+    # Acts as the base class for all PuppetForge::V3::* models.
     #
     # @api private
     class Base
-      include Her::Model
-      include Her::LazyAccessors
-      include Her::LazyRelations
-
-      use_api begin
-        begin
-          # Use Typhoeus if available.
-          Gem::Specification.find_by_name('typhoeus', '~> 0.6')
-          require 'typhoeus/adapters/faraday'
-          adapter = Faraday::Adapter::Typhoeus
-        rescue Gem::LoadError
-          adapter = Faraday::Adapter::NetHttp
-        end
-
-        Her::API.new :url => "#{PuppetForge.host}/v3/" do |c|
-          c.use PuppetForge::Middleware::JSONForHer
-          c.use adapter
-        end
-      end
 
       class << self
-        # Overrides Her::Model#request to allow end users to dynamically update
-        # both the Forge host being communicated with and the user agent string.
-        #
-        # @api private
-        # @api her
-        # @see Her::Model#request
-        # @see PuppetForge.host
-        # @see PuppetForge.user_agent
-        def request(*args)
-          unless her_api.base_uri =~ /^#{PuppetForge.host}/
-            her_api.connection.url_prefix = "#{PuppetForge.host}/v3/"
+
+        def faraday_api
+          # Initialize faraday_api if it has not been
+          if @faraday_api.nil?
+            begin
+              # Use Typhoeus if available.
+              Gem::Specification.find_by_name('typhoeus', '~> 0.6')
+              require 'typhoeus/adapters/faraday'
+              adapter = Faraday::Adapter::Typhoeus
+            rescue Gem::LoadError
+              adapter = Faraday.default_adapter
+            end
+
+            @faraday_api = Faraday.new :url => "#{PuppetForge.host}/v3/" do |c|
+              c.response :json, :content_type => 'application/json'
+              c.adapter adapter
+            end
           end
 
-          her_api.connection.headers[:user_agent] = %W[
+          @faraday_api
+        end
+
+        # @private
+        def request(resource, item = nil, params = {})
+          unless faraday_api.url_prefix =~ /^#{PuppetForge.host}/
+            faraday_api.url_prefix = "#{PuppetForge.host}/v3/"
+          end
+
+          faraday_api.headers["User-Agent"] = %W[
             #{PuppetForge.user_agent}
             PuppetForge.gem/#{PuppetForge::VERSION}
-            Her/#{Her::VERSION}
             Faraday/#{Faraday::VERSION}
             Ruby/#{RUBY_VERSION}-p#{RUBY_PATCHLEVEL} (#{RUBY_PLATFORM})
           ].join(' ').strip
 
-          super
+          if item.nil?
+            uri_path = resource
+          else
+            uri_path = "#{resource}/#{item}"
+          end
+
+          faraday_api.get uri_path, params
         end
 
-        # Overrides Her::Model#new_collection with custom logic for handling the
-        # paginated collections produced by the Forge API. These collections are
-        # then wrapped in a {PaginatedCollection}, which enables navigation of
-        # the paginated dataset.
-        #
-        # @api private
-        # @api her
-        # @param parsed_data [Hash<(:data, :errors)>] the parsed response data
-        # @return [PaginatedCollection] the collection
-        def new_collection(parsed_data)
-          col = super :data =>     parsed_data[:data][:results] || [],
-                      :metadata => parsed_data[:data][:pagination] || { limit: 10, total: 0, offset: 0 },
-                      :errors =>   parsed_data[:errors]
-
-          PaginatedCollection.new(self, col.to_a, col.metadata, col.errors)
+        def find(slug)
+          request("#{self.name.split("::").last.downcase}s", slug)
         end
-      end
 
-      # FIXME: We should provide an actual unique identifier.
-      primary_key :slug
-      store_metadata :_metadata
-      after_initialize do
-        attributes[:slug] ||= uri[/[^\/]+$/]
-      end
-
-      # Since our data is primarily URI based rather than ID based, we should
-      # use our URIs as the request_path whenever possible.
-      #
-      # @api private
-      # @api her
-      # @see Her::Model::Paths#request_path
-      def request_path(*args)
-        if has_attribute? :uri then uri else super end
+        def where(params)
+          request("#{self.name.split("::").last.downcase}s", nil, params)
+        end
       end
     end
   end
