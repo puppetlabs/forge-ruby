@@ -7,9 +7,6 @@ module PuppetForge
 
     # Models a Puppet Module hosted on the Forge.
     class Module < Base
-      lazy :owner, 'User'
-      lazy :current_release, 'Release'
-      lazy_collection :releases
     end
   end
 end
