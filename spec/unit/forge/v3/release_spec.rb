@@ -93,6 +93,11 @@ describe PuppetForge::V3::Release do
       stub_api_for(PuppetForge::V3::Module) do |stubs|
         stub_fixture(stubs, :get, '/v3/modules/puppetlabs-apache')
       end
+
+      stub_api_for(PuppetForge::V3::Release) do |stubs|
+        stub_fixture(stubs, :get, '/v3/releases/puppetlabs-apache-0.0.1')
+        stub_fixture(stubs, :get, '/v3/releases?module=puppetlabs-apache')
+      end
     end
 
     it 'is lazy and repeatable' do

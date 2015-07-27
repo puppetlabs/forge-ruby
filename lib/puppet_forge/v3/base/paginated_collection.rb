@@ -10,13 +10,18 @@ module PuppetForge
         # @param data [Array] the current data page
         # @param metadata [Hash<(:limit, :total, :offset)>] page metadata
         # @param errors [Object] errors for the page request
-        def initialize(klass, data, metadata, errors)
+        def initialize(klass, data = [], metadata = {'total' => 0, 'offset' => 0, 'limit' => 10}, errors = nil)
+          super()
           @metadata = metadata
           @errors = errors
           @klass = klass
 
           data.each do |item|
-            self << @klass.new(item)
+            if item.is_a? Hash
+              self << @klass.new(item)
+            else
+              self << item
+            end
           end
         end
 

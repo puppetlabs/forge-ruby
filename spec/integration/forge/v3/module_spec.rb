@@ -20,18 +20,15 @@ describe PuppetForge::V3::Module do
 
   end
 
-  context "#find" do
-    context "when the user exists," do
+  context "::find" do
+    context "when the user exists" do
+      let (:mod) { PuppetForge::V3::Module.find('puppetforgegemtesting-thorin') }
 
-      it "find returns a PuppetForge::V3::Module." do
-        mod = PuppetForge::V3::Module.find('puppetforgegemtesting-thorin')
-
+      it "returns a PuppetForge::V3::Module." do
         expect(mod).to be_a(PuppetForge::V3::Module)
       end
 
-      it "it exposes the API information." do
-        mod = PuppetForge::V3::Module.find('puppetforgegemtesting-thorin')
-
+      it "exposes the API information." do
         expect(mod).to respond_to(:uri)
         expect(mod).to respond_to(:owner)
         expect(mod).to respond_to(:current_release)
@@ -45,7 +42,8 @@ describe PuppetForge::V3::Module do
 
     end
 
-    context "when the module doesn't exist," do
+    context "when the module doesn't exist" do
+      let (:mod) { PuppetForge::V3::Module.find('puppetforgegemtesting-thorin') }
 
       it "find returns nil." do
         mod = PuppetForge::V3::Module.find('puppetforgegemtesting-bilbo')
@@ -55,6 +53,42 @@ describe PuppetForge::V3::Module do
 
     end
 
+  end
+
+  context "::where" do
+    context "finds matching resources" do
+
+      it "only returns modules that match the query" do
+        modules = PuppetForge::V3::Module.where(:owner => 'puppetforgegemtesting')
+
+        expect(modules).to be_a(PuppetForge::V3::Base::PaginatedCollection)
+        modules.each do |mod|
+          expect(mod.owner.username).to eq('puppetforgegemtesting')
+        end
+
+      end
+
+      it "returns a paginated response" do
+        modules = PuppetForge::V3::Module.where(:owner => 'puppetforgegemtesting', :limit => 1)
+
+        expect(modules.limit).to eq(1)
+        expect(modules.total).to eq(2)
+
+        expect(modules.next).not_to be_nil
+      end
+
+    end
+
+    context "does not find matching resources" do
+      it "returns an empty PaginatedCollection" do
+        modules = PuppetForge::V3::Module.where(:owner => 'absentuser')
+
+        expect(modules).to be_a(PuppetForge::V3::Base::PaginatedCollection)
+
+        expect(modules.size).to eq(0)
+        expect(modules.empty?).to be(true)
+      end
+    end
   end
 end
 

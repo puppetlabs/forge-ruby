@@ -50,5 +50,41 @@ describe PuppetForge::V3::Release do
     end
 
   end
+
+  context "::where" do
+    context "finds matching resources" do
+
+      it "only returns releases that match the query" do
+        releases = PuppetForge::V3::Release.where(:module => 'puppetforgegemtesting-thorin')
+
+        expect(releases).to be_a(PuppetForge::V3::Base::PaginatedCollection)
+
+        expect(releases.first.version).to eq("0.0.2")
+        expect(releases[1].version).to eq("0.0.1")
+
+      end
+
+      it "returns a paginated response" do
+        modules = PuppetForge::V3::Release.where(:module => 'puppetforgegemtesting-thorin', :limit => 1)
+
+        expect(modules.limit).to eq(1)
+        expect(modules.total).to eq(2)
+
+        expect(modules.next).not_to be_nil
+      end
+
+    end
+
+    context "does not find matching resources" do
+      it "returns an empty PaginatedCollection" do
+        modules = PuppetForge::V3::Release.where(:module => 'puppetforgegemtesting-notamodule')
+
+        expect(modules).to be_a(PuppetForge::V3::Base::PaginatedCollection)
+
+        expect(modules.size).to eq(0)
+        expect(modules.empty?).to be(true)
+      end
+    end
+  end
 end
 

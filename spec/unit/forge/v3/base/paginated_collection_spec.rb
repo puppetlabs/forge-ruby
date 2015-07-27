@@ -2,47 +2,47 @@ require 'spec_helper'
 
 describe PuppetForge::V3::Base::PaginatedCollection do
   let(:klass) do
-    Class.new do
-      def self.get_collection(url)
-        data = {
-          '/v3/collection'        => [ :A, :B, :C ],
-          '/v3/collection?page=2' => [ :D, :E, :F ],
-          '/v3/collection?page=3' => [ :G, :H ],
-        }
+    allow(PuppetForge::V3::Base).to receive(:get_collection) do |url|
+      data = {
+        '/v3/collection'        => [ :A, :B, :C ],
+        '/v3/collection?page=2' => [ :D, :E, :F ],
+        '/v3/collection?page=3' => [ :G, :H ],
+      }
 
-        meta = {
-          '/v3/collection' => {
-            :limit    => 3,
-            :offset   => 0,
-            :first    => '/v3/collection',
-            :previous => nil,
-            :current  => '/v3/collection',
-            :next     => '/v3/collection?page=2',
-            :total    => 8,
-          },
-          '/v3/collection?page=2' => {
-            :limit    => 3,
-            :offset   => 0,
-            :first    => '/v3/collection',
-            :previous => '/v3/collection',
-            :current  => '/v3/collection?page=2',
-            :next     => '/v3/collection?page=3',
-            :total    => 8,
-          },
-          '/v3/collection?page=3' => {
-            :limit    => 3,
-            :offset   => 0,
-            :first    => '/v3/collection',
-            :previous => '/v3/collection?page=2',
-            :current  => '/v3/collection?page=3',
-            :next     => nil,
-            :total    => 8,
-          },
-        }
+      meta = {
+        '/v3/collection' => {
+          'limit'    => 3,
+          'offset'   => 0,
+          'first'    => '/v3/collection',
+          'previous' => nil,
+          'current'  => '/v3/collection',
+          'next'     => '/v3/collection?page=2',
+          'total'    => 8,
+        },
+        '/v3/collection?page=2' => {
+          'limit'    => 3,
+          'offset'   => 0,
+          'first'    => '/v3/collection',
+          'previous' => '/v3/collection',
+          'current'  => '/v3/collection?page=2',
+          'next'     => '/v3/collection?page=3',
+          'total'    => 8,
+        },
+        '/v3/collection?page=3' => {
+          'limit'    => 3,
+          'offset'   => 0,
+          'first'    => '/v3/collection',
+          'previous' => '/v3/collection?page=2',
+          'current'  => '/v3/collection?page=3',
+          'next'     => nil,
+          'total'    => 8,
+        },
+      }
 
-        PuppetForge::V3::Base::PaginatedCollection.new(self, data[url], meta[url], {})
-      end
+      PuppetForge::V3::Base::PaginatedCollection.new(PuppetForge::V3::Base, data[url], meta[url], {})
     end
+
+    PuppetForge::V3::Base
   end
 
   subject { klass.get_collection('/v3/collection') }
@@ -66,7 +66,7 @@ describe PuppetForge::V3::Base::PaginatedCollection do
   end
 
   it 'exposes the pagination metadata' do
-    expect(subject.metadata[:limit]).to be subject.size
+    expect(subject.limit).to be subject.size
   end
 
   it 'exposes previous_url and next_url' do
