@@ -1,5 +1,6 @@
 {
   "uri": "/v3/modules/puppetlabs-apache",
+  "slug": "puppetlabs-apache",
   "name": "apache",
   "downloads": 81387,
   "created_at": "2010-05-20 22:43:19 -0700",
