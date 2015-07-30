@@ -38,7 +38,7 @@ module PuppetForge
               adapter = Faraday.default_adapter
             end
 
-            @faraday_api = Faraday.new :url => "#{PuppetForge.host}/" do |c|
+            @faraday_api = Faraday.new :url => "#{PuppetForge.host}" do |c|
               c.response :json, :content_type => 'application/json'
               c.adapter adapter
             end
@@ -50,7 +50,7 @@ module PuppetForge
         # @private
         def request(resource, item = nil, params = {})
           unless faraday_api.url_prefix =~ /^#{PuppetForge.host}/
-            faraday_api.url_prefix = "#{PuppetForge.host}/"
+            faraday_api.url_prefix = "#{PuppetForge.host}"
           end
 
           faraday_api.headers["User-Agent"] = %W[
@@ -61,9 +61,9 @@ module PuppetForge
           ].join(' ').strip
 
           if item.nil?
-            uri_path = "v3/#{resource}"
+            uri_path = "/v3/#{resource}"
           else
-            uri_path = "v3/#{resource}/#{item}"
+            uri_path = "/v3/#{resource}/#{item}"
           end
 
           faraday_api.get uri_path, params
@@ -82,7 +82,40 @@ module PuppetForge
         end
 
         def where(params)
-          request("#{self.name.split("::").last.downcase}s", nil, params)
+          resp = request("#{self.name.split("::").last.downcase}s", nil, params)
+
+          new_collection(resp)
+        end
+
+        def get_collection(uri_path)
+          resource, params = split_uri_path uri_path
+          resp = request(resource, nil, params)
+
+          new_collection(resp)
+        end
+
+        # @private
+        def split_uri_path(uri_path)
+          all, resource, params = /(?:\/v3\/)([^\/]+)(?:\?)(.*)/.match(uri_path).to_a
+
+          params = params.split('&')
+
+          param_hash = Hash.new
+          params.each do |param|
+            key, val = param.split('=')
+            param_hash[key] = val
+          end
+
+          [resource, param_hash]
+        end
+
+        # @private
+        def new_collection(faraday_resp)
+          if faraday_resp[:errors].nil?
+            PaginatedCollection.new(self, faraday_resp.body['results'], faraday_resp.body['pagination'], nil)
+          else
+            PaginatedCollection.new(self)
+          end
         end
       end
     end

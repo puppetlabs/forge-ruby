@@ -40,7 +40,7 @@ describe PuppetForge::V3::Module do
     end
 
     it 'transparently makes API calls for other attributes' do
-      expect(PuppetForge::V3::User).to receive(:request).once
+      expect(PuppetForge::V3::User).to receive(:request).once.and_call_original
       expect(mod.owner.created_at).to_not be nil
     end
   end
@@ -57,16 +57,6 @@ describe PuppetForge::V3::Module do
       expect(mod.current_release.version).to_not be nil
     end
 
-    it 'transparently makes API calls for other attributes' do
-      stub_api_for(PuppetForge::V3::Release) do |stubs|
-        stubs.get(mod.current_release.uri) do
-          load_fixture('/v3/releases/puppetlabs-apache-0.0.1')
-        end
-      end
-
-      mod.attributes[:current_release].delete :created_at
-      expect(mod.current_release.created_at).to_not be nil
-    end
   end
 
   describe '#releases' do
@@ -96,14 +86,20 @@ describe PuppetForge::V3::Module do
       expect(mod.releases.map(&:version)).to_not include nil
     end
 
-    it 'transparently makes API calls for other attributes' do
+    it 'loads releases lazily' do
       versions = %w[ 0.0.1 0.0.2 0.0.3 0.0.4 0.1.1 ]
-      releases = mod.releases.select { |x| versions.include? x.version }
 
-      expect(PuppetForge::V3::Release).to receive(:request) \
-                        .exactly(5).times
+      expect(PuppetForge::V3::Release).to receive(:find).exactly(5).times.and_call_original
+
+      releases = mod.releases
 
       expect(releases.map(&:created_at)).to_not include nil
+    end
+
+    it 'transparently makes API calls for other attributes' do
+      expect(PuppetForge::V3::Release).to receive(:where) \
+                        .once.and_call_original
+      releases = mod.releases
     end
   end
 

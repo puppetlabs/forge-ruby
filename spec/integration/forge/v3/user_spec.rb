@@ -39,7 +39,7 @@ describe PuppetForge::V3::User do
       end
 
     end
-    
+
     context "when the user doesn't exists," do
 
       it "find returns nil." do
@@ -48,6 +48,37 @@ describe PuppetForge::V3::User do
       end
 
     end
+  end
+
+  context "::where" do
+    context "finds matching resources" do
+
+      it "returns sorted users" do
+        users = PuppetForge::V3::User.where(:sort_by => 'releases')
+
+        expect(users).to be_a(PuppetForge::V3::Base::PaginatedCollection)
+
+        previous_releases = users.first.release_count
+        users.each do |user|
+          expect(user.release_count).to be <= previous_releases
+          previous_releases = user.release_count
+        end
+
+      end
+
+      it "returns a paginated response" do
+        users = PuppetForge::V3::User.where(:limit => 1)
+
+        expect(users.limit).to eq(1)
+
+        2.times do
+          expect(users).not_to be_nil
+          users = users.next
+        end
+      end
+
+    end
+
   end
 end
 
