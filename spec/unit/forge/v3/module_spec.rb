@@ -89,9 +89,7 @@ describe PuppetForge::V3::Module do
     it 'loads releases lazily' do
       versions = %w[ 0.0.1 0.0.2 0.0.3 0.0.4 0.1.1 ]
 
-      expect(PuppetForge::V3::Release).to receive(:find) \
-                        .exactly(5).times \
-                        .and_call_original
+      expect(PuppetForge::V3::Release).to receive(:find).exactly(5).times.and_call_original
 
       releases = mod.releases
 

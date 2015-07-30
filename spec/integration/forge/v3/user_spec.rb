@@ -67,13 +67,13 @@ describe PuppetForge::V3::User do
       end
 
       it "returns a paginated response" do
-        modules = PuppetForge::V3::User.where(:user => 'puppetforgegemtesting', :limit => 1)
+        users = PuppetForge::V3::User.where(:limit => 1)
 
-        expect(modules.limit).to eq(1)
+        expect(users.limit).to eq(1)
 
         2.times do
-          expect(modules).not_to be_nil
-          modules = modules.next
+          expect(users).not_to be_nil
+          users = users.next
         end
       end
 

@@ -5,23 +5,21 @@ module PuppetForge
       # Enables navigation of the Forge API's paginated datasets.
       class PaginatedCollection < Array
 
+        LIMIT = 10
+
         # @api private
         # @param klass [PuppetForge::V3::Base] the class to page over
         # @param data [Array] the current data page
         # @param metadata [Hash<(:limit, :total, :offset)>] page metadata
         # @param errors [Object] errors for the page request
-        def initialize(klass, data = [], metadata = {'total' => 0, 'offset' => 0, 'limit' => 10}, errors = nil)
+        def initialize(klass, data = [], metadata = {'total' => 0, 'offset' => 0, 'limit' => LIMIT}, errors = nil)
           super()
           @metadata = metadata
           @errors = errors
           @klass = klass
 
           data.each do |item|
-            if item.is_a? Hash
-              self << @klass.new(item)
-            else
-              self << item
-            end
+            self << @klass.new(item)
           end
         end
 

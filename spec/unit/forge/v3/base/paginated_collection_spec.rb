@@ -4,9 +4,9 @@ describe PuppetForge::V3::Base::PaginatedCollection do
   let(:klass) do
     allow(PuppetForge::V3::Base).to receive(:get_collection) do |url|
       data = {
-        '/v3/collection'        => [ :A, :B, :C ],
-        '/v3/collection?page=2' => [ :D, :E, :F ],
-        '/v3/collection?page=3' => [ :G, :H ],
+        '/v3/collection'        => [ { 'data' => :A } , { 'data' => :B }, { 'data' => :C } ],
+        '/v3/collection?page=2' => [ { 'data' => :D }, { 'data' => :E }, { 'data' => :F } ],
+        '/v3/collection?page=3' => [ { 'data' => :G }, { 'data' => :H } ],
       }
 
       meta = {
@@ -47,8 +47,14 @@ describe PuppetForge::V3::Base::PaginatedCollection do
 
   subject { klass.get_collection('/v3/collection') }
 
+  def collect_data(paginated)
+    paginated.to_a.collect do |x|
+      x.data
+    end
+  end
+
   it 'maps to a single page of the collection' do
-    expect(subject.to_a).to eql([ :A, :B, :C ])
+    expect(collect_data(subject)).to eql([ :A, :B, :C ])
   end
 
   it 'knows the size of the entire collection' do
@@ -61,8 +67,8 @@ describe PuppetForge::V3::Base::PaginatedCollection do
 
   it 'enables page navigation' do
     expect(subject.next).to_not be_empty
-    expect(subject.next.to_a).to_not eql(subject.to_a)
-    expect(subject.next.previous.to_a).to eql(subject.to_a)
+    expect(collect_data(subject.next)).to_not eql(collect_data(subject))
+    expect(collect_data(subject.next.previous)).to eql(collect_data(subject))
   end
 
   it 'exposes the pagination metadata' do
@@ -77,12 +83,22 @@ describe PuppetForge::V3::Base::PaginatedCollection do
   describe '#unpaginated' do
     it 'provides an iterator over the entire collection' do
       expected = [ :A, :B, :C, :D, :E, :F, :G, :H ]
-      expect(subject.unpaginated.to_a).to eql(expected)
+      actual = subject.unpaginated.to_a.collect do |x|
+        expect(x).to be_a(klass)
+        x.data
+      end
+
+      expect(actual).to eql(expected)
     end
 
     it "provides a full iterator regardless of which page it's started on" do
       expected = [ :A, :B, :C, :D, :E, :F, :G, :H ]
-      expect(subject.next.next.unpaginated.to_a).to eql(expected)
+
+      actual = subject.next.next.unpaginated.to_a.collect do |x|
+        expect(x).to be_a(klass)
+        x.data
+      end
+      expect(actual).to eql(expected)
     end
   end
 end

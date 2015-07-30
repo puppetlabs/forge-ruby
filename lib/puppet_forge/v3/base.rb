@@ -111,8 +111,11 @@ module PuppetForge
 
         # @private
         def new_collection(faraday_resp)
-          return PaginatedCollection.new(self) unless faraday_resp[:errors].nil?
-          PaginatedCollection.new(self, faraday_resp.body['results'], faraday_resp.body['pagination'], nil)
+          if faraday_resp[:errors].nil?
+            PaginatedCollection.new(self, faraday_resp.body['results'], faraday_resp.body['pagination'], nil)
+          else
+            PaginatedCollection.new(self)
+          end
         end
       end
     end
