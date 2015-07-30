@@ -13,7 +13,7 @@ describe PuppetForge::V3::Base do
 
       collection = PuppetForge::V3::Base.new_collection(response_data)
 
-      expect(collection.limit).to eq(10)
+      expect(collection.limit).to eq(20)
       expect(collection.offset).to eq(0)
       expect(collection.total).to eq(0)
     end

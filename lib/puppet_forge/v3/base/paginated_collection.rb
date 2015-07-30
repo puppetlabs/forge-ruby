@@ -5,7 +5,8 @@ module PuppetForge
       # Enables navigation of the Forge API's paginated datasets.
       class PaginatedCollection < Array
 
-        LIMIT = 10
+        # Default pagination limit for API request
+        LIMIT = 20
 
         # @api private
         # @param klass [PuppetForge::V3::Base] the class to page over
