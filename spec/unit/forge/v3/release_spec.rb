@@ -81,7 +81,7 @@ describe PuppetForge::V3::Release do
 
     it 'downloads the file to the specified location' do
       expect(File.exist?(tarball)).to be false
-      release.download(tarball)
+      release.download(Pathname.new(tarball))
       expect(File.exist?(tarball)).to be true
     end
   end
