@@ -17,8 +17,8 @@ describe PuppetForge::V3::Release do
       expect(release.version).to eql('0.0.1')
     end
 
-    it 'returns nil for non-existent releases' do
-      expect(missing_release).to be nil
+    it 'raises Faraday::ResourceNotFound for non-existent releases' do
+      expect { missing_release }.to raise_error(Faraday::ResourceNotFound)
     end
   end
 
@@ -81,7 +81,7 @@ describe PuppetForge::V3::Release do
 
     it 'downloads the file to the specified location' do
       expect(File.exist?(tarball)).to be false
-      release.download(tarball)
+      release.download(Pathname.new(tarball))
       expect(File.exist?(tarball)).to be true
     end
   end

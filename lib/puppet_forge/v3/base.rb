@@ -1,6 +1,6 @@
+require 'puppet_forge/connection'
 require 'puppet_forge/v3/base/paginated_collection'
-require 'faraday'
-require 'faraday_middleware'
+require 'puppet_forge/error'
 
 module PuppetForge
   module V3
@@ -26,39 +26,14 @@ module PuppetForge
 
       class << self
 
-        def faraday_api
-          # Initialize faraday_api if it has not been
-          if @faraday_api.nil?
-            begin
-              # Use Typhoeus if available.
-              Gem::Specification.find_by_name('typhoeus', '~> 0.6')
-              require 'typhoeus/adapters/faraday'
-              adapter = Faraday::Adapter::Typhoeus
-            rescue Gem::LoadError
-              adapter = Faraday.default_adapter
-            end
-
-            @faraday_api = Faraday.new :url => "#{PuppetForge.host}" do |c|
-              c.response :json, :content_type => 'application/json'
-              c.adapter adapter
-            end
-          end
-
-          @faraday_api
-        end
+        include PuppetForge::Connection
 
         # @private
         def request(resource, item = nil, params = {})
-          unless faraday_api.url_prefix =~ /^#{PuppetForge.host}/
-            faraday_api.url_prefix = "#{PuppetForge.host}"
+          unless conn.url_prefix =~ /^#{PuppetForge.host}/
+            conn.url_prefix = "#{PuppetForge.host}"
           end
 
-          faraday_api.headers["User-Agent"] = %W[
-            #{PuppetForge.user_agent}
-            PuppetForge.gem/#{PuppetForge::VERSION}
-            Faraday/#{Faraday::VERSION}
-            Ruby/#{RUBY_VERSION}-p#{RUBY_PATCHLEVEL} (#{RUBY_PLATFORM})
-          ].join(' ').strip
 
           if item.nil?
             uri_path = "/v3/#{resource}"
@@ -66,7 +41,7 @@ module PuppetForge
             uri_path = "/v3/#{resource}/#{item}"
           end
 
-          faraday_api.get uri_path, params
+          conn.get uri_path, params
         end
 
         def find(slug)
@@ -74,11 +49,7 @@ module PuppetForge
 
           resp = request("#{self.name.split("::").last.downcase}s", slug)
 
-          if resp.status >= 400 || !resp.body['errors'].nil?
-            nil
-          else
-            self.new(resp.body)
-          end
+          self.new(resp.body)
         end
 
         def where(params)

@@ -3,25 +3,15 @@ require 'spec_helper'
 describe PuppetForge::V3::Module do
   before do
 
-    class PuppetForge::V3::Base
-      class << self
-        def faraday_api
-          @faraday_api = Faraday.new ({ :url => "#{PuppetForge.host}/", :ssl => { :verify => false } }) do |c|
-            c.response :json, :content_type => 'application/json'
-            c.adapter Faraday.default_adapter
-          end
-
-          @faraday_api
-        end
-      end
-    end
-
     PuppetForge.host = "https://forge-aio01-petest.puppetlabs.com/"
+    PuppetForge::V3::Module.conn = PuppetForge::V3::Module.make_connection(PuppetForge.host, nil, {:ssl => {:verify => false} })
+    PuppetForge::V3::User.conn = PuppetForge::V3::User.make_connection(PuppetForge.host, nil, {:ssl => {:verify => false} })
+    PuppetForge::V3::Release.conn = PuppetForge::V3::Release.make_connection(PuppetForge.host, nil, {:ssl => {:verify => false} })
 
   end
 
   context "::find" do
-    context "when the user exists" do
+    context "gets information on an existing module and" do
       let (:mod) { PuppetForge::V3::Module.find('puppetforgegemtesting-thorin') }
 
       it "returns a PuppetForge::V3::Module." do
@@ -42,13 +32,11 @@ describe PuppetForge::V3::Module do
 
     end
 
-    context "when the module doesn't exist" do
-      let (:mod) { PuppetForge::V3::Module.find('puppetforgegemtesting-thorin') }
+    context "raises Faraday::ResourceNotFound when" do
+      let (:mod) { PuppetForge::V3::Module.find('puppetforgegemtesting-bilbo') }
 
-      it "find returns nil." do
-        mod = PuppetForge::V3::Module.find('puppetforgegemtesting-bilbo')
-
-        expect(mod).to be_nil
+      it "the module does not exist" do
+        expect { mod }.to raise_error(Faraday::ResourceNotFound)
       end
 
     end

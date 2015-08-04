@@ -16,8 +16,8 @@ describe PuppetForge::V3::User do
       expect(user.username).to eq('puppetlabs')
     end
 
-    it 'returns nil for non-existent users' do
-      expect(missing_user).to be_nil
+    it 'raises Faraday::ResourceNotFound for non-existent users' do
+      expect { missing_user }.to raise_error(Faraday::ResourceNotFound)
     end
   end
 

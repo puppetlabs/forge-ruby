@@ -29,4 +29,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "cane"
   spec.add_development_dependency "yard"
   spec.add_development_dependency "redcarpet"
+
+  spec.add_dependency 'semantic_puppet', '~> 0.1.0'
+  spec.add_dependency 'minitar'
 end

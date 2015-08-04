@@ -17,7 +17,7 @@ describe PuppetForge::V3::Module do
     end
 
     it 'returns nil for non-existent modules' do
-      expect(missing_mod).to be_nil
+      expect { missing_mod }.to raise_error(Faraday::ResourceNotFound)
     end
   end
 

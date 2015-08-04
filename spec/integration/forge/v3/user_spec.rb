@@ -2,22 +2,9 @@ require 'spec_helper'
 
 describe PuppetForge::V3::User do
   before do
-
-    class PuppetForge::V3::Base
-      class << self
-        def faraday_api
-          @faraday_api = Faraday.new ({ :url => "#{PuppetForge.host}/", :ssl => { :verify => false } }) do |c|
-            c.response :json, :content_type => 'application/json'
-            c.adapter Faraday.default_adapter
-          end
-
-          @faraday_api
-        end
-      end
-    end
-
     PuppetForge.host = "https://forge-aio01-petest.puppetlabs.com/"
-
+    PuppetForge::V3::Module.conn = PuppetForge::V3::Module.make_connection(PuppetForge.host, nil, {:ssl => {:verify => false} })
+    PuppetForge::V3::User.conn = PuppetForge::V3::User.make_connection(PuppetForge.host, nil, {:ssl => {:verify => false} })
   end
 
   context "#find" do
@@ -41,10 +28,10 @@ describe PuppetForge::V3::User do
     end
 
     context "when the user doesn't exists," do
+      let (:user) { PuppetForge::V3::User.find('notauser') }
 
       it "find returns nil." do
-        user = PuppetForge::V3::User.find('notauser')
-        expect(user).to be_nil
+        expect { user }.to raise_error(Faraday::ResourceNotFound)
       end
 
     end

@@ -13,10 +13,13 @@ require 'puppet_forge'
 module StubbingFaraday
 
   def stub_api_for(klass)
-    allow(klass).to receive(:faraday_api) do
-      Faraday.new :url => "http://api.example.com" do |c|
-        c.response :json, :content_type => 'application/json'
-        c.adapter(:test) { |s| yield(s) }
+    allow(klass).to receive(:conn) do
+      Faraday.new :url => "http://api.example.com" do |builder|
+        builder.response(:json, :content_type => /\bjson$/)
+        builder.response(:raise_error)
+        builder.use(:connection_failure)
+
+        builder.adapter(:test) { |s| yield(s) }
       end
     end
 
