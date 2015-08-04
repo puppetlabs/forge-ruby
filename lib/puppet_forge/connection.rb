@@ -45,13 +45,14 @@ module PuppetForge
         # Use Typhoeus if available.
         Gem::Specification.find_by_name('typhoeus', '~> 0.6')
         require 'typhoeus/adapters/faraday'
-        adapter = Faraday::Adapter::Typhoeus
+        adapter = :typhoeus
       rescue Gem::LoadError
         adapter = Faraday.default_adapter
       end
 
-      make_connection('https://forgeapi.puppetlabs.com', [adapter])
+      make_connection(PuppetForge.host, [adapter])
     end
+    module_function :default_connection
 
     # Generate a new Faraday connection for the given URL.
     #
@@ -73,5 +74,6 @@ module PuppetForge
         builder.adapter(*adapter_args)
       end
     end
+    module_function :make_connection
   end
 end

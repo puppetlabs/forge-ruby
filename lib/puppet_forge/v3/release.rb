@@ -6,17 +6,7 @@ module PuppetForge
 
     # Models a specific release version of a Puppet Module on the Forge.
     class Release < Base
-
-      def initialize(json_response)
-        @module_info = json_response['module']
-
-        super
-      end
-
-      def module
-        @module ||= Module.find(@module_info['slug'])
-        @module
-      end
+      lazy :module, 'Module'
 
       # Returns a fully qualified URL for downloading this release from the Forge.
       #

@@ -3,8 +3,8 @@ require 'spec_helper'
 describe PuppetForge::V3::User do
   before do
     PuppetForge.host = "https://forge-aio01-petest.puppetlabs.com/"
-    PuppetForge::V3::Module.conn = PuppetForge::V3::Module.make_connection(PuppetForge.host, nil, {:ssl => {:verify => false} })
-    PuppetForge::V3::User.conn = PuppetForge::V3::User.make_connection(PuppetForge.host, nil, {:ssl => {:verify => false} })
+    PuppetForge::V3::Module.conn = PuppetForge::Connection.make_connection(PuppetForge.host, nil, {:ssl => {:verify => false} })
+    PuppetForge::V3::User.conn = PuppetForge::Connection.make_connection(PuppetForge.host, nil, {:ssl => {:verify => false} })
   end
 
   context "#find" do

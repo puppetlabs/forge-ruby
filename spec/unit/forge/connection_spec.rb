@@ -1,14 +1,13 @@
 require 'spec_helper'
 
 describe PuppetForge::Connection do
+  before(:each) do
+    PuppetForge.host = "https://forgeapi.puppetlabs.com"
+  end
 
-    let(:test_conn) do
-      class BasicConnection
-        include PuppetForge::Connection
-      end
-
-      BasicConnection.new
-    end
+  let(:test_conn) do
+    PuppetForge::Connection
+  end
 
   describe 'creating a new connection' do
 
@@ -46,7 +45,7 @@ describe PuppetForge::Connection do
   end
 
   describe 'creating a default connection' do
-    it 'creates a connection with the default Forge URL' do
+    it 'creates a connection with the PuppetForge host' do
       conn = test_conn.default_connection
       expect(conn.url_prefix.to_s).to eq 'https://forgeapi.puppetlabs.com/'
     end

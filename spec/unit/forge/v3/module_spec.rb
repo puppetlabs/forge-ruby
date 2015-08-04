@@ -88,18 +88,11 @@ describe PuppetForge::V3::Module do
 
     it 'loads releases lazily' do
       versions = %w[ 0.0.1 0.0.2 0.0.3 0.0.4 0.1.1 ]
+      releases = mod.releases.select { |x| versions.include? x.version }
 
-      expect(PuppetForge::V3::Release).to receive(:find).exactly(5).times.and_call_original
-
-      releases = mod.releases
+      expect(PuppetForge::V3::Release).to receive(:request).exactly(5).times.and_call_original
 
       expect(releases.map(&:created_at)).to_not include nil
-    end
-
-    it 'transparently makes API calls for other attributes' do
-      expect(PuppetForge::V3::Release).to receive(:where) \
-                        .once.and_call_original
-      releases = mod.releases
     end
   end
 

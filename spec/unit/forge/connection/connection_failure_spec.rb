@@ -1,5 +1,8 @@
 require 'spec_helper'
 
+# The adapter NetHttp must be required before the SocketError (used below) is accessible
+require 'faraday/adapter/net_http'
+
 describe PuppetForge::Connection::ConnectionFailure do
 
   subject do

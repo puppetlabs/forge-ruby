@@ -19,8 +19,10 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = '>= 1.9.3'
 
-  spec.add_runtime_dependency "faraday"
-  spec.add_runtime_dependency "faraday_middleware"
+  spec.add_runtime_dependency "faraday", "~> 0.9.0"
+  spec.add_runtime_dependency "faraday_middleware", "~> 0.9.0"
+  spec.add_dependency 'semantic_puppet', '~> 0.1.0'
+  spec.add_dependency 'minitar'
 
   spec.add_development_dependency "bundler", "~> 1.6"
   spec.add_development_dependency "rake"
@@ -29,7 +31,4 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "cane"
   spec.add_development_dependency "yard"
   spec.add_development_dependency "redcarpet"
-
-  spec.add_dependency 'semantic_puppet', '~> 0.1.0'
-  spec.add_dependency 'minitar'
 end
