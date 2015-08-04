@@ -58,8 +58,8 @@ module PuppetForge
           klass ||= parent.const_get(class_name)
 
           klass.send(:include, PuppetForge::LazyAccessors)
-          fetch unless has_attribute?(name.to_s)
-          value = attributes[name.to_s]
+          fetch unless has_attribute?(name)
+          value = attributes[name]
           klass.new(value) if value
         end
       end
@@ -96,8 +96,8 @@ module PuppetForge
         @_lazy[name] ||= begin
           klass ||= parent.const_get(class_name)
           klass.send(:include, PuppetForge::LazyAccessors)
-          fetch unless has_attribute?(name.to_s)
-          (attribute(name.to_s) || []).map { |x| klass.new(x) }
+          fetch unless has_attribute?(name)
+          (attribute(name) || []).map { |x| klass.new(x) }
         end
       end
     end

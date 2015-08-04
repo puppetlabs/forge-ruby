@@ -59,13 +59,15 @@ describe PuppetForge::LazyRelations do
     PuppetForge::V3::Thing
   end
 
-  let(:local_data)  { { "id" => 1, "local" => 'data', "shadow" => 'x' } }
-  let(:remote_data) { local_data.merge("remote" => 'DATA', "remote_shadow" => 'X') }
+  let(:local_data)  { { :id => 1, :local => 'data', :shadow => 'x' } }
+  let(:remote_data) { local_data.merge(:remote => 'DATA', :remote_shadow => 'X') }
 
   describe '.lazy' do
-    subject { klass.new("relation" => local_data).relation }
+    subject { klass.new(:relation => local_data).relation }
 
-    it { should be_a(related_class) }
+    it do
+      should be_a(related_class)
+    end
 
     it 'does not call methods to #inspect' do
       expect(subject).not_to receive(:shadow)
@@ -129,7 +131,7 @@ describe PuppetForge::LazyRelations do
                      .and_call_original
 
         9.times do
-          subject = klass.new("relation" => local_data).relation
+          subject = klass.new(:relation => local_data).relation
           expect(subject.remote).to eql('DATA')
         end
       end
@@ -147,7 +149,7 @@ describe PuppetForge::LazyRelations do
       before do
         stub_api_for(klass) do |api|
           api.get('/v3/parents/1') do
-            data = { "id" => 1, "relation" => local_data }
+            data = { :id => 1, :relation => local_data }
             [ 200, { 'Content-Type' => 'json' }, data ]
           end
         end
@@ -159,7 +161,7 @@ describe PuppetForge::LazyRelations do
         end
       end
 
-      subject { klass.new("chained" => { "id" => 1 }) }
+      subject { klass.new(:chained => { :id => 1 }) }
 
       example 'allow chained lookups of lazy relations' do
         expect(subject.chained.relation.remote).to eql('DATA')
@@ -167,7 +169,7 @@ describe PuppetForge::LazyRelations do
     end
 
     describe 'null relations' do
-      subject { klass.new("relation" => nil) }
+      subject { klass.new(:relation => nil) }
 
       example 'do not return new instances' do
         expect(subject.relation).to be nil
@@ -192,7 +194,7 @@ describe PuppetForge::LazyRelations do
   end
 
   describe '.lazy_collection' do
-    subject { klass.new("relations" => [local_data]).relations.first }
+    subject { klass.new(:relations => [local_data]).relations.first }
 
     it { should be_a(related_class) }
 
@@ -258,7 +260,7 @@ describe PuppetForge::LazyRelations do
                      .and_call_original
 
         9.times do
-          subject = klass.new("relations" => [local_data]).relations.first
+          subject = klass.new(:relations => [local_data]).relations.first
           expect(subject.remote).to eql('DATA')
         end
       end
@@ -276,7 +278,7 @@ describe PuppetForge::LazyRelations do
       before do
         stub_api_for(klass) do |api|
           api.get('/v3/parents/1') do
-            data = { "id" => 1, "parents" => [{ "id" => 1, "relation" => local_data }] }
+            data = { :id => 1, :parents => [{ :id => 1, :relation => local_data }] }
             [ 200, { 'Content-Type' => 'json' }, data ]
           end
         end
@@ -288,7 +290,7 @@ describe PuppetForge::LazyRelations do
         end
       end
 
-      subject { klass.new("id" => 1) }
+      subject { klass.new(:id => 1) }
 
       example 'allow chained lookups of lazy relations' do
         expect(subject.parents[0].relation.remote).to eql('DATA')
@@ -296,7 +298,7 @@ describe PuppetForge::LazyRelations do
     end
 
     describe 'null relations' do
-      subject { klass.new("relations" => nil) }
+      subject { klass.new(:relations => nil) }
 
       example 'return an empty list' do
         expect(subject.relations).to be_empty

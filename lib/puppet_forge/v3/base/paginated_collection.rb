@@ -13,7 +13,7 @@ module PuppetForge
         # @param data [Array] the current data page
         # @param metadata [Hash<(:limit, :total, :offset)>] page metadata
         # @param errors [Object] errors for the page request
-        def initialize(klass, data = [], metadata = {'total' => 0, 'offset' => 0, 'limit' => LIMIT}, errors = nil)
+        def initialize(klass, data = [], metadata = {:total => 0, :offset => 0, :limit => LIMIT}, errors = nil)
           super()
           @metadata = metadata
           @errors = errors
@@ -35,7 +35,7 @@ module PuppetForge
         #
         # @return [Enumerator] an iterator for the entire collection
         def unpaginated
-          page = @klass.get_collection(@metadata['first'])
+          page = @klass.get_collection(@metadata[:first])
           Enumerator.new do |emitter|
             loop do
               page.each { |x| emitter << x }
@@ -51,7 +51,7 @@ module PuppetForge
         # @!method offset
         #   @return [Integer] the offset for the current page
         [ :total, :limit, :offset ].each do |info|
-          define_method(info) { @metadata[info.to_s] }
+          define_method(info) { @metadata[info] }
         end
 
         [ :next, :previous ].each do |link|
@@ -62,7 +62,7 @@ module PuppetForge
           #   Returns the previous page if a previous page exists.
           #   @return [PaginatedCollection, nil] the previous page
           define_method(link) do
-            return unless path = @metadata[link.to_s]
+            return unless path = @metadata[link]
             @klass.get_collection(path)
           end
 
@@ -73,7 +73,7 @@ module PuppetForge
           #   Returns the url of the previous page if a previous page exists.
           #   @return [String, nil] the previous page's url
           define_method("#{link}_url") do
-            @metadata[link.to_s]
+            @metadata[link]
           end
         end
       end

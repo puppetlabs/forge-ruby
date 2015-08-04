@@ -2,6 +2,7 @@ require 'puppet_forge/connection/connection_failure'
 
 require 'faraday'
 require 'faraday_middleware'
+require 'puppet_forge/middleware/symbolify_json'
 
 module PuppetForge
   # Provide a common mixin for adding a HTTP connection to classes.
@@ -67,6 +68,7 @@ module PuppetForge
       end
 
       Faraday.new(url, options) do |builder|
+        builder.use PuppetForge::Middleware::SymbolifyJson
         builder.response(:json, :content_type => /\bjson$/)
         builder.response(:raise_error)
         builder.use(:connection_failure)
