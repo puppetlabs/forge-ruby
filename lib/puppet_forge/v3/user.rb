@@ -7,6 +7,8 @@ module PuppetForge
     # Models a Forge user's account.
     class User < Base
 
+      include PuppetForge::LazyAccessors
+
       # Returns a collection of Modules owned by the user.
       #
       # @note Because there is no related module data in the record, we can't

@@ -53,6 +53,12 @@ describe PuppetForge::V3::Base::PaginatedCollection do
     end
   end
 
+  it '#all returns self for backwards compatibility.' do
+    paginated = subject.all
+
+    expect(paginated).to eq(subject)
+  end
+
   it 'maps to a single page of the collection' do
     expect(collect_data(subject)).to eql([ :A, :B, :C ])
   end

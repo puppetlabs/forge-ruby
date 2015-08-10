@@ -24,6 +24,11 @@ module PuppetForge
           end
         end
 
+        # For backwards compatibility, all returns the current object.
+        def all
+          self
+        end
+
         # An enumerator that iterates over the entire collection, independent
         # of API pagination. This will potentially result in several API
         # requests.

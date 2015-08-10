@@ -1,18 +1,12 @@
-# Her is an ORM for RESTful APIs, instead of databases.
-# @see http://her-rb.org/
-module Her
-
-  # ActiveRecord-like interface for RESTful models.
-  # @see http://her-rb.org/#usage/activerecord-like-methods
-  module Model; end
+module PuppetForge
 
   # When dealing with a remote service, it's reasonably common to receive only
   # a partial representation of the underlying object, with additional data
-  # available upon request. {Her}, by default, provides a convenient interface
+  # available upon request. PuppetForge, by default, provides a convenient interface
   # for accessing whatever local data is available, but lacks good support for
   # fleshing out partial representations. In order to build a seamless
   # interface for both local and remote attriibutes, this module replaces the
-  # default behavior of {Her::Model}s with an "updatable" interface.
+  # default behavior with an "updatable" interface.
   module LazyAccessors
 
     # Callback for module inclusion.
@@ -28,19 +22,25 @@ module Her
       end
     end
 
-    # Override the default {Her::Model}#inspect behavior.
+    # Provide class name for object
+    #
+    def class_name
+      self.class.name.split("::").last.downcase
+    end
+
+    # Override the default #inspect behavior.
     #
     # The original behavior actually invokes each attribute accessor, which can
     # be somewhat problematic when the accessors have been overridden. This
     # implementation simply reports the contents of the attributes hash.
     def inspect
       attrs = attributes.map do |x, y|
-        [ x, attribute_for_inspect(y) ].join('=')
+        [ x, y ].join('=')
       end
-      "#<#{self.class}(#{request_path}) #{attrs.join(' ')}>"
+      "#<#{self.class}(#{uri}) #{attrs.join(' ')}>"
     end
 
-    # Override the default {Her::Model}#method_misssing behavior.
+    # Override the default #method_misssing behavior.
     #
     # When we receive a {#method_missing} call, one of three things is true:
     # - the caller is looking up a piece of local data without an accessor
@@ -81,21 +81,14 @@ module Her
       return self if @_fetch
 
       klass = self.class
-      params = { :_method => klass.method_for(:find), :_path => self.request_path }
 
-      klass.request(params) do |data, response|
-        if @_fetch = response.success?
-          parsed = klass.parse(data[:data])
-          parsed.merge!(:_metadata => data[:metadata], :_errors => data[:errors])
-
-          self.send(:initialize, parsed)
-          self.run_callbacks(:find)
-        end
+      response = klass.request("#{self.class_name}s/#{self.slug}")
+      if @_fetch = response.success?
+        self.send(:initialize, response.body)
       end
 
       return self
     end
-
 
     # A Module subclass for attribute accessors.
     class AccessorContainer < Module
@@ -117,19 +110,19 @@ module Her
       # @return [void]
       def add_attributes(keys)
         keys.each do |key|
-          next if methods.include?(name = :"#{key}")
+          next if methods.include?(name = "#{key}")
 
           define_method(name) do
             fetch unless has_attribute?(name)
             attribute(name)
           end
 
-          define_method(:"#{name}?") do
+          define_method("#{name}?") do
             fetch unless has_attribute?(name)
             has_attribute?(name)
           end
 
-          define_method(:"#{name}=") do |value|
+          define_method("#{name}=") do |value|
             fetch unless has_attribute?(name)
             attributes[name] = value
           end

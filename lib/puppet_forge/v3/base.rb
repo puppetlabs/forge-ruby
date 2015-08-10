@@ -2,6 +2,9 @@ require 'puppet_forge/connection'
 require 'puppet_forge/v3/base/paginated_collection'
 require 'puppet_forge/error'
 
+require 'puppet_forge/lazy_accessors'
+require 'puppet_forge/lazy_relations'
+
 module PuppetForge
   module V3
 
@@ -9,6 +12,8 @@ module PuppetForge
     #
     # @api private
     class Base
+      include PuppetForge::LazyAccessors
+      include PuppetForge::LazyRelations
 
       def initialize(json_response)
         @attributes = json_response
@@ -22,6 +27,20 @@ module PuppetForge
             define_singleton_method("#{key}=") { |val| @attributes[key] = val }
           end
         end
+      end
+
+      # @return true if attribute exists, false otherwise
+      #
+      def has_attribute?(attr)
+        @attributes.has_key? attr
+      end
+
+      def attribute(name)
+        @attributes[name]
+      end
+
+      def attributes
+        @attributes
       end
 
       class << self
@@ -56,6 +75,11 @@ module PuppetForge
           resp = request("#{self.name.split("::").last.downcase}s", nil, params)
 
           new_collection(resp)
+        end
+
+        # Return a paginated collection of all modules
+        def all
+          where(nil)
         end
 
         def get_collection(uri_path)
