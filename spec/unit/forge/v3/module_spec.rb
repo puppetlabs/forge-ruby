@@ -2,9 +2,16 @@ require 'spec_helper'
 
 describe PuppetForge::V3::Module do
   before do
-    stub_api_for(PuppetForge::V3::Module) do |stubs|
+    stub_api_for(PuppetForge::V3::Base) do |stubs|
       stub_fixture(stubs, :get, '/v3/modules/puppetlabs-apache')
       stub_fixture(stubs, :get, '/v3/modules/absent-apache')
+      stub_fixture(stubs, :get, '/v3/users/puppetlabs')
+      stub_fixture(stubs, :get, '/v3/releases/puppetlabs-apache-0.0.1')
+      stub_fixture(stubs, :get, '/v3/releases/puppetlabs-apache-0.0.2')
+      stub_fixture(stubs, :get, '/v3/releases/puppetlabs-apache-0.0.3')
+      stub_fixture(stubs, :get, '/v3/releases/puppetlabs-apache-0.0.4')
+      stub_fixture(stubs, :get, '/v3/releases/puppetlabs-apache-0.1.1')
+      stub_fixture(stubs, :get, '/v3/releases?module=puppetlabs-apache')
     end
   end
 
@@ -23,12 +30,6 @@ describe PuppetForge::V3::Module do
 
   describe '#owner' do
     let(:mod) { PuppetForge::V3::Module.find('puppetlabs-apache') }
-
-    before do
-      stub_api_for(PuppetForge::V3::User) do |stubs|
-        stub_fixture(stubs, :get, '/v3/users/puppetlabs')
-      end
-    end
 
     it 'exposes the related module as a property' do
       expect(mod.owner).to_not be nil
@@ -62,17 +63,6 @@ describe PuppetForge::V3::Module do
   describe '#releases' do
     let(:mod) { PuppetForge::V3::Module.find('puppetlabs-apache') }
 
-    before do
-      stub_api_for(PuppetForge::V3::Release) do |stubs|
-        stub_fixture(stubs, :get, '/v3/releases/puppetlabs-apache-0.0.1')
-        stub_fixture(stubs, :get, '/v3/releases/puppetlabs-apache-0.0.2')
-        stub_fixture(stubs, :get, '/v3/releases/puppetlabs-apache-0.0.3')
-        stub_fixture(stubs, :get, '/v3/releases/puppetlabs-apache-0.0.4')
-        stub_fixture(stubs, :get, '/v3/releases/puppetlabs-apache-0.1.1')
-        stub_fixture(stubs, :get, '/v3/releases?module=puppetlabs-apache')
-      end
-    end
-
     it 'exposes the related releases as a property' do
       expect(mod.releases).to be_an Array
     end
@@ -90,9 +80,9 @@ describe PuppetForge::V3::Module do
       versions = %w[ 0.0.1 0.0.2 0.0.3 0.0.4 0.1.1 ]
       releases = mod.releases.select { |x| versions.include? x.version }
 
-      expect(PuppetForge::V3::Release).to receive(:request).exactly(5).times.and_call_original
+      expect(PuppetForge::V3::Base).to receive(:request).exactly(5).times.and_call_original
 
-      expect(releases.map(&:created_at)).to_not include nil
+      expect(releases.map(&:downloads)).to_not include nil
     end
   end
 

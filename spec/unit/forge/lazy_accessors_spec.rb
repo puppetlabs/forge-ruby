@@ -39,6 +39,7 @@ describe PuppetForge::LazyAccessors do
     PuppetForge::V3::Thing
   end
 
+  let(:base_class) { PuppetForge::V3::Base }
   let(:local_data)  { { :id => 1, :local => 'data', :shadow => 'x' } }
   let(:remote_data) { local_data.merge(:remote => 'DATA', :remote_shadow => 'X') }
 
@@ -86,7 +87,7 @@ describe PuppetForge::LazyAccessors do
 
   describe 'remote attributes' do
     before do
-      stub_api_for(klass) do |api|
+      stub_api_for(base_class) do |api|
         api.get('/v3/things/1') do
           [ 200, { 'Content-Type' => 'json' }, remote_data ]
         end
@@ -128,7 +129,7 @@ describe PuppetForge::LazyAccessors do
 
   describe 'unsatisfiable attributes' do
     before do
-      stub_api_for(klass) do |api|
+      stub_api_for(base_class) do |api|
         api.get('/v3/things/1') do
           [ 200, { 'Content-Type' => 'json' }, remote_data ]
         end

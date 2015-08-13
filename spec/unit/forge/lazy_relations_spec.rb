@@ -51,6 +51,7 @@ describe PuppetForge::LazyRelations do
 
     end
 
+  let(:base_class) { PuppetForge::V3::Base }
   let(:klass) do |*args|
     PuppetForge::V3::Parent
   end
@@ -105,7 +106,7 @@ describe PuppetForge::LazyRelations do
 
     describe 'remote attributes' do
       before do
-        stub_api_for(related_class) do |stubs|
+        stub_api_for(base_class) do |stubs|
           stubs.get('/v3/things/1') do
             [ 200, { 'Content-Type' => 'json' }, remote_data ]
           end
@@ -147,18 +148,17 @@ describe PuppetForge::LazyRelations do
 
     describe 'remote relations' do
       before do
-        stub_api_for(klass) do |api|
+        stub_api_for(base_class) do |api|
           api.get('/v3/parents/1') do
             data = { :id => 1, :relation => local_data }
             [ 200, { 'Content-Type' => 'json' }, data ]
           end
-        end
 
-        stub_api_for(related_class) do |api|
           api.get('/v3/things/1') do
             [ 200, { 'Content-Type' => 'json' }, remote_data ]
           end
         end
+
       end
 
       subject { klass.new(:chained => { :id => 1 }) }
@@ -178,7 +178,7 @@ describe PuppetForge::LazyRelations do
 
     describe 'unsatisfiable attributes' do
       before do
-        stub_api_for(klass) do |api|
+        stub_api_for(base_class) do |api|
           api.get('/v3/parents/1') do
             [ 200, { 'Content-Type' => 'json' }, remote_data ]
           end
@@ -234,7 +234,7 @@ describe PuppetForge::LazyRelations do
 
     describe 'remote attributes' do
       before do
-        stub_api_for(related_class) do |api|
+        stub_api_for(base_class) do |api|
           api.get('/v3/things/1') do
             [ 200, { 'Content-Type' => 'json' }, remote_data ]
           end
@@ -276,18 +276,17 @@ describe PuppetForge::LazyRelations do
 
     describe 'remote relations' do
       before do
-        stub_api_for(klass) do |api|
+        stub_api_for(base_class) do |api|
           api.get('/v3/parents/1') do
             data = { :id => 1, :parents => [{ :id => 1, :relation => local_data }] }
             [ 200, { 'Content-Type' => 'json' }, data ]
           end
-        end
 
-        stub_api_for(related_class) do |api|
           api.get('/v3/things/1') do
             [ 200, { 'Content-Type' => 'json' }, remote_data ]
           end
         end
+
       end
 
       subject { klass.new(:id => 1) }
@@ -307,7 +306,7 @@ describe PuppetForge::LazyRelations do
 
     describe 'unsatisfiable attributes' do
       before do
-        stub_api_for(klass) do |api|
+        stub_api_for(base_class) do |api|
           api.get('/v3/parents/1') do
             [ 200, { 'Content-Type' => 'json' }, remote_data ]
           end
