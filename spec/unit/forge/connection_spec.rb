@@ -17,7 +17,7 @@ describe PuppetForge::Connection do
 
     it 'parses response bodies with a JSON content-type into a hash' do
       faraday_stubs.get('/json') { [200, {'Content-Type' => 'application/json'}, '{"hello": "world"}'] }
-      expect(subject.get('/json').body).to eq('hello' => 'world')
+      expect(subject.get('/json').body).to eq(:hello => 'world')
     end
 
     it 'returns the response body as-is when the content-type is not JSON' do

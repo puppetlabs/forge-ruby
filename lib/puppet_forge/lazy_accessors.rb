@@ -110,9 +110,9 @@ module PuppetForge
       # @return [void]
       def add_attributes(keys)
         keys.each do |key|
-          next if methods.include?(name = "#{key}")
+          next if methods.include?(name = key)
 
-          define_method(name) do
+          define_method("#{name}") do
             fetch unless has_attribute?(name)
             attribute(name)
           end

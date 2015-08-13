@@ -4,38 +4,38 @@ describe PuppetForge::V3::Base::PaginatedCollection do
   let(:klass) do
     allow(PuppetForge::V3::Base).to receive(:get_collection) do |url|
       data = {
-        '/v3/collection'        => [ { 'data' => :A } , { 'data' => :B }, { 'data' => :C } ],
-        '/v3/collection?page=2' => [ { 'data' => :D }, { 'data' => :E }, { 'data' => :F } ],
-        '/v3/collection?page=3' => [ { 'data' => :G }, { 'data' => :H } ],
+        '/v3/collection'        => [ { :data => :A }, { :data => :B }, { :data => :C } ],
+        '/v3/collection?page=2' => [ { :data => :D }, { :data => :E }, { :data => :F } ],
+        '/v3/collection?page=3' => [ { :data => :G }, { :data => :H } ],
       }
 
       meta = {
         '/v3/collection' => {
-          'limit'    => 3,
-          'offset'   => 0,
-          'first'    => '/v3/collection',
-          'previous' => nil,
-          'current'  => '/v3/collection',
-          'next'     => '/v3/collection?page=2',
-          'total'    => 8,
+          :limit    => 3,
+          :offset   => 0,
+          :first    => '/v3/collection',
+          :previous => nil,
+          :current  => '/v3/collection',
+          :next     => '/v3/collection?page=2',
+          :total    => 8,
         },
         '/v3/collection?page=2' => {
-          'limit'    => 3,
-          'offset'   => 0,
-          'first'    => '/v3/collection',
-          'previous' => '/v3/collection',
-          'current'  => '/v3/collection?page=2',
-          'next'     => '/v3/collection?page=3',
-          'total'    => 8,
+          :limit    => 3,
+          :offset   => 0,
+          :first    => '/v3/collection',
+          :previous => '/v3/collection',
+          :current  => '/v3/collection?page=2',
+          :next     => '/v3/collection?page=3',
+          :total    => 8,
         },
         '/v3/collection?page=3' => {
-          'limit'    => 3,
-          'offset'   => 0,
-          'first'    => '/v3/collection',
-          'previous' => '/v3/collection?page=2',
-          'current'  => '/v3/collection?page=3',
-          'next'     => nil,
-          'total'    => 8,
+          :limit    => 3,
+          :offset   => 0,
+          :first    => '/v3/collection',
+          :previous => '/v3/collection?page=2',
+          :current  => '/v3/collection?page=3',
+          :next     => nil,
+          :total    => 8,
         },
       }
 

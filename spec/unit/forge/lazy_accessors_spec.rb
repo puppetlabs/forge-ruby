@@ -39,8 +39,8 @@ describe PuppetForge::LazyAccessors do
     PuppetForge::V3::Thing
   end
 
-  let(:local_data)  { { "id" => 1, "local" => 'data', "shadow" => 'x' } }
-  let(:remote_data) { local_data.merge("remote" => 'DATA', "remote_shadow" => 'X') }
+  let(:local_data)  { { :id => 1, :local => 'data', :shadow => 'x' } }
+  let(:remote_data) { local_data.merge(:remote => 'DATA', :remote_shadow => 'X') }
 
   subject { klass.new(local_data) }
 

@@ -23,7 +23,7 @@ module PuppetForge
       def orm_resp_item(json_response)
         json_response.each do |key, value|
           unless respond_to? key
-            define_singleton_method(key) { @attributes[key] }
+            define_singleton_method("#{key}") { @attributes[key] }
             define_singleton_method("#{key}=") { |val| @attributes[key] = val }
           end
         end
@@ -32,11 +32,11 @@ module PuppetForge
       # @return true if attribute exists, false otherwise
       #
       def has_attribute?(attr)
-        @attributes.has_key? attr
+        @attributes.has_key?(:"#{attr}")
       end
 
       def attribute(name)
-        @attributes[name]
+        @attributes[:"#{name}"]
       end
 
       def attributes
@@ -78,8 +78,8 @@ module PuppetForge
         end
 
         # Return a paginated collection of all modules
-        def all
-          where(nil)
+        def all(params = {})
+          where(params)
         end
 
         def get_collection(uri_path)
@@ -89,11 +89,18 @@ module PuppetForge
           new_collection(resp)
         end
 
+        # Faraday's Util#escape method will replace a '+' with '%2B' to prevent it being
+        # interpreted as a space. For compatibility with the Forge API, we would like a '+'
+        # to be interpreted as a space so they are changed to spaces here.
+        def convert_plus_to_space(str)
+          str.gsub(/[+]/, ' ')
+        end
+
         # @private
         def split_uri_path(uri_path)
           all, resource, params = /(?:\/v3\/)([^\/]+)(?:\?)(.*)/.match(uri_path).to_a
 
-          params = params.split('&')
+          params = convert_plus_to_space(params).split('&')
 
           param_hash = Hash.new
           params.each do |param|
@@ -107,7 +114,7 @@ module PuppetForge
         # @private
         def new_collection(faraday_resp)
           if faraday_resp[:errors].nil?
-            PaginatedCollection.new(self, faraday_resp.body['results'], faraday_resp.body['pagination'], nil)
+            PaginatedCollection.new(self, faraday_resp.body[:results], faraday_resp.body[:pagination], nil)
           else
             PaginatedCollection.new(self)
           end
