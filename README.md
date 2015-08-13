@@ -178,3 +178,4 @@ to create a free account to add new tickets.
 
 * Pieter van de Bruggen, Puppet Labs
 * Jesse Scott, Puppet Labs
+* Austin Blatt, Puppet Labs
