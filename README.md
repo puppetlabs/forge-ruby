@@ -114,13 +114,14 @@ All API Requests (whether via find, where, or all) will raise a Faraday::Resourc
 A release tarball can be downloaded and installed by following the steps below.
 
 ``` ruby
-release_tarball = "puppetlabs-apache-1.6.0.tar.gz"
+release_slug = "puppetlabs-apache-1.6.0"
+release_tarball = release_slug + ".tar.gz"
 dest_dir = "/path/to/install/directory"
 tmp_dir = "/path/to/tmpdir"
 
 # Fetch Release information from API
 # @raise Faraday::ResourceNotFound error if the given release does not exist
-release = PuppetForge::Release.find 'puppetlabs-apache-1.6.0'
+release = PuppetForge::Release.find release_slug
 
 # Download the Release tarball
 # @raise PuppetForge::ReleaseNotFound error if the given release does not exist

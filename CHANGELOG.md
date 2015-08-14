@@ -1,6 +1,6 @@
 # Change Log
 
-All notable changes to this project will be documented in this file.
+Starting with v2.0.0, all notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).i
 
 ## v2.0.0 - 2015-08-13
