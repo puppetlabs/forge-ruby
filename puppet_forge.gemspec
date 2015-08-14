@@ -8,7 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = PuppetForge::VERSION
   spec.authors       = ["Puppet Labs"]
   spec.email         = ["forge-team+api@puppetlabs.com"]
-  spec.summary       = "Access and manipulate the Puppet Forge API from Ruby."
+  spec.summary       = "Access the Puppet Forge API from Ruby for resource information and to download releases."
+  spec.description   = %q{Tools that can be used to access Forge API information on Modules, Users, and Releases. As well as download, unpack, and install Releases to a directory.}
   spec.homepage      = "https://github.com/puppetlabs/forge-ruby"
   spec.license       = "Apache-2.0"
 
