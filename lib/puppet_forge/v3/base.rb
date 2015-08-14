@@ -47,6 +47,12 @@ module PuppetForge
 
         include PuppetForge::Connection
 
+        API_VERSION = "v3"
+
+        def api_version
+          API_VERSION
+        end
+
         # @private
         def request(resource, item = nil, params = {})
           unless conn.url_prefix =~ /^#{PuppetForge.host}/
@@ -60,7 +66,7 @@ module PuppetForge
             uri_path = "/v3/#{resource}/#{item}"
           end
 
-          conn.get uri_path, params
+          PuppetForge::V3::Base.conn.get uri_path, params
         end
 
         def find(slug)
