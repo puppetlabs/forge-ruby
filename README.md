@@ -104,6 +104,39 @@ PuppetForge::Module.where(query: 'apache')
 PuppetForge::Module.where(query: 'apache').all # This method is deprecated and not recommended
 ```
 
+####Errors
+
+All API Requests (whether via find, where, or all) will raise a Faraday::ResourceNotFound error if the request fails.
+
+
+###Installing a Release
+
+A release tarball can be downloaded and installed by following the steps below.
+
+``` ruby
+release_slug = "puppetlabs-apache-1.6.0"
+release_tarball = release_slug + ".tar.gz"
+dest_dir = "/path/to/install/directory"
+tmp_dir = "/path/to/tmpdir"
+
+# Fetch Release information from API
+# @raise Faraday::ResourceNotFound error if the given release does not exist
+release = PuppetForge::Release.find release_slug
+
+# Download the Release tarball
+# @raise PuppetForge::ReleaseNotFound error if the given release does not exist
+release.download(Pathname(release_tarball))
+
+# Verify the MD5
+# @raise PuppetForge::V3::Release::ChecksumMismatch error if the file's md5 does not match the API information
+release.verify(Pathname(release_tarball))
+
+# Unpack the files to a given directory
+# @raise RuntimeError if it fails to extract the contents of the release tarball
+PuppetForge::Unpacker.unpack(release_tarball, dest_dir, tmp_dir)
+```
+
+
 ###Paginated Collections
 
 The Forge API only returns paginated collections as of v3.
