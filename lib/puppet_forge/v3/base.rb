@@ -1,97 +1,130 @@
-require 'her'
-require 'her/lazy_accessors'
-require 'her/lazy_relations'
-
-require 'puppet_forge/middleware/json_for_her'
+require 'puppet_forge/connection'
 require 'puppet_forge/v3/base/paginated_collection'
+require 'puppet_forge/error'
+
+require 'puppet_forge/lazy_accessors'
+require 'puppet_forge/lazy_relations'
 
 module PuppetForge
   module V3
 
-    # Acts as the base class for all PuppetForge::V3::* models. This class provides
-    # some overrides of behaviors from Her, in addition to convenience methods
-    # and abstractions of common behavior.
+    # Acts as the base class for all PuppetForge::V3::* models.
     #
     # @api private
     class Base
-      include Her::Model
-      include Her::LazyAccessors
-      include Her::LazyRelations
+      include PuppetForge::LazyAccessors
+      include PuppetForge::LazyRelations
 
-      use_api begin
-        begin
-          # Use Typhoeus if available.
-          Gem::Specification.find_by_name('typhoeus', '~> 0.6')
-          require 'typhoeus/adapters/faraday'
-          adapter = Faraday::Adapter::Typhoeus
-        rescue Gem::LoadError
-          adapter = Faraday::Adapter::NetHttp
-        end
+      def initialize(json_response)
+        @attributes = json_response
+        orm_resp_item json_response
+      end
 
-        Her::API.new :url => "#{PuppetForge.host}/v3/" do |c|
-          c.use PuppetForge::Middleware::JSONForHer
-          c.use adapter
+      def orm_resp_item(json_response)
+        json_response.each do |key, value|
+          unless respond_to? key
+            define_singleton_method("#{key}") { @attributes[key] }
+            define_singleton_method("#{key}=") { |val| @attributes[key] = val }
+          end
         end
+      end
+
+      # @return true if attribute exists, false otherwise
+      #
+      def has_attribute?(attr)
+        @attributes.has_key?(:"#{attr}")
+      end
+
+      def attribute(name)
+        @attributes[:"#{name}"]
+      end
+
+      def attributes
+        @attributes
       end
 
       class << self
-        # Overrides Her::Model#request to allow end users to dynamically update
-        # both the Forge host being communicated with and the user agent string.
-        #
-        # @api private
-        # @api her
-        # @see Her::Model#request
-        # @see PuppetForge.host
-        # @see PuppetForge.user_agent
-        def request(*args)
-          unless her_api.base_uri =~ /^#{PuppetForge.host}/
-            her_api.connection.url_prefix = "#{PuppetForge.host}/v3/"
+
+        include PuppetForge::Connection
+
+        API_VERSION = "v3"
+
+        def api_version
+          API_VERSION
+        end
+
+        # @private
+        def request(resource, item = nil, params = {})
+          unless conn.url_prefix =~ /^#{PuppetForge.host}/
+            conn.url_prefix = "#{PuppetForge.host}"
           end
 
-          her_api.connection.headers[:user_agent] = %W[
-            #{PuppetForge.user_agent}
-            PuppetForge.gem/#{PuppetForge::VERSION}
-            Her/#{Her::VERSION}
-            Faraday/#{Faraday::VERSION}
-            Ruby/#{RUBY_VERSION}-p#{RUBY_PATCHLEVEL} (#{RUBY_PLATFORM})
-          ].join(' ').strip
 
-          super
+          if item.nil?
+            uri_path = "/v3/#{resource}"
+          else
+            uri_path = "/v3/#{resource}/#{item}"
+          end
+
+          PuppetForge::V3::Base.conn.get uri_path, params
         end
 
-        # Overrides Her::Model#new_collection with custom logic for handling the
-        # paginated collections produced by the Forge API. These collections are
-        # then wrapped in a {PaginatedCollection}, which enables navigation of
-        # the paginated dataset.
-        #
-        # @api private
-        # @api her
-        # @param parsed_data [Hash<(:data, :errors)>] the parsed response data
-        # @return [PaginatedCollection] the collection
-        def new_collection(parsed_data)
-          col = super :data =>     parsed_data[:data][:results] || [],
-                      :metadata => parsed_data[:data][:pagination] || { limit: 10, total: 0, offset: 0 },
-                      :errors =>   parsed_data[:errors]
+        def find(slug)
+          return nil if slug.nil?
 
-          PaginatedCollection.new(self, col.to_a, col.metadata, col.errors)
+          resp = request("#{self.name.split("::").last.downcase}s", slug)
+
+          self.new(resp.body)
         end
-      end
 
-      # FIXME: We should provide an actual unique identifier.
-      primary_key :slug
-      store_metadata :_metadata
-      after_initialize do
-        attributes[:slug] ||= uri[/[^\/]+$/]
-      end
+        def where(params)
+          resp = request("#{self.name.split("::").last.downcase}s", nil, params)
 
-      # Since our data is primarily URI based rather than ID based, we should
-      # use our URIs as the request_path whenever possible.
-      #
-      # @api private
-      # @api her
-      # @see Her::Model::Paths#request_path
-      def request_path(*args)
-        if has_attribute? :uri then uri else super end
+          new_collection(resp)
+        end
+
+        # Return a paginated collection of all modules
+        def all(params = {})
+          where(params)
+        end
+
+        def get_collection(uri_path)
+          resource, params = split_uri_path uri_path
+          resp = request(resource, nil, params)
+
+          new_collection(resp)
+        end
+
+        # Faraday's Util#escape method will replace a '+' with '%2B' to prevent it being
+        # interpreted as a space. For compatibility with the Forge API, we would like a '+'
+        # to be interpreted as a space so they are changed to spaces here.
+        def convert_plus_to_space(str)
+          str.gsub(/[+]/, ' ')
+        end
+
+        # @private
+        def split_uri_path(uri_path)
+          all, resource, params = /(?:\/v3\/)([^\/]+)(?:\?)(.*)/.match(uri_path).to_a
+
+          params = convert_plus_to_space(params).split('&')
+
+          param_hash = Hash.new
+          params.each do |param|
+            key, val = param.split('=')
+            param_hash[key] = val
+          end
+
+          [resource, param_hash]
+        end
+
+        # @private
+        def new_collection(faraday_resp)
+          if faraday_resp[:errors].nil?
+            PaginatedCollection.new(self, faraday_resp.body[:results], faraday_resp.body[:pagination], nil)
+          else
+            PaginatedCollection.new(self)
+          end
+        end
       end
     end
   end

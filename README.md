@@ -23,8 +23,8 @@ Or install it yourself as:
 
 ##Dependencies
 
-* [Her](http://her-rb.org) ~> 0.6
-* [Typhoeus](https://github.com/typhoeus/typhoeus) ~> 0.6 (optional)
+* [Faraday]() ~> 0.9.0
+* [Typhoeus](https://github.com/typhoeus/typhoeus) ~> 0.7.0 (optional)
 
 Typhoeus will be used as the HTTP adapter if it is available, otherwise
 Net::HTTP will be used. We recommend using Typhoeus for production-level
@@ -78,11 +78,12 @@ resource model are documented on the [Resource Reference][resource_ref] page.
 
 ###Basic Interface
 
-Each of the models uses [Her](http://her-rb.org) (an ActiveRecord-like REST
-library) to map over the Forge API endpoints. Most simple ActiveRecord-style
-interactions function as intended.
+Each of the models uses ActiveRecord-like REST functionality to map over the Forge API endpoints.
+Most simple ActiveRecord-style interactions function as intended.
 
 Currently, only unauthenticated read-only actions are supported.
+
+The methods find, where, and all immediately make one API request.
 
 ``` ruby
 # Find a Resource by Slug
@@ -92,9 +93,49 @@ PuppetForge::User.find('puppetlabs') # => #<Forge::V3::User(/v3/users/puppetlabs
 PuppetForge::Module.all # See "Paginated Collections" below for important info about enumerating resource sets.
 
 # Find Resources with Conditions
-PuppetForge::Module.where(query: 'apache').all # See "Paginated Collections" below for important info about enumerating resource sets.
+PuppetForge::Module.where(query: 'apache') # See "Paginated Collections" below for important info about enumerating resource sets.
 PuppetForge::Module.where(query: 'apache').first # => #<Forge::V3::Module(/v3/modules/puppetlabs-apache)>
 ```
+
+For compatibility with older versions of the puppet_forge gem, the following two methods are functionally equivalent.
+
+``` ruby
+PuppetForge::Module.where(query: 'apache')
+PuppetForge::Module.where(query: 'apache').all # This method is deprecated and not recommended
+```
+
+####Errors
+
+All API Requests (whether via find, where, or all) will raise a Faraday::ResourceNotFound error if the request fails.
+
+
+###Installing a Release
+
+A release tarball can be downloaded and installed by following the steps below.
+
+``` ruby
+release_slug = "puppetlabs-apache-1.6.0"
+release_tarball = release_slug + ".tar.gz"
+dest_dir = "/path/to/install/directory"
+tmp_dir = "/path/to/tmpdir"
+
+# Fetch Release information from API
+# @raise Faraday::ResourceNotFound error if the given release does not exist
+release = PuppetForge::Release.find release_slug
+
+# Download the Release tarball
+# @raise PuppetForge::ReleaseNotFound error if the given release does not exist
+release.download(Pathname(release_tarball))
+
+# Verify the MD5
+# @raise PuppetForge::V3::Release::ChecksumMismatch error if the file's md5 does not match the API information
+release.verify(Pathname(release_tarball))
+
+# Unpack the files to a given directory
+# @raise RuntimeError if it fails to extract the contents of the release tarball
+PuppetForge::Unpacker.unpack(release_tarball, dest_dir, tmp_dir)
+```
+
 
 ###Paginated Collections
 
@@ -170,3 +211,4 @@ to create a free account to add new tickets.
 
 * Pieter van de Bruggen, Puppet Labs
 * Jesse Scott, Puppet Labs
+* Austin Blatt, Puppet Labs

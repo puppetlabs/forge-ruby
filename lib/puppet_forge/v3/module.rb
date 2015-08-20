@@ -9,7 +9,8 @@ module PuppetForge
     class Module < Base
       lazy :owner, 'User'
       lazy :current_release, 'Release'
-      lazy_collection :releases
+      lazy_collection :releases, 'Release'
+
     end
   end
 end

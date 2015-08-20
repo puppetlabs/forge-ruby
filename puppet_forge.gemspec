@@ -8,7 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = PuppetForge::VERSION
   spec.authors       = ["Puppet Labs"]
   spec.email         = ["forge-team+api@puppetlabs.com"]
-  spec.summary       = "Access and manipulate the Puppet Forge API from Ruby."
+  spec.summary       = "Access the Puppet Forge API from Ruby for resource information and to download releases."
+  spec.description   = %q{Tools that can be used to access Forge API information on Modules, Users, and Releases. As well as download, unpack, and install Releases to a directory.}
   spec.homepage      = "https://github.com/puppetlabs/forge-ruby"
   spec.license       = "Apache-2.0"
 
@@ -19,7 +20,10 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = '>= 1.9.3'
 
-  spec.add_runtime_dependency "her", "~> 0.6.8"
+  spec.add_runtime_dependency "faraday", "~> 0.9.0"
+  spec.add_runtime_dependency "faraday_middleware", "~> 0.9.0"
+  spec.add_dependency 'semantic_puppet', '~> 0.1.0'
+  spec.add_dependency 'minitar'
 
   spec.add_development_dependency "bundler", "~> 1.6"
   spec.add_development_dependency "rake"

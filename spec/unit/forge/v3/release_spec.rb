@@ -3,9 +3,12 @@ require 'fileutils'
 
 describe PuppetForge::V3::Release do
   before do
-    stub_api_for(PuppetForge::V3::Release) do |api|
-      stub_fixture(api, :get, '/v3/releases/puppetlabs-apache-0.0.1')
-      stub_fixture(api, :get, '/v3/releases/absent-apache-0.0.1')
+    stub_api_for(PuppetForge::V3::Base) do |stubs|
+      stub_fixture(stubs, :get, '/v3/releases/puppetlabs-apache-0.0.1')
+      stub_fixture(stubs, :get, '/v3/releases/absent-apache-0.0.1')
+      stub_fixture(stubs, :get, '/v3/files/puppetlabs-apache-0.0.1.tar.gz')
+      stub_fixture(stubs, :get, '/v3/modules/puppetlabs-apache')
+      stub_fixture(stubs, :get, '/v3/releases?module=puppetlabs-apache')
     end
   end
 
@@ -17,19 +20,13 @@ describe PuppetForge::V3::Release do
       expect(release.version).to eql('0.0.1')
     end
 
-    it 'returns nil for non-existent releases' do
-      expect(missing_release).to be nil
+    it 'raises Faraday::ResourceNotFound for non-existent releases' do
+      expect { missing_release }.to raise_error(Faraday::ResourceNotFound)
     end
   end
 
   describe '#module' do
     let(:release) { PuppetForge::V3::Release.find('puppetlabs-apache-0.0.1') }
-
-    before do
-      stub_api_for(PuppetForge::V3::Module) do |api|
-        stub_fixture(api, :get, '/v3/modules/puppetlabs-apache')
-      end
-    end
 
     it 'exposes the related module as a property' do
       expect(release.module).to_not be nil
@@ -49,12 +46,6 @@ describe PuppetForge::V3::Release do
   describe '#download_url' do
     let(:release) { PuppetForge::V3::Release.find('puppetlabs-apache-0.0.1') }
 
-    before do
-      stub_api_for(PuppetForge::V3::Release) do |api|
-        stub_fixture(api, :get, '/v3/releases/puppetlabs-apache-0.0.1')
-      end
-    end
-
     it 'handles an API response that does not include a scheme and host' do
       release.file_uri = '/v3/files/puppetlabs-apache-0.0.1.tar.gz'
       expect(release.download_url).to eql(PuppetForge.host + '/v3/files/puppetlabs-apache-0.0.1.tar.gz')
@@ -72,28 +63,16 @@ describe PuppetForge::V3::Release do
 
     before { FileUtils.rm tarball rescue nil }
     after  { FileUtils.rm tarball rescue nil }
-    before do
-      stub_api_for(PuppetForge::V3::Release) do |api|
-        stub_fixture(api, :get, '/v3/releases/puppetlabs-apache-0.0.1')
-        stub_fixture(api, :get, '/v3/files/puppetlabs-apache-0.0.1.tar.gz')
-      end
-    end
 
     it 'downloads the file to the specified location' do
       expect(File.exist?(tarball)).to be false
-      release.download(tarball)
+      release.download(Pathname.new(tarball))
       expect(File.exist?(tarball)).to be true
     end
   end
 
   describe '#metadata' do
     let(:release) { PuppetForge::V3::Release.find('puppetlabs-apache-0.0.1') }
-
-    before do
-      stub_api_for(PuppetForge::V3::Module) do |api|
-        stub_fixture(api, :get, '/v3/modules/puppetlabs-apache')
-      end
-    end
 
     it 'is lazy and repeatable' do
       3.times do

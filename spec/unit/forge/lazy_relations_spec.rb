@@ -1,31 +1,32 @@
 require 'spec_helper'
-require 'json'
 
-describe Her::LazyRelations do
-  let(:klass) do |*args|
-    ctx = self
+describe PuppetForge::LazyRelations do
+    class PuppetForge::V3::Parent < PuppetForge::V3::Base
 
-    Class.new do
-      include Her::Model
-      include Her::LazyRelations
+      lazy :relation, 'Thing'
+      lazy :chained, 'Parent'
+      lazy_collection :relations, 'Thing'
+      lazy_collection :parents, 'Parent'
 
-      lazy :relation, ctx.related_class
-      lazy :chained, self
-      lazy_collection :relations, ctx.related_class
-      lazy_collection :parents, self
+      def uri
+        "/parents/#{slug}"
+      end
 
-      def request_path
-        "/parents/#{id}"
+      def slug
+        "1"
       end
     end
-  end
 
-  let(:related_class) do
-    Class.new do
-      include Her::Model
+    class PuppetForge::V3::Thing < PuppetForge::V3::Base
 
-      def request_path
-        "/things/#{id}"
+      # Needed for #inspect
+      def uri
+        "/things/1"
+      end
+
+      # Needed for fetch
+      def slug
+        "1"
       end
 
       def standalone_method
@@ -47,7 +48,16 @@ describe Her::LazyRelations do
       def remote_shadow
         "-#{super}-"
       end
+
     end
+
+  let(:base_class) { PuppetForge::V3::Base }
+  let(:klass) do |*args|
+    PuppetForge::V3::Parent
+  end
+
+  let(:related_class) do
+    PuppetForge::V3::Thing
   end
 
   let(:local_data)  { { :id => 1, :local => 'data', :shadow => 'x' } }
@@ -56,7 +66,9 @@ describe Her::LazyRelations do
   describe '.lazy' do
     subject { klass.new(:relation => local_data).relation }
 
-    it { should be_a(related_class) }
+    it do
+      should be_a(related_class)
+    end
 
     it 'does not call methods to #inspect' do
       expect(subject).not_to receive(:shadow)
@@ -94,9 +106,9 @@ describe Her::LazyRelations do
 
     describe 'remote attributes' do
       before do
-        stub_api_for(related_class) do |api|
-          api.get('/things/1') do
-            [ 200, { 'Content-Type' => 'json' }, remote_data.to_json ]
+        stub_api_for(base_class) do |stubs|
+          stubs.get('/v3/things/1') do
+            [ 200, { 'Content-Type' => 'json' }, remote_data ]
           end
         end
       end
@@ -136,18 +148,17 @@ describe Her::LazyRelations do
 
     describe 'remote relations' do
       before do
-        stub_api_for(klass) do |api|
-          api.get('/parents/1') do
+        stub_api_for(base_class) do |api|
+          api.get('/v3/parents/1') do
             data = { :id => 1, :relation => local_data }
-            [ 200, { 'Content-Type' => 'json' }, data.to_json ]
+            [ 200, { 'Content-Type' => 'json' }, data ]
+          end
+
+          api.get('/v3/things/1') do
+            [ 200, { 'Content-Type' => 'json' }, remote_data ]
           end
         end
 
-        stub_api_for(related_class) do |api|
-          api.get('/things/1') do
-            [ 200, { 'Content-Type' => 'json' }, remote_data.to_json ]
-          end
-        end
       end
 
       subject { klass.new(:chained => { :id => 1 }) }
@@ -167,12 +178,14 @@ describe Her::LazyRelations do
 
     describe 'unsatisfiable attributes' do
       before do
-        stub_api_for(klass) do |api|
-          api.get('/things/1') do
-            [ 200, { 'Content-Type' => 'json' }, remote_data.to_json ]
+        stub_api_for(base_class) do |api|
+          api.get('/v3/parents/1') do
+            [ 200, { 'Content-Type' => 'json' }, remote_data ]
           end
         end
       end
+
+      subject { klass.new(local_data) }
 
       example 'raise an exception when accessing an unknown attribute' do
         expect { subject.unknown_attribute }.to raise_error(NoMethodError)
@@ -221,9 +234,9 @@ describe Her::LazyRelations do
 
     describe 'remote attributes' do
       before do
-        stub_api_for(related_class) do |api|
-          api.get('/things/1') do
-            [ 200, { 'Content-Type' => 'json' }, remote_data.to_json ]
+        stub_api_for(base_class) do |api|
+          api.get('/v3/things/1') do
+            [ 200, { 'Content-Type' => 'json' }, remote_data ]
           end
         end
       end
@@ -263,18 +276,17 @@ describe Her::LazyRelations do
 
     describe 'remote relations' do
       before do
-        stub_api_for(klass) do |api|
-          api.get('/parents/1') do
+        stub_api_for(base_class) do |api|
+          api.get('/v3/parents/1') do
             data = { :id => 1, :parents => [{ :id => 1, :relation => local_data }] }
-            [ 200, { 'Content-Type' => 'json' }, data.to_json ]
+            [ 200, { 'Content-Type' => 'json' }, data ]
+          end
+
+          api.get('/v3/things/1') do
+            [ 200, { 'Content-Type' => 'json' }, remote_data ]
           end
         end
 
-        stub_api_for(related_class) do |api|
-          api.get('/things/1') do
-            [ 200, { 'Content-Type' => 'json' }, remote_data.to_json ]
-          end
-        end
       end
 
       subject { klass.new(:id => 1) }
@@ -294,12 +306,14 @@ describe Her::LazyRelations do
 
     describe 'unsatisfiable attributes' do
       before do
-        stub_api_for(klass) do |api|
-          api.get('/things/1') do
-            [ 200, { 'Content-Type' => 'json' }, remote_data.to_json ]
+        stub_api_for(base_class) do |api|
+          api.get('/v3/parents/1') do
+            [ 200, { 'Content-Type' => 'json' }, remote_data ]
           end
         end
       end
+
+      subject { klass.new(local_data) }
 
       example 'raise an exception when accessing an unknown attribute' do
         expect { subject.unknown_attribute }.to raise_error(NoMethodError)

@@ -1,14 +1,17 @@
 require 'spec_helper'
-require 'json'
 
-describe Her::LazyAccessors do
+describe PuppetForge::LazyAccessors do
   let(:klass) do
-    Class.new do
-      include Her::Model
-      include Her::LazyAccessors
+    class PuppetForge::V3::Thing < PuppetForge::V3::Base
 
-      def request_path
-        "/things/#{id}"
+      # Needed for #inspect
+      def uri
+        "/things/1"
+      end
+
+      # Needed for fetch
+      def slug
+        "1"
       end
 
       def standalone_method
@@ -30,9 +33,13 @@ describe Her::LazyAccessors do
       def remote_shadow
         "-#{super}-"
       end
+
     end
+
+    PuppetForge::V3::Thing
   end
 
+  let(:base_class) { PuppetForge::V3::Base }
   let(:local_data)  { { :id => 1, :local => 'data', :shadow => 'x' } }
   let(:remote_data) { local_data.merge(:remote => 'DATA', :remote_shadow => 'X') }
 
@@ -80,9 +87,9 @@ describe Her::LazyAccessors do
 
   describe 'remote attributes' do
     before do
-      stub_api_for(klass) do |api|
-        api.get('/things/1') do
-          [ 200, { 'Content-Type' => 'json' }, remote_data.to_json ]
+      stub_api_for(base_class) do |api|
+        api.get('/v3/things/1') do
+          [ 200, { 'Content-Type' => 'json' }, remote_data ]
         end
       end
     end
@@ -122,9 +129,9 @@ describe Her::LazyAccessors do
 
   describe 'unsatisfiable attributes' do
     before do
-      stub_api_for(klass) do |api|
-        api.get('/things/1') do
-          [ 200, { 'Content-Type' => 'json' }, remote_data.to_json ]
+      stub_api_for(base_class) do |api|
+        api.get('/v3/things/1') do
+          [ 200, { 'Content-Type' => 'json' }, remote_data ]
         end
       end
     end
