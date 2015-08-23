@@ -1,5 +1,6 @@
 require 'puppet_forge/v3/base'
 require 'puppet_forge/v3/module'
+require 'json'
 
 module PuppetForge
   module V3
@@ -28,6 +29,12 @@ module PuppetForge
         path.open('wb') { |fh| fh.write(resp.body) }
       rescue Faraday::ResourceNotFound => e
         raise PuppetForge::ReleaseNotFound, "The module release #{slug} does not exist on #{conn.url_prefix}.", e.backtrace
+      rescue Faraday::ClientError => e
+        if e.response[:status] == 403
+          raise PuppetForge::ModuleReleaseForbidden.from_response(e.response)
+        else
+          raise e
+        end
       end
 
       # Verify that a downloaded module matches the checksum in the metadata for this release.
