@@ -3,6 +3,12 @@
 Starting with v2.0.0, all notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).i
 
+## v2.1.0 - 2015-08-20
+
+### Added
+
+* PuppetForge::ReleaseForbidden added to acknowledge 403 status returned from release download request
+
 ## v2.0.0 - 2015-08-13
 
 ### Added
