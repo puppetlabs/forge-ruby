@@ -3,6 +3,12 @@
 Starting with v2.0.0, all notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).i
 
+## v2.1.1 - 2015-10-06
+
+### Changed
+
+* Bug in error message around missing release on forge caused inappropriate error.
+
 ## v2.1.0 - 2015-08-20
 
 ### Added
