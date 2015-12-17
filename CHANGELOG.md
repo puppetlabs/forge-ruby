@@ -1,7 +1,13 @@
 # Change Log
 
 Starting with v2.0.0, all notable changes to this project will be documented in this file.
-This project adheres to [Semantic Versioning](http://semver.org/).i
+This project adheres to [Semantic Versioning](http://semver.org/).
+
+## v2.1.2 - 2015-12-16
+
+### Changed
+
+* Runtime dependency on "faraday\_middleware" gem updated to allow 0.10.x releases.
 
 ## v2.1.1 - 2015-10-06
 
@@ -32,4 +38,4 @@ This project adheres to [Semantic Versioning](http://semver.org/).i
 
 ### Removed
 
-* Depency on Her (also removes dependency on ActiveSupport).
+* Dependency on Her (also removes dependency on ActiveSupport).
