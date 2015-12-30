@@ -24,7 +24,7 @@ module PuppetForge
       # @param path [Pathname]
       # @return [void]
       def download(path)
-        resp = self.class.conn.get(file_url)
+        resp = self.class.conn.get(download_url)
         path.open('wb') { |fh| fh.write(resp.body) }
       rescue Faraday::ResourceNotFound => e
         raise PuppetForge::ReleaseNotFound, "The module release #{slug} does not exist on #{self.class.conn.url_prefix}.", e.backtrace
@@ -46,16 +46,6 @@ module PuppetForge
         if expected_md5 != file_md5
           raise ChecksumMismatch.new("Expected #{path} checksum to be #{expected_md5}, got #{file_md5}")
         end
-      end
-
-      private
-
-      def file_url
-        "/v3/files/#{slug}.tar.gz"
-      end
-
-      def resource_url
-        "/v3/releases/#{slug}"
       end
 
       class ChecksumMismatch < StandardError
