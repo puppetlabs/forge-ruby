@@ -13,7 +13,7 @@ module PuppetForge
       # @return [String] fully qualified download URL for release
       def download_url
         if URI.parse(file_uri).host.nil?
-          PuppetForge.host + file_uri
+          URI.join(PuppetForge.host, file_uri).to_s
         else
           file_uri
         end
