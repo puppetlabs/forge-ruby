@@ -48,7 +48,8 @@ describe PuppetForge::V3::Release do
 
     it 'handles an API response that does not include a scheme and host' do
       release.file_uri = '/v3/files/puppetlabs-apache-0.0.1.tar.gz'
-      expect(release.download_url).to eql(PuppetForge.host + '/v3/files/puppetlabs-apache-0.0.1.tar.gz')
+      uri_with_host = URI.join(PuppetForge.host, '/v3/files/puppetlabs-apache-0.0.1.tar.gz').to_s
+      expect(release.download_url).to eql(uri_with_host)
     end
 
     it 'handles an API response that includes a scheme and host' do
