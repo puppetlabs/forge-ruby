@@ -17,10 +17,15 @@ describe PuppetForge::V3::Module do
 
   describe '::find' do
     let(:mod) { PuppetForge::V3::Module.find('puppetlabs-apache') }
+    let(:mod_stateless) { PuppetForge::V3::Module.find_stateless('puppetlabs-apache') }
     let(:missing_mod) { PuppetForge::V3::Module.find('absent-apache') }
 
     it 'can find modules that exist' do
       expect(mod.name).to eq('apache')
+    end
+
+    it 'can find modules that exist from a stateless call' do
+      expect(mod_stateless.name).to eq('apache')
     end
 
     it 'returns nil for non-existent modules' do

@@ -10,9 +10,14 @@ describe PuppetForge::V3::Module do
   context "::find" do
     context "gets information on an existing module and" do
       let (:mod) { PuppetForge::V3::Module.find('puppetforgegemtesting-thorin') }
+      let (:mod_stateless) { PuppetForge::V3::Module.find_stateless('puppetforgegemtesting-thorin') }
 
       it "returns a PuppetForge::V3::Module." do
         expect(mod).to be_a(PuppetForge::V3::Module)
+      end
+
+      it "returns a PuppetForge::V3::Module from a stateless call." do
+        expect(mod_stateless).to be_a(PuppetForge::V3::Module)
       end
 
       it "exposes the API information." do
@@ -67,6 +72,42 @@ describe PuppetForge::V3::Module do
     context "does not find matching resources" do
       it "returns an empty PaginatedCollection" do
         modules = PuppetForge::V3::Module.where(:owner => 'absentuser')
+
+        expect(modules).to be_a(PuppetForge::V3::Base::PaginatedCollection)
+
+        expect(modules.size).to eq(0)
+        expect(modules.empty?).to be(true)
+      end
+    end
+  end
+
+  context "::where_stateless" do
+    context "finds matching resources" do
+
+      it "only returns modules that match the query" do
+        modules = PuppetForge::V3::Module.where_stateless(:owner => 'puppetforgegemtesting')
+
+        expect(modules).to be_a(PuppetForge::V3::Base::PaginatedCollection)
+        modules.each do |mod|
+          expect(mod.owner.username).to eq('puppetforgegemtesting')
+        end
+
+      end
+
+      it "returns a paginated response" do
+        modules = PuppetForge::V3::Module.where_stateless(:owner => 'puppetforgegemtesting', :limit => 1)
+
+        expect(modules.limit).to eq(1)
+        expect(modules.total).to eq(2)
+
+        expect(modules.next).not_to be_nil
+      end
+
+    end
+
+    context "does not find matching resources" do
+      it "returns an empty PaginatedCollection" do
+        modules = PuppetForge::V3::Module.where_stateless(:owner => 'absentuser')
 
         expect(modules).to be_a(PuppetForge::V3::Base::PaginatedCollection)
 
