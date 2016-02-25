@@ -34,13 +34,20 @@ module PuppetForge
       @authorization
     end
 
+    # @param reset_connection [Boolean] flag to create a new connection every time this is called
+    # @param opts [Hash] Hash of connection options for Faraday
     # @return [Faraday::Connection] An existing Faraday connection if one was
     #   already set, otherwise a new Faraday connection.
-    def conn
-      @conn ||= default_connection
+    def conn(reset_connection = nil, opts = {})
+      if reset_connection
+        default_connection(opts)
+      else
+        @conn ||= default_connection(opts)
+      end
     end
 
-    def default_connection
+    # @param opts [Hash] Hash of connection options for Faraday
+    def default_connection(opts = {})
 
       begin
         # Use Typhoeus if available.
@@ -51,13 +58,14 @@ module PuppetForge
         adapter = Faraday.default_adapter
       end
 
-      make_connection(PuppetForge.host, [adapter])
+      make_connection(PuppetForge.host, [adapter], opts)
     end
     module_function :default_connection
 
     # Generate a new Faraday connection for the given URL.
     #
     # @param url [String] the base URL for this connection
+    # @param opts [Hash] Hash of connection options for Faraday
     # @return [Faraday::Connection]
     def make_connection(url, adapter_args = nil, opts = {})
       adapter_args ||= [Faraday.default_adapter]
