@@ -3,9 +3,10 @@ require 'spec_helper'
 describe PuppetForge::Tar::Mini do
   let(:entry_class) do
     Class.new do
-      attr_accessor :typeflag, :name
-      def initialize(name, typeflag)
+      attr_accessor :typeflag, :name, :full_name
+      def initialize(name, full_name, typeflag)
         @name = name
+        @full_name = full_name
         @typeflag = typeflag
       end
     end
@@ -15,9 +16,9 @@ describe PuppetForge::Tar::Mini do
   let(:sourcedir)  { '/the/src/dir' }
   let(:destfile)   { '/the/dest/file.tar.gz' }
   let(:minitar)    { described_class.new }
-  let(:tarfile_contents) { [entry_class.new('file', '0'), \
-                            entry_class.new('symlink', '2'), \
-                            entry_class.new('invalid', 'F')] }
+  let(:tarfile_contents) { [entry_class.new('file', 'full_file', '0'), \
+                            entry_class.new('symlink', 'full_symlink', '2'), \
+                            entry_class.new('invalid', 'full_invalid', 'F')] }
 
   it "unpacks a tar file" do
     unpacks_the_entry(:file_start, 'thefile')
@@ -66,13 +67,13 @@ describe PuppetForge::Tar::Mini do
 
     expect(Zlib::GzipReader).to receive(:open).with(sourcefile).and_yield(reader)
     expect(Archive::Tar::Minitar).to receive(:open).with(reader).and_return(tarfile_contents)
-    expect(Archive::Tar::Minitar).to receive(:unpack).with(reader, destdir, ['file']).and_yield(:file_start, 'thefile', nil)
-    
+    expect(Archive::Tar::Minitar).to receive(:unpack).with(reader, destdir, ['full_file']).and_yield(:file_start, 'thefile', nil)
+
     file_lists = minitar.unpack(sourcefile, destdir)
 
-    expect(file_lists[:valid]).to eq(['file'])
-    expect(file_lists[:invalid]).to eq(['invalid'])
-    expect(file_lists[:symlinks]).to eq(['symlink'])
+    expect(file_lists[:valid]).to eq(['full_file'])
+    expect(file_lists[:invalid]).to eq(['full_invalid'])
+    expect(file_lists[:symlinks]).to eq(['full_symlink'])
   end
 
   def unpacks_the_entry(type, name)
