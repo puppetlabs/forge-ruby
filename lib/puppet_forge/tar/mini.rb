@@ -53,11 +53,11 @@ module PuppetForge
         Archive::Tar::Minitar.open(tarfile).each do |entry|
           flag = entry.typeflag
           if flag.nil? || flag =~ /[[:digit:]]/ && SYMLINK_FLAGS.include?(flag.to_i)
-            file_lists[:symlinks] << entry.name
+            file_lists[:symlinks] << entry.full_name
           elsif flag.nil? || flag =~ /[[:digit:]]/ && VALID_TAR_FLAGS.include?(flag.to_i)
-            file_lists[:valid] << entry.name
+            file_lists[:valid] << entry.full_name
           else
-            file_lists[:invalid] << entry.name 
+            file_lists[:invalid] << entry.full_name
           end
         end
         file_lists
