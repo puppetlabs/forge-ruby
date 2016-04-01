@@ -3,6 +3,12 @@
 Starting with v2.0.0, all notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## v2.1.4 - 2016-04-01
+
+### Changed
+
+* Bug in usage of minitar filenames led to ignored tar files with tar file length of >100 chars.
+
 ## v2.1.3 - 2016-01-25
 
 ### Changed
