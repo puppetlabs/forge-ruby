@@ -28,10 +28,26 @@ module PuppetForge
 
     def self.authorization=(token)
       @authorization = token
+
+      # RK-229 Specific Workaround
+      # Capture instance specific proxy setting if defined.
+      if defined?(PuppetForge::V3::Base)
+        if old_conn = PuppetForge::V3::Base.instance_variable_get(:@conn)
+          self.proxy = old_conn.proxy.uri.to_s if old_conn.proxy
+        end
+      end
     end
 
     def self.authorization
       @authorization
+    end
+
+    def self.proxy=(url)
+      @proxy = url
+    end
+
+    def self.proxy
+      @proxy
     end
 
     # @param reset_connection [Boolean] flag to create a new connection every time this is called
@@ -39,7 +55,10 @@ module PuppetForge
     # @return [Faraday::Connection] An existing Faraday connection if one was
     #   already set, otherwise a new Faraday connection.
     def conn(reset_connection = nil, opts = {})
-      if reset_connection
+      new_auth = @conn && @conn.headers['Authorization'] != PuppetForge::Connection.authorization
+      new_proxy = @conn && ((@conn.proxy.nil? && PuppetForge::Connection.proxy) || (@conn.proxy && @conn.proxy.uri.to_s != PuppetForge::Connection.proxy))
+
+      if new_auth || new_proxy || reset_connection
         default_connection(opts)
       else
         @conn ||= default_connection(opts)
@@ -73,6 +92,10 @@ module PuppetForge
 
       if token = PuppetForge::Connection.authorization
         options[:headers][:authorization] = token
+      end
+
+      if proxy = PuppetForge::Connection.proxy
+        options[:proxy] = proxy
       end
 
       Faraday.new(url, options) do |builder|
