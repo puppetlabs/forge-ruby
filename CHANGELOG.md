@@ -3,6 +3,16 @@
 Starting with v2.0.0, all notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## v2.1.5 - 2016-04-13
+
+### Added
+
+* PuppetForge::Connection now has .proxy and .proxy= class methods providing a more reliable way of configuring an HTTP proxy.
+
+### Changed
+
+* Cached connection objects will now be automatically discarded when proxy or authorization config has changed.
+
 ## v2.1.4 - 2016-04-01
 
 ### Changed
