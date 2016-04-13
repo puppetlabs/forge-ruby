@@ -28,6 +28,14 @@ module PuppetForge
 
     def self.authorization=(token)
       @authorization = token
+
+      # RK-229 Specific Workaround
+      # Capture instance specific proxy setting if defined.
+      if defined?(PuppetForge::V3::Base)
+        if old_conn = PuppetForge::V3::Base.instance_variable_get(:@conn)
+          self.proxy = old_conn.proxy.uri.to_s if old_conn.proxy
+        end
+      end
     end
 
     def self.authorization
