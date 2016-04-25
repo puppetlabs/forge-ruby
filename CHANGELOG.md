@@ -3,6 +3,12 @@
 Starting with v2.0.0, all notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## v2.1.6 - UNRELEASED
+
+### Changed
+
+* PuppetForge's optional dependency on Typhoeus now searches for a gem matching '~> 1.0.1' so it will pick up more recent versions.
+
 ## v2.1.5 - 2016-04-13
 
 ### Added
