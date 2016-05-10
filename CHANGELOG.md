@@ -3,11 +3,13 @@
 Starting with v2.0.0, all notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## v2.1.6 - UNRELEASED
+## v2.2.0 - 2016-05-10
 
 ### Changed
 
-* PuppetForge's optional dependency on Typhoeus now searches for a gem matching '~> 1.0.1' so it will pick up more recent versions.
+* puppet\_forge's optional dependency on Typhoeus now searches for a gem matching '~> 1.0.1' so it will pick up more recent versions. 
+  NOTE: This means if you have a version of Typhoeus installed that is less than 1.0.1, puppet\_forge will no longer use the Typhoeus
+  adapter and will fall back to Ruby's Net::HTTP library.
 
 ## v2.1.5 - 2016-04-13
 
