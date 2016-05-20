@@ -110,6 +110,28 @@ describe PuppetForge::V3::Release do
         release.download(Pathname.new(tarball))
         expect(File.exist?(tarball)).to be true
       end
+
+      context 'when response is 403' do
+        it "raises PuppetForge::ReleaseForbidden" do
+          mock_conn = instance_double("PuppetForge::V3::Connection", :url_prefix => PuppetForge.host)
+          allow(described_class).to receive(:conn).and_return(mock_conn)
+
+          expect(mock_conn).to receive(:get).and_raise(Faraday::ClientError.new("403", {:status => 403, :body => ({:message => "Forbidden"}.to_json)}))
+
+          expect { release.download(Pathname.new(tarball)) }.to raise_error(PuppetForge::ReleaseForbidden)
+        end
+      end
+
+      context 'when connection fails' do
+        it "re-raises original error" do
+          mock_conn = instance_double("PuppetForge::V3::Connection", :url_prefix => PuppetForge.host)
+          allow(described_class).to receive(:conn).and_return(mock_conn)
+
+          expect(mock_conn).to receive(:get).and_raise(Faraday::ConnectionFailed.new("connection failed"))
+
+          expect { release.download(Pathname.new(tarball)) }.to raise_error(Faraday::ConnectionFailed, /connection failed/)
+        end
+      end
     end
 
     describe '#metadata' do
