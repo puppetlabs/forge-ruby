@@ -29,7 +29,7 @@ module PuppetForge
       rescue Faraday::ResourceNotFound => e
         raise PuppetForge::ReleaseNotFound, "The module release #{slug} does not exist on #{self.class.conn.url_prefix}.", e.backtrace
       rescue Faraday::ClientError => e
-        if e.response[:status] == 403
+        if e.response && e.response[:status] == 403
           raise PuppetForge::ReleaseForbidden.from_response(e.response)
         else
           raise e
