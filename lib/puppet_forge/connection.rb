@@ -43,6 +43,7 @@ module PuppetForge
     end
 
     def self.proxy=(url)
+      url = nil if url.respond_to?(:empty?) && url.empty?
       @proxy = url
     end
 

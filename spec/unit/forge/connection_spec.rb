@@ -9,6 +9,33 @@ describe PuppetForge::Connection do
     PuppetForge::Connection
   end
 
+  describe 'class methods' do
+    subject { described_class }
+
+    describe '#proxy=' do
+      it "sets @proxy to value when passed non-empty string" do
+        proxy = "http://proxy.example.com:3128"
+
+        subject.proxy = proxy
+
+        expect(subject.instance_variable_get(:@proxy)).to eq proxy
+      end
+
+      it "sets @proxy to nil when passed an empty string" do
+        subject.proxy = ''
+
+        expect(subject.instance_variable_get(:@proxy)).to be_nil
+      end
+
+      it "replaces existing @proxy value with nil when set to empty string" do
+        subject.instance_variable_set(:@proxy, 'value')
+        subject.proxy = ''
+
+        expect(subject.instance_variable_get(:@proxy)).to be_nil
+      end
+    end
+  end
+
   describe 'creating a new connection' do
 
     let(:faraday_stubs) { Faraday::Adapter::Test::Stubs.new }
