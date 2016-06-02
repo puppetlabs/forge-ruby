@@ -214,3 +214,12 @@ to create a free account to add new tickets.
 * Austin Blatt, Puppet Labs
 * Adrien Thebo, Puppet Labs
 * Anderson Mills, Puppet Labs
+
+## Maintenance
+
+Maintainers:
+
+* Jesse Scott, jesse@puppet.com
+* Anderson Mills, anderson@puppet.com
+
+Tickets: File at https://tickets.puppet.com/browse/FORGE
