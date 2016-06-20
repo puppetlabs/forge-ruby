@@ -24,7 +24,7 @@ module PuppetForge
       version = class_name.split("::")[-2]
 
       if version.nil?
-        raise RuntimeError, "Unable to determine the parent PuppetForge version module"
+        raise RuntimeError, _("Unable to determine the parent PuppetForge version module")
       end
 
       PuppetForge.const_get(version)

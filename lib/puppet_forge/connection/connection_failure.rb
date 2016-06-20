@@ -10,9 +10,10 @@ module PuppetForge
       rescue Faraday::ConnectionFailed => e
         baseurl = env[:url].dup
         baseurl.path = ''
-        errmsg = "Unable to connect to #{baseurl.to_s}"
         if proxy = env[:request][:proxy]
-          errmsg << " (using proxy #{proxy.uri.to_s})"
+          errmsg = _("Unable to connect to %{url} (using proxy %{proxy})") % {url: baseurl.to_s, proxy: proxy.uri.to_s}
+        else
+          errmsg = _("Unable to connect to %{url}") % {url: baseurl.to_s}
         end
         errmsg << ": #{e.message}"
         m = Faraday::ConnectionFailed.new(errmsg)
