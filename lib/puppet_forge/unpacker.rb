@@ -39,7 +39,7 @@ module PuppetForge
       begin
         PuppetForge::Tar.instance.unpack(@filename, @tmpdir)
       rescue PuppetForge::ExecutionFailure => e
-        raise RuntimeError, "Could not extract contents of module archive: #{e.message}"
+        raise RuntimeError, _("Could not extract contents of module archive: %{error_msg}") % {error_msg: e.message}
       end
     end
 
@@ -61,7 +61,7 @@ module PuppetForge
       if metadata_file
         @root_dir = Pathname.new(metadata_file).dirname
       else
-        raise "No valid metadata.json found!"
+        raise _("No valid metadata.json found!")
       end
     end
   end

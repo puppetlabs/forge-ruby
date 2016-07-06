@@ -186,6 +186,26 @@ user.username # => "puppetlabs"
 user.created_at # => "2010-05-19 05:46:26 -0700"
 ```
 
+### i18n
+
+When adding new error or log messages please follow the instructions for
+[writing translatable code](https://github.com/puppetlabs/gettext-setup-gem#writing-translatable-code).
+
+The PuppetForge gem will default to outputing all error messages in English, but you may set the locale
+using the `FastGettext.set_locale` method. If translations do not exist for the language you request then the gem will
+default to English. The `set_locale` method will return the locale, as a string, that FastGettext will now
+use to report PuppetForge errors.
+
+``` ruby
+# Assuming the German translations exist, this will set the reporting language
+# to German
+
+locale = FastGettext.set_locale "de_DE"
+
+# If it successfully finds Germany's locale, locale will be "de_DE"
+# If it fails to find any German locale, locale will be "en"
+```
+
 ##Caveats
 
 This library currently does no response caching of its own, instead opting to

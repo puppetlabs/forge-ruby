@@ -27,7 +27,7 @@ module PuppetForge
         resp = self.class.conn.get(download_url)
         path.open('wb') { |fh| fh.write(resp.body) }
       rescue Faraday::ResourceNotFound => e
-        raise PuppetForge::ReleaseNotFound, "The module release #{slug} does not exist on #{self.class.conn.url_prefix}.", e.backtrace
+        raise PuppetForge::ReleaseNotFound, (_("The module release %{release_slug} does not exist on %{url}.") % {release_slug: slug, url: self.class.conn.url_prefix}), e.backtrace
       rescue Faraday::ClientError => e
         if e.response && e.response[:status] == 403
           raise PuppetForge::ReleaseForbidden.from_response(e.response)
