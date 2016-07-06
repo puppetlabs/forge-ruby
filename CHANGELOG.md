@@ -3,6 +3,12 @@
 Starting with v2.0.0, all notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## v2.2.2 - 2016-07-06
+
+### Changed
+
+* Externalized all user facing strings with gettext to support future localization work.
+
 ## v2.2.1 - 2016-05-24
 
 ### Changed
