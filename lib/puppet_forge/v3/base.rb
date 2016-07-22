@@ -61,9 +61,9 @@ module PuppetForge
           end
 
           if item.nil?
-            uri_path = "/v3/#{resource}"
+            uri_path = "v3/#{resource}"
           else
-            uri_path = "/v3/#{resource}/#{item}"
+            uri_path = "v3/#{resource}/#{item}"
           end
 
           PuppetForge::V3::Base.conn.get uri_path, params
