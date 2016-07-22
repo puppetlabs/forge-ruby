@@ -60,15 +60,10 @@ module PuppetForge
             conn.url_prefix = "#{PuppetForge.host}"
           end
 
-          path_prefix = conn.path_prefix.clone
-          
-          unless path_prefix.end_with?("/") 
-          	 path_prefix = path_prefix + "/"
-          end
           if item.nil?
-            uri_path = "#{path_prefix}v3/#{resource}"
+            uri_path = "v3/#{resource}"
           else
-            uri_path = "#{path_prefix}v3/#{resource}/#{item}"
+            uri_path = "v3/#{resource}/#{item}"
           end
 
           PuppetForge::V3::Base.conn.get uri_path, params
