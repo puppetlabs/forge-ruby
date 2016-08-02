@@ -24,7 +24,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "faraday_middleware", [">= 0.9.0", "< 0.11.0"]
   spec.add_dependency 'semantic_puppet', '~> 0.1.0'
   spec.add_dependency 'minitar'
-  spec.add_dependency 'gettext-setup', '>= 0.3'
+  spec.add_dependency 'gettext-setup', '~> 0.5'
 
   spec.add_development_dependency "bundler", "~> 1.6"
   spec.add_development_dependency "rake"
