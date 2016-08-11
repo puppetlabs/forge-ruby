@@ -12,9 +12,9 @@ require 'puppet_forge'
 
 module StubbingFaraday
 
-  def stub_api_for(klass)
+  def stub_api_for(klass, base_url = "http://api.example.com")
     allow(klass).to receive(:conn) do
-      Faraday.new :url => "http://api.example.com" do |builder|
+      Faraday.new :url => base_url do |builder|
         builder.use PuppetForge::Middleware::SymbolifyJson
         builder.response(:json, :content_type => /\bjson$/)
         builder.response(:raise_error)
