@@ -13,6 +13,10 @@ describe PuppetForge::Connection do
     subject { described_class }
 
     describe '#proxy=' do
+      after(:each) do
+        subject.proxy = nil
+      end
+
       it "sets @proxy to value when passed non-empty string" do
         proxy = "http://proxy.example.com:3128"
 
