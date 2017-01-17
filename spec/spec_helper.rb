@@ -65,4 +65,12 @@ RSpec.configure do |config|
   # the seed, which is printed after each run.
   #     --seed 1234
   config.order = 'random'
+
+  config.before(:example) do
+    @old_host = PuppetForge.host
+  end
+
+  config.after(:example) do
+    PuppetForge.host = @old_host
+  end
 end
