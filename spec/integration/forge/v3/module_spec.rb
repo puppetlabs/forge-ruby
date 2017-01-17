@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe PuppetForge::V3::Module do
   before do
-
     PuppetForge.host = "https://forge-aio01-petest.puppetlabs.com/"
     PuppetForge::V3::Base.conn = PuppetForge::Connection.make_connection(PuppetForge.host, nil, {:ssl => {:verify => false} })
   end
