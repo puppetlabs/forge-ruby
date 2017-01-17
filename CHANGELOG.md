@@ -3,6 +3,13 @@
 Starting with v2.0.0, all notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## v2.2.3 - 2017-01-17
+
+### Changed
+
+* Fixed an issue that was preventing PuppetForge.host from honoring any given path prefix.
+* Upgraded gettext-setup dependency to 0.11 release.
+
 ## v2.2.2 - 2016-07-06
 
 ### Changed
