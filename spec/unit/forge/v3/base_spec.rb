@@ -57,4 +57,35 @@ describe PuppetForge::V3::Base do
       expect(collection.total).to eq(0)
     end
   end
+
+  describe 'the host url setting' do
+    before do
+    end
+
+    it 'should handle a host url with no path prefix' do
+      stub_api_for(PuppetForge::V3::Base) do |stubs|
+        stub_fixture(stubs, :get, '/v3/bases/puppet')
+      end
+
+      # Trigger connection reset
+      PuppetForge::V3::Base.conn = PuppetForge::Connection.default_connection
+
+      base = PuppetForge::V3::Base.find 'puppet'
+      expect(base.username).to eq('foo')
+    end
+
+    it 'should handle a path prefix in the host' do
+      PuppetForge.host = 'https://api.example.com/uri/prefix'
+
+      stub_api_for(PuppetForge::V3::Base, PuppetForge.host) do |stubs|
+        stub_fixture(stubs, :get, '/uri/prefix/v3/bases/puppet')
+      end
+
+      # Trigger connection reset
+      PuppetForge::V3::Base.conn = PuppetForge::Connection.default_connection
+
+      base = PuppetForge::V3::Base.find 'puppet'
+      expect(base.username).to eq('bar')
+    end
+  end
 end
