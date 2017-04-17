@@ -3,6 +3,13 @@
 Starting with v2.0.0, all notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## v2.2.4 - 2017-04-17
+
+### Added
+
+* PuppetForge::Connection now has .accept\_language and .accept\_language= class methods providing a way to set the
+  'Accept-Language' header for outbound requests.
+
 ## v2.2.3 - 2017-01-17
 
 ### Changed
