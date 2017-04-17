@@ -51,6 +51,15 @@ module PuppetForge
       @proxy
     end
 
+    def self.accept_language=(lang)
+      lang = nil if lang.respond_to?(:empty?) && lang.empty?
+      @accept_language = lang
+    end
+
+    def self.accept_language
+      @accept_language
+    end
+
     # @param reset_connection [Boolean] flag to create a new connection every time this is called
     # @param opts [Hash] Hash of connection options for Faraday
     # @return [Faraday::Connection] An existing Faraday connection if one was
@@ -58,8 +67,9 @@ module PuppetForge
     def conn(reset_connection = nil, opts = {})
       new_auth = @conn && @conn.headers['Authorization'] != PuppetForge::Connection.authorization
       new_proxy = @conn && ((@conn.proxy.nil? && PuppetForge::Connection.proxy) || (@conn.proxy && @conn.proxy.uri.to_s != PuppetForge::Connection.proxy))
+      new_lang = @conn && @conn.headers['Accept-Language'] != PuppetForge::Connection.accept_language
 
-      if new_auth || new_proxy || reset_connection
+      if reset_connection || new_auth || new_proxy || new_lang
         default_connection(opts)
       else
         @conn ||= default_connection(opts)
@@ -93,6 +103,10 @@ module PuppetForge
 
       if token = PuppetForge::Connection.authorization
         options[:headers][:authorization] = token
+      end
+
+      if lang = PuppetForge::Connection.accept_language
+        options[:headers]['Accept-Language'] = lang
       end
 
       if proxy = PuppetForge::Connection.proxy

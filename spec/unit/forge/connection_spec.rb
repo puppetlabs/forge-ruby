@@ -38,6 +38,33 @@ describe PuppetForge::Connection do
         expect(subject.instance_variable_get(:@proxy)).to be_nil
       end
     end
+
+    describe '#accept_language=' do
+      after(:each) do
+        subject.accept_language = nil
+      end
+
+      it "sets @accept_language to value when passed non-empty string" do
+        lang = "ja-JP"
+
+        subject.accept_language = lang
+
+        expect(subject.instance_variable_get(:@accept_language)).to eq lang
+      end
+
+      it "sets @accept_language to nil when passed an empty string" do
+        subject.accept_language = ''
+
+        expect(subject.instance_variable_get(:@accept_language)).to be_nil
+      end
+
+      it "replaces existing @accept_language value with nil when set to empty string" do
+        subject.instance_variable_set(:@accept_language, 'value')
+        subject.accept_language = ''
+
+        expect(subject.instance_variable_get(:@accept_language)).to be_nil
+      end
+    end
   end
 
   describe 'creating a new connection' do
@@ -71,6 +98,16 @@ describe PuppetForge::Connection do
 
       it 'sets authorization header on requests' do
         expect(subject.headers).to include(:authorization => "auth-test value")
+      end
+    end
+
+    context 'when an accept language value is provided' do
+      before(:each) do
+        allow(described_class).to receive(:accept_language).and_return("ja-JP")
+      end
+
+      it 'sets accept-language header on requests' do
+        expect(subject.headers).to include('Accept-Language' => "ja-JP")
       end
     end
   end
