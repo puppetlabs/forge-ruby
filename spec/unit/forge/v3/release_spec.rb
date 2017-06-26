@@ -96,6 +96,21 @@ describe PuppetForge::V3::Release do
         release.file_uri = 'https://example.com/v3/files/puppetlabs-apache-0.0.1.tar.gz'
         expect(release.download_url).to eql('https://example.com/v3/files/puppetlabs-apache-0.0.1.tar.gz')
       end
+
+      context 'when PuppetForge.host has a path prefix' do
+        around(:each) do |spec|
+          old_host = PuppetForge.host
+          PuppetForge.host = 'http://example.com/forge/api/'
+
+          spec.run
+
+          PuppetForge.host = old_host
+        end
+
+        it 'includes path prefix in download url' do
+          expect(release.download_url).to eql('http://example.com/forge/api/v3/files/puppetlabs-apache-0.0.1.tar.gz')
+        end
+      end
     end
 
     describe '#download' do

@@ -4,12 +4,21 @@ require 'gettext-setup'
 module PuppetForge
   class << self
     attr_accessor :user_agent
-    attr_accessor :host
+    attr_reader :host
+
+    def host=(new_host)
+      new_host << '/' unless new_host[-1] == '/'
+
+      # TODO: maybe freeze this
+      @host = new_host
+    end
   end
 
   GettextSetup.initialize(File.absolute_path('../locales', File.dirname(__FILE__)))
 
-  self.host = 'https://forgeapi.puppetlabs.com'
+  DEFAULT_FORGE_HOST = 'https://forgeapi.puppetlabs.com/'
+
+  self.host = DEFAULT_FORGE_HOST
 
   require 'puppet_forge/tar'
   require 'puppet_forge/unpacker'
