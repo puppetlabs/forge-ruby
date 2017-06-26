@@ -3,6 +3,13 @@
 Starting with v2.0.0, all notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## v2.2.5 - 2017-06-26
+
+### Fixed
+
+* (FORGE-338) Fixed an issue where `V3::Release.download_url` returned an incorrect value when `PuppetForge.host` included 
+  a path prefix. (Thanks to [Jainish Shah](https://github.com/jainishshah17) for the report and initial fix proposal.)
+
 ## v2.2.4 - 2017-04-17
 
 ### Added
