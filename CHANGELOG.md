@@ -3,6 +3,12 @@
 Starting with v2.0.0, all notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## v2.2.6 - 2017-06-27
+
+### Fixed
+
+* Fixed an issue when attempting to assign a non-String value to `PuppetForge.host`.
+
 ## v2.2.5 - 2017-06-26
 
 ### Fixed
