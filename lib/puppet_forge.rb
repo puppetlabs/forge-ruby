@@ -7,6 +7,7 @@ module PuppetForge
     attr_reader :host
 
     def host=(new_host)
+      new_host = new_host.to_s
       new_host << '/' unless new_host[-1] == '/'
 
       # TODO: maybe freeze this
