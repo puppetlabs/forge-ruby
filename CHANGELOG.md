@@ -3,6 +3,12 @@
 Starting with v2.0.0, all notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## v2.2.7 - 2017-06-30
+
+### Changed
+
+* Updated dependency on `semantic_puppet` to `~> 1.0`.
+
 ## v2.2.6 - 2017-06-27
 
 ### Fixed

@@ -1,9 +1,9 @@
-#Puppet Forge
+# Puppet Forge
 
 Access and manipulate the [Puppet Forge API](https://forgeapi.puppetlabs.com)
 from Ruby.
 
-##Installation
+## Installation
 
 Add this line to your application's Gemfile:
 
@@ -17,11 +17,11 @@ Or install it yourself as:
 
     $ gem install puppet_forge
 
-##Requirements
+## Requirements
 
 * Ruby >= 1.9.3
 
-##Dependencies
+## Dependencies
 
 * [Faraday]() ~> 0.9.0
 * [Typhoeus](https://github.com/typhoeus/typhoeus) ~> 0.7.0 (optional)
@@ -30,18 +30,18 @@ Typhoeus will be used as the HTTP adapter if it is available, otherwise
 Net::HTTP will be used. We recommend using Typhoeus for production-level
 applications.
 
-##Usage
+## Usage
 
 First, make sure you have imported the Puppet Forge gem into your application:
 
-``` ruby
+```ruby
 require 'puppet_forge'
 ```
 
 Next, supply a user-agent string to identify requests sent by your application
 to the Puppet Forge API:
 
-``` ruby
+```ruby
 PuppetForge.user_agent = "MyApp/1.0.0"
 ```
 
@@ -76,7 +76,7 @@ resource model are documented on the [Resource Reference][resource_ref] page.
 
 [resource_ref]: https://github.com/puppetlabs/forge-ruby/wiki/Resource-Reference
 
-###Basic Interface
+### Basic Interface
 
 Each of the models uses ActiveRecord-like REST functionality to map over the Forge API endpoints.
 Most simple ActiveRecord-style interactions function as intended.
@@ -85,7 +85,7 @@ Currently, only unauthenticated read-only actions are supported.
 
 The methods find, where, and all immediately make one API request.
 
-``` ruby
+```ruby
 # Find a Resource by Slug
 PuppetForge::User.find('puppetlabs') # => #<Forge::V3::User(/v3/users/puppetlabs)>
 
@@ -97,23 +97,23 @@ PuppetForge::Module.where(query: 'apache') # See "Paginated Collections" below f
 PuppetForge::Module.where(query: 'apache').first # => #<Forge::V3::Module(/v3/modules/puppetlabs-apache)>
 ```
 
-For compatibility with older versions of the puppet_forge gem, the following two methods are functionally equivalent.
+For compatibility with older versions of the puppet\_forge gem, the following two methods are functionally equivalent.
 
-``` ruby
+```ruby
 PuppetForge::Module.where(query: 'apache')
 PuppetForge::Module.where(query: 'apache').all # This method is deprecated and not recommended
 ```
 
-####Errors
+#### Errors
 
 All API Requests (whether via find, where, or all) will raise a Faraday::ResourceNotFound error if the request fails.
 
 
-###Installing a Release
+### Installing a Release
 
 A release tarball can be downloaded and installed by following the steps below.
 
-``` ruby
+```ruby
 release_slug = "puppetlabs-apache-1.6.0"
 release_tarball = release_slug + ".tar.gz"
 dest_dir = "/path/to/install/directory"
@@ -137,11 +137,11 @@ PuppetForge::Unpacker.unpack(release_tarball, dest_dir, tmp_dir)
 ```
 
 
-###Paginated Collections
+### Paginated Collections
 
 The Forge API only returns paginated collections as of v3.
 
-``` ruby
+```ruby
 PuppetForge::Module.all.total # => 1728
 PuppetForge::Module.all.length # => 20
 ```
@@ -151,7 +151,7 @@ parameters, but it's generally preferable to leverage the pagination links
 provided by the API. For convenience, pagination links are exposed by the
 library.
 
-``` ruby
+```ruby
 PuppetForge::Module.all.offset # => 0
 PuppetForge::Module.all.next_url # => "/v3/modules?limit=20&offset=20"
 PuppetForge::Module.all.next.offset # => 20
@@ -160,23 +160,23 @@ PuppetForge::Module.all.next.offset # => 20
 An enumerator exists for iterating over the entire (unpaginated) collection.
 Keep in mind that this will result in multiple calls to the Forge API.
 
-``` ruby
+```ruby
 PuppetForge::Module.where(query: 'php').total # => 37
 PuppetForge::Module.where(query: 'php').unpaginated # => #<Enumerator>
 PuppetForge::Module.where(query: 'php').unpaginated.to_a.length # => 37
 ```
 
-###Associations & Lazy Attributes
+### Associations & Lazy Attributes
 
 Associated models are accessible in the API by property name.
 
-``` ruby
+```ruby
 PuppetForge::Module.find('puppetlabs-apache').owner # => #<Forge::V3::User(/v3/users/puppetlabs)>
 ```
 
 Properties of associated models are then loaded lazily.
 
-``` ruby
+```ruby
 user = PuppetForge::Module.find('puppetlabs-apache').owner
 
 # This does not trigger a request
@@ -196,7 +196,7 @@ using the `FastGettext.set_locale` method. If translations do not exist for the 
 default to English. The `set_locale` method will return the locale, as a string, that FastGettext will now
 use to report PuppetForge errors.
 
-``` ruby
+```ruby
 # Assuming the German translations exist, this will set the reporting language
 # to German
 
@@ -206,12 +206,12 @@ locale = FastGettext.set_locale "de_DE"
 # If it fails to find any German locale, locale will be "en"
 ```
 
-##Caveats
+## Caveats
 
 This library currently does no response caching of its own, instead opting to
 re-issue every request each time. This will be changed in a later release.
 
-##Reporting Issues
+## Reporting Issues
 
 Please report problems, issues, and feature requests on the public
 [Puppet Labs issue tracker][issues] under the FORGE project. You will need
@@ -219,7 +219,7 @@ to create a free account to add new tickets.
 
 [issues]: https://tickets.puppetlabs.com/browse/FORGE
 
-##Contributing
+## Contributing
 
 1. Fork it ( https://github.com/[my-github-username]/forge-ruby/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
@@ -227,7 +227,7 @@ to create a free account to add new tickets.
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
 
-##Contributors
+## Contributors
 
 * Pieter van de Bruggen, Puppet Labs
 * Jesse Scott, Puppet Labs
