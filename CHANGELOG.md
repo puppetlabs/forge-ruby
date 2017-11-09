@@ -3,6 +3,13 @@
 Starting with v2.0.0, all notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## dev
+
+### Added
+
+Created PuppetForge::Util class with a single method, version_valid? in order to
+drop the r10k dependency on semantic_puppet.
+
 ## v2.2.7 - 2017-06-30
 
 ### Changed
@@ -19,7 +26,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
-* (FORGE-338) Fixed an issue where `V3::Release.download_url` returned an incorrect value when `PuppetForge.host` included 
+* (FORGE-338) Fixed an issue where `V3::Release.download_url` returned an incorrect value when `PuppetForge.host` included
   a path prefix. (Thanks to [Jainish Shah](https://github.com/jainishshah17) for the report and initial fix proposal.)
 
 ## v2.2.4 - 2017-04-17
