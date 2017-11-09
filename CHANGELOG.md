@@ -3,11 +3,11 @@
 Starting with v2.0.0, all notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## dev
+## v2.2.8 - 2017-11-09
 
 ### Added
 
-Created PuppetForge::Util class with a single method, version_valid? in order to
+Created PuppetForge::Util class with a single method, version_valid?, in order to
 drop the r10k dependency on semantic_puppet.
 
 ## v2.2.7 - 2017-06-30
