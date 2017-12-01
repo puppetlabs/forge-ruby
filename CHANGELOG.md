@@ -3,6 +3,12 @@
 Starting with v2.0.0, all notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## v2.2.9 - 2017-12-01
+
+### Changed
+
+* Loosened dependency on `faraday` and `faraday_middleware` gems to include recent releases.
+
 ## v2.2.8 - 2017-11-09
 
 ### Added

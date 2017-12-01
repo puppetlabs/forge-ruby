@@ -23,8 +23,8 @@ Or install it yourself as:
 
 ## Dependencies
 
-* [Faraday]() ~> 0.9.0
-* [Typhoeus](https://github.com/typhoeus/typhoeus) ~> 0.7.0 (optional)
+* [Faraday]() >= 0.9.0 < 0.14.0
+* [Typhoeus](https://github.com/typhoeus/typhoeus) ~> 1.0.1 (optional)
 
 Typhoeus will be used as the HTTP adapter if it is available, otherwise
 Net::HTTP will be used. We recommend using Typhoeus for production-level
