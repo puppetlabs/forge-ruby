@@ -22,7 +22,7 @@ describe PuppetForge::Connection::ConnectionFailure do
   end
 
   it "includes the proxy host in the error message when set" do
-    subject.proxy('https://some-unreachable.proxy:3128')
+    subject.proxy = 'https://some-unreachable.proxy:3128'
     expect {
       subject.get('/connectfail')
     }.to raise_error(Faraday::ConnectionFailed, "Unable to connect to https://my-site.url (using proxy https://some-unreachable.proxy:3128): getaddrinfo: Name or service not known")
