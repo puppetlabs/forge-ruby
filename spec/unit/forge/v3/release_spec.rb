@@ -149,6 +149,44 @@ describe PuppetForge::V3::Release do
       end
     end
 
+    describe '#verify' do
+      let(:release) { PuppetForge::V3::Release.find('puppetlabs-apache-0.0.1') }
+      let(:tarball) { "#{PROJECT_ROOT}/spec/tmp/module.tgz" }
+
+      before(:each) do
+        FileUtils.rm tarball rescue nil
+        release.download(Pathname.new(tarball))
+      end
+
+      after(:each) { FileUtils.rm tarball rescue nil }
+
+      context 'file_sha256 is available' do
+        before(:each) do
+          allow(release).to receive(:file_sha256).and_return("810ff2fb242a5dee4220f2cb0e6a519891fb67f2f828a6cab4ef8894633b1f50")
+        end
+
+        let(:mock_sha256) { double(Digest::SHA256, hexdigest: release.file_sha256) }
+
+        it 'only verifies sha-256 checksum' do
+          expect(Digest::SHA256).to receive(:file).and_return(mock_sha256)
+          expect(Digest::MD5).not_to receive(:file)
+
+          release.verify(tarball)
+        end
+      end
+
+      context 'file_sha256 is not available' do
+        let(:mock_md5) { double(Digest::MD5, hexdigest: release.file_md5) }
+
+        it 'only verfies the md5 checksum' do
+          expect(Digest::SHA256).not_to receive(:file)
+          expect(Digest::MD5).to receive(:file).and_return(mock_md5)
+
+          release.verify(tarball)
+        end
+      end
+    end
+
     describe '#metadata' do
       let(:release) { PuppetForge::V3::Release.find('puppetlabs-apache-0.0.1') }
 

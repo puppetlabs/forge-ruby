@@ -1,6 +1,8 @@
 require 'puppet_forge/v3/base'
 require 'puppet_forge/v3/module'
 
+require 'digest'
+
 module PuppetForge
   module V3
 
@@ -36,21 +38,34 @@ module PuppetForge
         end
       end
 
-      # Verify that a downloaded module matches the checksum in the metadata for this release.
+      # Verify that a downloaded module matches the best available checksum in the metadata for this release,
+      # validates SHA-256 checksum if available, otherwise validates MD5 checksum
       #
       # @param path [Pathname]
       # @return [void]
       def verify(path)
-        expected_md5 = file_md5
-        file_md5     = Digest::MD5.file(path).hexdigest
-        if expected_md5 != file_md5
-          raise ChecksumMismatch.new("Expected #{path} checksum to be #{expected_md5}, got #{file_md5}")
-        end
+        checksum =
+          if self.respond_to?(:file_sha256) && !self.file_sha256.nil? && !self.file_sha256.size.zero?
+            {
+              type: "SHA-256",
+              expected: self.file_sha256,
+              actual: Digest::SHA256.file(path).hexdigest,
+            }
+          else
+            {
+              type: "MD5",
+              expected: self.file_md5,
+              actual: Digest::MD5.file(path).hexdigest,
+            }
+          end
+
+        return if checksum[:expected] == checksum[:actual]
+
+        raise ChecksumMismatch.new("Unable to validate #{checksum[:type]} checksum for #{path}, download may be corrupt!")
       end
 
       class ChecksumMismatch < StandardError
       end
-
     end
   end
 end
