@@ -59,33 +59,56 @@ describe PuppetForge::V3::Base do
   end
 
   describe 'the host url setting' do
-    before do
-    end
+    context 'without a path prefix' do
+      before(:each) do
+        @orig_host = PuppetForge.host
+        PuppetForge.host = 'https://api.example.com'
 
-    it 'should handle a host url with no path prefix' do
-      stub_api_for(PuppetForge::V3::Base) do |stubs|
-        stub_fixture(stubs, :get, '/v3/bases/puppet')
+        # Trigger connection reset
+        PuppetForge::V3::Base.conn = PuppetForge::Connection.default_connection
       end
 
-      # Trigger connection reset
-      PuppetForge::V3::Base.conn = PuppetForge::Connection.default_connection
+      after(:each) do
+        PuppetForge.host = @orig_host
 
-      base = PuppetForge::V3::Base.find 'puppet'
-      expect(base.username).to eq('foo')
-    end
-
-    it 'should handle a path prefix in the host' do
-      PuppetForge.host = 'https://api.example.com/uri/prefix'
-
-      stub_api_for(PuppetForge::V3::Base, PuppetForge.host) do |stubs|
-        stub_fixture(stubs, :get, '/uri/prefix/v3/bases/puppet')
+        # Trigger connection reset
+        PuppetForge::V3::Base.conn = PuppetForge::Connection.default_connection
       end
 
-      # Trigger connection reset
-      PuppetForge::V3::Base.conn = PuppetForge::Connection.default_connection
+      it 'should work' do
+        stub_api_for(PuppetForge::V3::Base) do |stubs|
+          stub_fixture(stubs, :get, '/v3/bases/puppet')
+        end
 
-      base = PuppetForge::V3::Base.find 'puppet'
-      expect(base.username).to eq('bar')
+        base = PuppetForge::V3::Base.find 'puppet'
+        expect(base.username).to eq('foo')
+      end
+    end
+
+    context 'with a path prefix' do
+      before(:each) do
+        @orig_host = PuppetForge.host
+        PuppetForge.host = 'https://api.example.com/uri/prefix'
+
+        # Trigger connection reset
+        PuppetForge::V3::Base.conn = PuppetForge::Connection.default_connection
+      end
+
+      after(:each) do
+        PuppetForge.host = @orig_host
+
+        # Trigger connection reset
+        PuppetForge::V3::Base.conn = PuppetForge::Connection.default_connection
+      end
+
+      it 'should work' do
+        stub_api_for(PuppetForge::V3::Base, PuppetForge.host) do |stubs|
+          stub_fixture(stubs, :get, '/uri/prefix/v3/bases/puppet')
+        end
+
+        base = PuppetForge::V3::Base.find 'puppet'
+        expect(base.username).to eq('bar')
+      end
     end
   end
 end
