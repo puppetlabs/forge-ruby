@@ -18,7 +18,7 @@ describe PuppetForge::Connection::ConnectionFailure do
   it "includes the base URL in the error message" do
     expect {
       subject.get('/connectfail')
-    }.to raise_error(Faraday::ConnectionFailed, "Unable to connect to https://my-site.url: getaddrinfo: Name or service not known")
+    }.to raise_error(Faraday::ConnectionFailed, /unable to connect to.*\/connectfail.*name or service not known/i)
   end
 
   it "includes the proxy host in the error message when set" do
@@ -30,6 +30,6 @@ describe PuppetForge::Connection::ConnectionFailure do
 
     expect {
       subject.get('/connectfail')
-    }.to raise_error(Faraday::ConnectionFailed, "Unable to connect to https://my-site.url (using proxy https://some-unreachable.proxy:3128): getaddrinfo: Name or service not known")
+    }.to raise_error(Faraday::ConnectionFailed, /unable to connect to.*using proxy.*\/connectfail.*name or service not known/i)
   end
 end
