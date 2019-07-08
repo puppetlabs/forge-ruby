@@ -1,0 +1,12 @@
+dist: xenial
+language: ruby
+rvm:
+  - 2.6
+  - 2.5
+  - 2.3
+  - 2.1
+script: bundle exec rspec spec/unit
+
+# TODO: add integration testing
+#  script: bundle exec rspec spec/integration
+
