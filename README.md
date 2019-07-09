@@ -227,6 +227,13 @@ to create a free account to add new tickets.
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
 
+## Releasing
+
+1. Make sure version, changelog, etc. have been updated.
+1. Commit and tag with new version number: e.g. `v1.2.3`
+1. Push tag to Github: `git push upstream --tags` (where `upstream` is the remote name of the puppetlabs fork of this repo)
+1. Wait for Travis CI to test and push new release to Rubygems.
+
 ## Contributors
 
 * Pieter van de Bruggen, Puppet Labs
@@ -236,10 +243,5 @@ to create a free account to add new tickets.
 * Anderson Mills, Puppet Labs
 
 ## Maintenance
-
-Maintainers:
-
-* Jesse Scott, jesse@puppet.com
-* Anderson Mills, anderson@puppet.com
 
 Tickets: File at https://tickets.puppet.com/browse/FORGE
