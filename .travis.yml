@@ -5,8 +5,14 @@ rvm:
   - 2.5
   - 2.3
   - 2.1
+# TODO: enable integration testing
 script: bundle exec rspec spec/unit
-
-# TODO: add integration testing
-#  script: bundle exec rspec spec/integration
-
+deploy:
+  on:
+    tags: true
+  provider: rubygems
+  gem: puppet_forge
+  api_key:
+    # jesse@puppet key, will need to update if user is removed
+    # from gem admin role
+    secure: m3uLKgLNxhMni9PYLP3tKqtw7N7ZUR0FUjS5cA2a0Dh6SrQhZiE1Mlxn742pk5cmGWI0fBz1i4q/I2oqXTdAWadeYmiiBID4R2qT2uwroX//flHfar/Qx0knKEdH6J2InSwdUWMLFlkjihOdKTnqmIVfD8UiLfNXA5QgJLgXGKI=
