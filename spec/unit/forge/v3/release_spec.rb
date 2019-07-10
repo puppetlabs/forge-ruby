@@ -152,6 +152,7 @@ describe PuppetForge::V3::Release do
     describe '#verify' do
       let(:release) { PuppetForge::V3::Release.find('puppetlabs-apache-0.0.1') }
       let(:tarball) { "#{PROJECT_ROOT}/spec/tmp/module.tgz" }
+      let(:allow_md5) { true }
 
       before(:each) do
         FileUtils.rm tarball rescue nil
@@ -171,7 +172,7 @@ describe PuppetForge::V3::Release do
           expect(Digest::SHA256).to receive(:file).and_return(mock_sha256)
           expect(Digest::MD5).not_to receive(:file)
 
-          release.verify(tarball)
+          release.verify(tarball, allow_md5)
         end
       end
 
@@ -182,7 +183,20 @@ describe PuppetForge::V3::Release do
           expect(Digest::SHA256).not_to receive(:file)
           expect(Digest::MD5).to receive(:file).and_return(mock_md5)
 
-          release.verify(tarball)
+          release.verify(tarball, allow_md5)
+        end
+      end
+
+      context 'when allow_md5=false' do
+        let(:allow_md5) { false }
+
+        context 'file_sha256 is not available' do
+          it 'raises an appropriate error' do
+            expect(Digest::SHA256).not_to receive(:file)
+            expect(Digest::MD5).not_to receive(:file)
+
+            expect { release.verify(tarball, allow_md5) }.to raise_error(PuppetForge::Error, /cannot verify module release.*md5.*forbidden/i)
+          end
         end
       end
     end

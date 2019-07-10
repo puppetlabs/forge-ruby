@@ -43,7 +43,7 @@ module PuppetForge
       #
       # @param path [Pathname]
       # @return [void]
-      def verify(path)
+      def verify(path, allow_md5 = true)
         checksum =
           if self.respond_to?(:file_sha256) && !self.file_sha256.nil? && !self.file_sha256.size.zero?
             {
@@ -51,12 +51,14 @@ module PuppetForge
               expected: self.file_sha256,
               actual: Digest::SHA256.file(path).hexdigest,
             }
-          else
+          elsif allow_md5
             {
               type: "MD5",
               expected: self.file_md5,
               actual: Digest::MD5.file(path).hexdigest,
             }
+          else
+            raise PuppetForge::Error.new("Cannot verify module release: SHA-256 checksum is not available in API response and fallback to MD5 has been forbidden.")
           end
 
         return if checksum[:expected] == checksum[:actual]
