@@ -3,6 +3,13 @@
 Starting with v2.0.0, all notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## v2.3.0 - 2019-07-09
+
+### Changed
+
+* Updated `PuppetForge::V3::Release#verify` method to use `file_sha256` checksum from Forge API when available.
+* Added an `allow_md5` param to `PuppetForge::V3::Release#verify` method to control whether or not fallback to MD5 checksum will be allowed in cases where SHA-256 checksum is not available.
+
 ## v2.2.9 - 2017-12-01
 
 ### Changed
