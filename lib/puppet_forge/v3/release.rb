@@ -2,6 +2,7 @@ require 'puppet_forge/v3/base'
 require 'puppet_forge/v3/module'
 
 require 'digest'
+require 'base64'
 
 module PuppetForge
   module V3
@@ -36,6 +37,31 @@ module PuppetForge
         else
           raise e
         end
+      end
+
+      # Uploads the tarbarll to the forge
+      #
+      # @param path [Pathname] tarball file path
+      # @return resp
+      def upload(path, api_key)
+        if api_key.nil? 
+          raise "Please provide the api_key for the forge authentication"
+	end
+        encoded_string = Base64.encode64(File.open(path, "rb").read)
+
+	resp = self.class.conn.post do |req|
+                 req.url '/v3/releases'
+                 req.headers['Content-Type']='application/json'
+                 req.headers['Authorization'] = 'Bearer '+api_key
+                 req.body = '{"file":"'+encoded_string+'"}'
+                end
+      return resp
+        rescue Faraday::ClientError => e
+          if e.response && e.response[:status] == 403
+            raise PuppetForge::ReleaseForbidden.from_response(e.response)
+          else
+            raise e
+          end
       end
 
       # Verify that a downloaded module matches the best available checksum in the metadata for this release,
