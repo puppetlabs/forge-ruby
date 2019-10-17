@@ -127,6 +127,11 @@ release = PuppetForge::Release.find release_slug
 # @raise PuppetForge::ReleaseNotFound error if the given release does not exist
 release.download(Pathname(release_tarball))
 
+# Upload a module tarball to the Puppet Forge
+# Returns an instannce of V3::Release class and the response from the forge upload 
+# @raise Faraday::ClientError if any errors encountered in the upload
+instance, response = PuppetForge::V3::Release.upload(tarball_path, forge_api_key)
+
 # Verify the MD5
 # @raise PuppetForge::V3::Release::ChecksumMismatch error if the file's md5 does not match the API information
 release.verify(Pathname(release_tarball))

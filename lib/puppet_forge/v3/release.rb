@@ -42,20 +42,23 @@ module PuppetForge
       # Uploads the tarbarll to the forge
       #
       # @param path [Pathname] tarball file path
+      # @param api_key [String] Forge API key
       # @return resp
-      def upload(path, api_key)
+      def self.upload(path, api_key)
         if api_key.nil? 
           raise "Please provide the api_key for the forge authentication"
-	end
+        end
         encoded_string = Base64.encode64(File.open(path, "rb").read)
+        data = { file: encoded_string }
 
-	resp = self.class.conn.post do |req|
+        resp = self.conn.post do |req|
                  req.url '/v3/releases'
                  req.headers['Content-Type']='application/json'
                  req.headers['Authorization'] = 'Bearer '+api_key
-                 req.body = '{"file":"'+encoded_string+'"}'
-                end
-      return resp
+                 req.body = data.to_json
+               end
+
+        return self, resp
         rescue Faraday::ClientError => e
           if e.response && e.response[:status] == 403
             raise PuppetForge::ReleaseForbidden.from_response(e.response)
