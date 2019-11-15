@@ -3,6 +3,12 @@
 Starting with v2.0.0, all notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## v2.3.1 - 2019-11-15
+
+### Fixed
+
+* Fixed an issue where proxy configurations were being ignored by expanding the range of acceptable versions of the `faraday` gem dependency and specifically excluding the version that was ignoring proxy configuration options.
+
 ## v2.3.0 - 2019-07-09
 
 ### Changed
