@@ -7,7 +7,7 @@ module PuppetForge
     class ConnectionFailure < Faraday::Middleware
       def call(env)
         @app.call(env)
-      rescue Faraday::ConnectionFailed => e
+      rescue Faraday::ConnectionFailed, Faraday::TimeoutError => e
         baseurl = env[:url].dup
         if proxy = env[:request][:proxy]
           errmsg = _("Unable to connect to %{scheme}://%{host} (using proxy %{proxy}) (for request %{path_query})") % {

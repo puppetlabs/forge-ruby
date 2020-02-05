@@ -11,6 +11,7 @@ describe PuppetForge::Connection::ConnectionFailure do
 
       builder.adapter :test do |stub|
         stub.get('/connectfail') { raise Faraday::ConnectionFailed.new(SocketError.new("getaddrinfo: Name or service not known"), :hi) }
+        stub.get('/timeout') { raise Faraday::TimeoutError, "request timed out" }
       end
     end
   end
@@ -19,6 +20,12 @@ describe PuppetForge::Connection::ConnectionFailure do
     expect {
       subject.get('/connectfail')
     }.to raise_error(Faraday::ConnectionFailed, /unable to connect to.*\/connectfail.*name or service not known/i)
+  end
+
+  it "logs for timeout errors" do
+    expect {
+      subject.get('/timeout')
+    }.to raise_error(Faraday::ConnectionFailed, /unable to connect to.*\/timeout.*request timed out/i)
   end
 
   it "includes the proxy host in the error message when set" do
