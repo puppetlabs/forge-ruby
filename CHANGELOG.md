@@ -3,6 +3,19 @@
 Starting with v2.0.0, all notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## v2.3.2 - 2020-02-05
+
+### Fixed
+
+* Catch and handle the new `Faraday::TimeoutError`s which are occasionally
+  surfaced by the the typheous adapter with more recent verions of libcurl, and
+  log them the same way that `Faraday::ConnectionFailed` errors are already
+  logged.
+
+### Changed
+
+* Allow for using `faraday_middleware` versions in the 0.13.x series.
+
 ## v2.3.1 - 2019-11-15
 
 ### Fixed
