@@ -3,6 +3,12 @@
 Starting with v2.0.0, all notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## v2.3.3 - 2020-02-20
+
+### Changed
+
+* Allow versions of faraday up to 0.18
+
 ## v2.3.2 - 2020-02-05
 
 ### Fixed
