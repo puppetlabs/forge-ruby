@@ -56,7 +56,7 @@ module PuppetForge
         # @private
         def request(resource, item = nil, params = {}, reset_connection = false, conn_opts = {})
           conn(reset_connection, conn_opts) if reset_connection
-          unless conn.url_prefix =~ /^#{PuppetForge.host}/
+          unless conn.url_prefix.to_s =~ /^#{PuppetForge.host}/
             conn.url_prefix = "#{PuppetForge.host}"
           end
 
