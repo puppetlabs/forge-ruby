@@ -17,7 +17,7 @@ module PuppetForge
 
   GettextSetup.initialize(File.absolute_path('../locales', File.dirname(__FILE__)))
 
-  DEFAULT_FORGE_HOST = 'https://forgeapi.puppetlabs.com/'
+  DEFAULT_FORGE_HOST = 'https://forgeapi.puppet.com/'
 
   self.host = DEFAULT_FORGE_HOST
 
