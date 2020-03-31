@@ -3,6 +3,11 @@
 Starting with v2.0.0, all notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## v2.3.4 - 2020-03-31
+
+* Update the forge API url to `forgeapi.puppet.com` (instead of using the older puppetlabs.com domain).
+* Allow versions of the `faraday_middleware` dependency up to 0.15.
+
 ## v2.3.3 - 2020-02-20
 
 ### Changed
