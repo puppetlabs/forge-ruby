@@ -1,6 +1,6 @@
 # Puppet Forge
 
-Access and manipulate the [Puppet Forge API](https://forgeapi.puppetlabs.com)
+Access and manipulate the [Puppet Forge API](https://forgeapi.puppet.com)
 from Ruby.
 
 ## Installation
