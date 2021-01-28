@@ -80,7 +80,7 @@ module PuppetForge
 
       begin
         # Use Typhoeus if available.
-        Gem::Specification.find_by_name('typhoeus', '~> 1.0.1')
+        Gem::Specification.find_by_name('typhoeus', '~> 1.4')
         require 'typhoeus/adapters/faraday'
         adapter = :typhoeus
       rescue Gem::LoadError
