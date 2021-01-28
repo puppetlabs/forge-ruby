@@ -3,6 +3,12 @@
 Starting with v2.0.0, all notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## v3.0.0 - 2021-01-28
+
+* Breaking: The `puppet_forge` gem now requires at least Ruby 2.4.0.
+* Update `faraday` and `faraday_middleware` gem dependencies to 1.x series.
+* Update optional `typhoeus` dependency to `>= 1.4` to maintain compatibility with `faraday`.
+
 ## v2.3.4 - 2020-03-31
 
 * Update the forge API url to `forgeapi.puppet.com` (instead of using the older puppetlabs.com domain).
