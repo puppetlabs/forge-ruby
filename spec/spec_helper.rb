@@ -15,8 +15,7 @@ module StubbingFaraday
   def stub_api_for(klass, base_url = "http://api.example.com")
     allow(klass).to receive(:conn) do
       Faraday.new :url => base_url do |builder|
-        builder.use PuppetForge::Middleware::SymbolifyJson
-        builder.response(:json, :content_type => /\bjson$/)
+        builder.response(:json, :content_type => /\bjson$/, :parser_options => { :symbolize_names => true })
         builder.response(:raise_error)
         builder.use(:connection_failure)
 
