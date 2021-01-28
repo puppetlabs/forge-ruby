@@ -168,14 +168,6 @@ describe PuppetForge::Metadata do
 
     end
 
-    context "with a valid dependency", :pending => "dependency resolution is not yet in scope" do
-      let(:data) { {'dependencies' => [{'name' => 'puppetlabs-goodmodule'}] }}
-
-      it "adds the dependency" do
-        expect(subject.dependencies.size).to eq(1)
-      end
-    end
-
     context "with a invalid dependency name" do
       let(:data) { {'dependencies' => [{'name' => 'puppetlabsbadmodule'}] }}
 
@@ -184,43 +176,11 @@ describe PuppetForge::Metadata do
       end
     end
 
-    context "with a valid dependency version range", :pending => "dependency resolution is not yet in scope" do
-      let(:data) { {'dependencies' => [{'name' => 'puppetlabs-badmodule', 'version_requirement' => '>= 2.0.0'}] }}
-
-      it "adds the dependency" do
-        expect(subject.dependencies.size).to eq(1)
-      end
-    end
-
     context "with a invalid version range" do
       let(:data) { {'dependencies' => [{'name' => 'puppetlabsbadmodule', 'version_requirement' => '>= banana'}] }}
 
       it "raises an exception" do
         expect { subject }.to raise_error(ArgumentError)
-      end
-    end
-
-    context "with duplicate dependencies", :pending => "dependency resolution is not yet in scope" do
-      let(:data) { {'dependencies' => [{'name' => 'puppetlabs-dupmodule', 'version_requirement' => '1.0.0'},
-        {'name' => 'puppetlabs-dupmodule', 'version_requirement' => '0.0.1'}] }
-      }
-
-      it "raises an exception" do
-        expect { subject }.to raise_error(ArgumentError)
-      end
-    end
-
-    context "adding a duplicate dependency", :pending => "dependency resolution is not yet in scope" do
-      let(:data) { {'dependencies' => [{'name' => 'puppetlabs-origmodule', 'version_requirement' => '1.0.0'}] }}
-
-      it "with a different version raises an exception" do
-        metadata.add_dependency('puppetlabs-origmodule', '>= 0.0.1')
-        expect { subject }.to raise_error(ArgumentError)
-      end
-
-      it "with the same version does not add another dependency" do
-        metadata.add_dependency('puppetlabs-origmodule', '1.0.0')
-        expect(subject.dependencies.size).to eq(1)
       end
     end
   end
