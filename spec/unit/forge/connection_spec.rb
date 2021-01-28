@@ -88,7 +88,7 @@ describe PuppetForge::Connection do
 
       expect {
         subject.get('/error')
-      }.to raise_error(Faraday::ClientError, "the server responded with status 503")
+      }.to raise_error(Faraday::ServerError, "the server responded with status 503")
     end
 
     context 'when an authorization value is provided' do
