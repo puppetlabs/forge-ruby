@@ -20,8 +20,8 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = '>= 2.4.0'
 
-  spec.add_runtime_dependency "faraday", "~> 1.3" 
-  spec.add_runtime_dependency "faraday_middleware", "~> 1.0" 
+  spec.add_runtime_dependency "faraday", "~> 1.3"
+  spec.add_runtime_dependency "faraday_middleware", "~> 1.0"
   spec.add_dependency "semantic_puppet", "~> 1.0"
   spec.add_dependency "minitar"
   spec.add_dependency "gettext-setup", "~> 0.11"
