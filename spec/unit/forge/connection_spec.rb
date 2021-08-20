@@ -92,12 +92,41 @@ describe PuppetForge::Connection do
     end
 
     context 'when an authorization value is provided' do
-      before(:each) do
-        allow(described_class).to receive(:authorization).and_return("auth-test value")
+      let(:key) { "abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789" }
+      let(:prepended_key) { "Bearer #{key}" }
+
+      context 'when the key already includes the Bearer prefix as expected' do
+        before(:each) do
+          allow(described_class).to receive(:authorization).and_return(prepended_key)
+        end
+
+        it 'does not prepend it again' do
+          expect(subject.headers).to include(:authorization => prepended_key)
+        end
       end
 
-      it 'sets authorization header on requests' do
-        expect(subject.headers).to include(:authorization => "auth-test value")
+      context 'when the key does not includ the Bearer prefix' do
+        context 'when the value looks like a Forge API key' do
+          before(:each) do
+            allow(described_class).to receive(:authorization).and_return(key)
+          end
+
+          it 'prepends "Bearer"' do
+            expect(subject.headers).to include(:authorization => prepended_key)
+          end
+        end
+
+        context 'when the value does not look like a Forge API key' do
+          let(:key) { "auth-test value" }
+
+          before(:each) do
+            allow(described_class).to receive(:authorization).and_return(key)
+          end
+
+          it 'does not alter the value' do
+            expect(subject.headers).to include(:authorization => key)
+          end
+        end
       end
     end
 

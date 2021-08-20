@@ -23,6 +23,8 @@ module PuppetForge
 
     attr_writer :conn
 
+    AUTHORIZATION_TOKEN_REGEX = /^[a-f0-9]{64}$/
+
     USER_AGENT = "#{PuppetForge.user_agent} PuppetForge.gem/#{PuppetForge::VERSION} Faraday/#{Faraday::VERSION} Ruby/#{RUBY_VERSION}-p#{RUBY_PATCHLEVEL} (#{RUBY_PLATFORM})".strip
 
     def self.authorization=(token)
@@ -101,7 +103,7 @@ module PuppetForge
       options = { :headers => { :user_agent => USER_AGENT } }.merge(opts)
 
       if token = PuppetForge::Connection.authorization
-        options[:headers][:authorization] = token
+        options[:headers][:authorization] = token =~ AUTHORIZATION_TOKEN_REGEX ? "Bearer #{token}" : token
       end
 
       if lang = PuppetForge::Connection.accept_language
