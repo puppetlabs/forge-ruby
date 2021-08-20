@@ -3,6 +3,14 @@
 Starting with v2.0.0, all notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## v3.1.0 - 2021-08-20
+
+### Changed
+
+* Update `PuppetForge::Connection.authorization` so that it prepends the
+  required `Bearer ` string automatically to values that look like Forge API
+  keys. This won't affect values that already include `Bearer `.
+
 ## v3.0.0 - 2021-01-28
 
 * Breaking: The `puppet_forge` gem now requires at least Ruby 2.4.0.
