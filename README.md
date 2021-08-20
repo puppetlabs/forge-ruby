@@ -81,13 +81,14 @@ resource model are documented on the [Resource Reference][resource_ref] page.
 Each of the models uses ActiveRecord-like REST functionality to map over the Forge API endpoints.
 Most simple ActiveRecord-style interactions function as intended.
 
-Currently, only unauthenticated read-only actions are supported.
+Currently, only read-only actions are supported.
 
 The methods find, where, and all immediately make one API request.
 
 ```ruby
 # Find a Resource by Slug
-PuppetForge::User.find('puppetlabs') # => #<Forge::V3::User(/v3/users/puppetlabs)>
+PuppetForge::User.find('puppetlabs') # => #<PuppetForge::V3::User(/v3/users/puppetlabs)>
+PuppetForge::Module.find('puppetlabs-stdlib') # => #<PuppetForge::V3::Module(/v3/modules/puppetlabs-stdlib)>
 
 # Find All Resources
 PuppetForge::Module.all # See "Paginated Collections" below for important info about enumerating resource sets.
@@ -109,7 +110,7 @@ PuppetForge::Module.where(query: 'apache').all # This method is deprecated and n
 All API Requests (whether via find, where, or all) will raise a Faraday::ResourceNotFound error if the request fails.
 
 
-### Installing a Release
+### Downloading and installing a module release
 
 A release tarball can be downloaded and installed by following the steps below.
 
@@ -185,6 +186,24 @@ user.username # => "puppetlabs"
 # This *does* trigger a request
 user.created_at # => "2010-05-19 05:46:26 -0700"
 ```
+
+### Configuration
+
+To overwrite the default of `https://forgeapi.puppet.com` and set a custom url for the Forge API:
+
+```ruby
+PuppetForge.host = "https://your-own-api.url/"
+```
+
+### Authorization
+
+To authorize your requests with an API key from a Forge user account:
+
+```ruby
+PuppetForge::Connection.authorization = "<your-api-key-here>"
+```
+
+You can generate API keys on your user profile page once you've [logged into the Forge website](https://forge.puppet.com/login).
 
 ### i18n
 
