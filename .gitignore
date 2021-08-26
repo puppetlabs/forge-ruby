@@ -20,4 +20,3 @@ _yardoc
 *.o
 *.a
 mkmf.log
-locales/forge-ruby.pot

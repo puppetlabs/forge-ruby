@@ -1,5 +1,4 @@
 require 'puppet_forge/version'
-require 'gettext-setup'
 
 module PuppetForge
   class << self
@@ -14,8 +13,6 @@ module PuppetForge
       @host = new_host
     end
   end
-
-  GettextSetup.initialize(File.absolute_path('../locales', File.dirname(__FILE__)))
 
   DEFAULT_FORGE_HOST = 'https://forgeapi.puppet.com/'
 

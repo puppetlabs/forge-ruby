@@ -16,11 +16,15 @@ module PuppetForge
     def initialize(options)
       @entry_path = options[:entry_path]
       @directory  = options[:directory]
-      super _("Attempt to install file into %{path} under %{directory}") % {path: @entry_path.inspect, directory: @directory.inspect}
+      super "Attempt to install file into #{@entry_path.inspect} under #{@directory.inspect}"
     end
 
     def multiline
-      _("Could not install package\n  Package attempted to install file into\n  %{path} under %{directory}.") % {path: @entry_path.inspect, directory: @directory.inspect}
+      <<-MSG.strip
+Could not install package
+  Package attempted to install file into
+  #{@entry_path.inspect} under #{@directory.inspect}.
+      MSG
     end
   end
 
