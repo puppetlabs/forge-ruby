@@ -115,6 +115,7 @@ module PuppetForge
       end
 
       Faraday.new(url, options) do |builder|
+        builder.use FaradayMiddleware::FollowRedirects
         builder.response(:json, :content_type => /\bjson$/, :parser_options => { :symbolize_names => true })
         builder.response(:raise_error)
         builder.use(:connection_failure)
