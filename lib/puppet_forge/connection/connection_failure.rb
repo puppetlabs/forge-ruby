@@ -9,22 +9,11 @@ module PuppetForge
         @app.call(env)
       rescue Faraday::ConnectionFailed, Faraday::TimeoutError => e
         baseurl = env[:url].dup
-        errmsg = "Unable to connect to #{baseurl.to_s}"
+        errmsg = "Unable to connect to %{scheme}://%{host}" % { scheme: baseurl.scheme, host: baseurl.host }
         if proxy = env[:request][:proxy]
-          errmsg << ("Unable to connect to %{scheme}://%{host} (using proxy %{proxy}) (for request %{path_query})") % {
-            scheme: baseurl.scheme,
-            host: baseurl.host,
-            proxy: proxy.uri.to_s,
-            path_query: baseurl.request_uri,
-          }
-        else
-          errmsg << ("Unable to connect to %{scheme}://%{host} (for request %{path_query})") % {
-            scheme: baseurl.scheme,
-            host: baseurl.host,
-            path_query: baseurl.request_uri,
-          }
+          errmsg << " (using proxy %{proxy})" % { proxy: proxy.uri.to_s }
         end
-        errmsg << ": #{e.message}"
+        errmsg << " (for request %{path_query}): %{message}" % { message: e.message, path_query: baseurl.request_uri }
         m = Faraday::ConnectionFailed.new(errmsg)
         m.set_backtrace(e.backtrace)
         raise m
