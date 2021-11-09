@@ -3,6 +3,11 @@
 Starting with v2.0.0, all notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## v3.2.0 - 2021-11-09
+
+* Allow requests to follow redirects
+* Remove the `gettext-setup` gem dependency, which was unused
+
 ## v3.1.0 - 2021-08-20
 
 ### Changed
