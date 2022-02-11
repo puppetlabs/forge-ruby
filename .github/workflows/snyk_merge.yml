@@ -1,0 +1,18 @@
+name: snyk_merge
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/ruby@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_FORGE_KEY }}
+        with:
+          command: monitor
+          args: --org=puppet-forge
