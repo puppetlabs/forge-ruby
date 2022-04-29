@@ -1,7 +1,6 @@
 require 'puppet_forge/connection/connection_failure'
 
 require 'faraday'
-require 'faraday_middleware'
 
 module PuppetForge
   # Provide a common mixin for adding a HTTP connection to classes.
