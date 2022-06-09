@@ -22,4 +22,4 @@ module PuppetForge
   end
 end
 
-Faraday::Middleware.register_middleware(:connection_failure => lambda { PuppetForge::Connection::ConnectionFailure })
+Faraday::Middleware.register_middleware(:connection_failure => PuppetForge::Connection::ConnectionFailure)
