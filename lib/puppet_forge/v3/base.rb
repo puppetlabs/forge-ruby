@@ -66,6 +66,9 @@ module PuppetForge
             uri_path = "v3/#{resource}/#{item}"
           end
 
+          # The API expects a space separated string. This allows the user to invoke it with a more natural feeling array.
+          params['endorsements'] = params['endorsements'].join(' ') if params['endorsements'].is_a? Array
+
           PuppetForge::V3::Base.conn.get uri_path, params
         end
 
