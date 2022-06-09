@@ -31,8 +31,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "cane"
   spec.add_development_dependency "yard"
   spec.add_development_dependency "redcarpet"
-
-  # Install the right pry debugging combo depending on ruby version.
-  spec.add_development_dependency "pry-debugger" if RUBY_VERSION <= '1.9.3'
-  spec.add_development_dependency "pry-byebug" if RUBY_VERSION >= '2.0.0'
+  spec.add_development_dependency "pry-byebug"
 end
