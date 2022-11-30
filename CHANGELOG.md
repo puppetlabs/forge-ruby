@@ -3,6 +3,11 @@
 Starting with v2.0.0, all notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## v4.0.0 - 2022-11-30
+
+* Breaking: The `puppet_forge` gem now requires at least Ruby 2.6.0
+* Update `faraday` gem to 2.x series
+
 ## v3.2.0 - 2021-11-09
 
 * Allow requests to follow redirects
