@@ -3,6 +3,11 @@
 Starting with v2.0.0, all notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## v4.1.0 - 2023-02-21
+
+* Add upload method functionality.
+* Allows the user to search by an array of endorsements.
+
 ## v4.0.0 - 2022-11-30
 
 * Breaking: The `puppet_forge` gem now requires at least Ruby 2.6.0

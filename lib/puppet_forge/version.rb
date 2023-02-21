@@ -1,3 +1,3 @@
 module PuppetForge
-  VERSION = '4.0.0' # Library version
+  VERSION = '4.1.0' # Library version
 end
