@@ -218,5 +218,43 @@ describe PuppetForge::V3::Release do
         expect(release.created_at).to_not be nil
       end
     end
+
+    describe '#upload' do
+      let(:tarball) { "#{PROJECT_ROOT}/spec/tmp/module.tgz" }
+      let(:file_object) { double('file', read: 'file contents') }
+
+      let(:release) { PuppetForge::V3::Release.upload(tarball) }
+      let(:mock_conn) { instance_double('PuppetForge::V3::Connection', url_prefix: PuppetForge.host) }
+
+      context 'when there is no auth token provided' do
+        it 'raises PuppetForge::ReleaseForbidden' do
+          allow(File).to receive(:file?).and_return(true)
+          allow(File).to receive(:open).and_return(file_object)
+          allow(described_class).to receive(:conn).and_return(mock_conn)
+
+          response = { status: 403, body: { 'message' => 'Forbidden' }.to_json }
+          expect(mock_conn).to receive(:post).and_raise(Faraday::ClientError.new('Forbidden', response))
+          expect { release }.to raise_error(PuppetForge::ReleaseForbidden)
+        end
+      end
+
+      context 'when the module is not valid' do
+        it 'raises PuppetForge::ReleaseBadRequest' do
+          allow(File).to receive(:file?).and_return(true)
+          allow(File).to receive(:open).and_return(file_object)
+          allow(described_class).to receive(:conn).and_return(mock_conn)
+
+          response = { status: 400, body: { message: 'Bad Content' }.to_json }
+          expect(mock_conn).to receive(:post).and_raise(Faraday::ClientError.new('400', response))
+          expect { release }.to raise_error(PuppetForge::ReleaseBadContent)
+        end
+      end
+
+      context 'when the tarball does not exist' do
+        it 'raises PuppetForge::FileNotFound' do
+          expect { PuppetForge::V3::Release.upload(tarball) }.to raise_error(PuppetForge::FileNotFound)
+        end
+      end
+    end
   end
 end

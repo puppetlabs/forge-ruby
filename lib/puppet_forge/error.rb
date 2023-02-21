@@ -28,16 +28,32 @@ Could not install package
     end
   end
 
+
+  class ErrorWithDetail < PuppetForge::Error
+    def self.from_response(response)
+      body = JSON.parse(response[:body])
+
+      message = body['message']
+      if body.key?('errors') && !body['errors']&.empty?
+        message << "\nThe following errors were returned from the server:\n - #{body['errors'].join("\n - ")}"
+      end
+
+      new(message)
+    end
+  end
+
+  class FileNotFound < PuppetForge::Error
+  end
+
   class ModuleNotFound < PuppetForge::Error
   end
 
   class ReleaseNotFound < PuppetForge::Error
   end
 
-  class ReleaseForbidden < PuppetForge::Error
-    def self.from_response(response)
-      body = JSON.parse(response[:body])
-      new(body["message"])
-    end
+  class ReleaseForbidden < PuppetForge::ErrorWithDetail
+  end
+
+  class ReleaseBadContent < PuppetForge::ErrorWithDetail
   end
 end

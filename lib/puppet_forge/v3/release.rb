@@ -2,6 +2,7 @@ require 'puppet_forge/v3/base'
 require 'puppet_forge/v3/module'
 
 require 'digest'
+require 'base64'
 
 module PuppetForge
   module V3
@@ -36,6 +37,38 @@ module PuppetForge
         else
           raise e
         end
+      end
+
+      # Uploads the tarbarll to the forge
+      #
+      # @param path [Pathname] tarball file path
+      # @return resp
+      def self.upload(path)
+        # We want to make sure that the file exists before trying to upload it
+        raise PuppetForge::FileNotFound, "The file '#{path}' does not exist." unless File.file?(path)
+
+        file = File.open(path, 'rb')
+        encoded_string = Base64.encode64(file.read)
+        data = { file: encoded_string }
+
+        resp = conn.post do |req|
+          req.url '/v3/releases'
+          req.headers['Content-Type'] = 'application/json'
+          req.body = data.to_json
+        end
+
+        [self, resp]
+      rescue Faraday::ClientError => e
+        if e.response
+          case e.response[:status]
+          when 403
+            raise PuppetForge::ReleaseForbidden.from_response(e.response)
+          when 400
+            raise PuppetForge::ReleaseBadContent.from_response(e.response)
+          end
+        end
+
+        raise e
       end
 
       # Verify that a downloaded module matches the best available checksum in the metadata for this release,

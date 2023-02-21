@@ -136,7 +136,23 @@ release.verify(Pathname(release_tarball))
 # @raise RuntimeError if it fails to extract the contents of the release tarball
 PuppetForge::Unpacker.unpack(release_tarball, dest_dir, tmp_dir)
 ```
+### Uploading a module release
 
+You can upload new module versions to the forge by following the steps below.
+
+> Note: This API requires authorization. See [Authorization](#authorization) for more information.
+
+```ruby
+release_tarball = 'pkg/puppetlabs-apache-1.6.0.tar.gz'
+
+# Upload a module tarball to the Puppet Forge
+# Returns an instance of V3::Release class and the response from the forge upload 
+# @raise PuppetForge::ReleaseForbidden if a 403 response is recieved from the server
+# @raise PuppetForge::ReleaseBadContent if the module to upload is not valid
+# @raise Faraday::ClientError if any errors encountered in the upload
+# @raise PuppetForge::FileNotFound if the given tarball cannot be found
+release, response = PuppetForge::V3::Release.upload(release_tarball)
+```
 
 ### Paginated Collections
 
