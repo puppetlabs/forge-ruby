@@ -11,6 +11,11 @@ module PuppetForge
       lazy :current_release, 'Release'
       lazy_collection :releases, 'Release'
 
+      def self.find(slug)
+        super
+      rescue Faraday::ResourceNotFound
+        raise PuppetForge::ModuleNotFound, "Module #{slug} not found"
+      end
     end
   end
 end

@@ -28,8 +28,8 @@ describe PuppetForge::V3::Module do
       expect(mod_stateless.name).to eq('apache')
     end
 
-    it 'returns nil for non-existent modules' do
-      expect { missing_mod }.to raise_error(Faraday::ResourceNotFound)
+    it 'raises exception for non-existent modules' do
+      expect { missing_mod }.to raise_error(PuppetForge::ModuleNotFound, 'Module absent-apache not found')
     end
   end
 
