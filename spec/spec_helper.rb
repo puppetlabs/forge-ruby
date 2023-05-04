@@ -12,7 +12,10 @@ require 'puppet_forge'
 
 module StubbingFaraday
 
-  def stub_api_for(klass, base_url = "http://api.example.com")
+  def stub_api_for(klass, base_url = "http://api.example.com", lru_cache: false)
+    unless lru_cache # Disable LRU cache by default
+      allow(klass).to receive(:lru_cache).and_return(instance_double('PuppetForge::LruCache', get: nil, put: nil, clear: nil))
+    end
     allow(klass).to receive(:conn) do
       Faraday.new :url => base_url do |builder|
         builder.response(:json, :content_type => /\bjson$/, :parser_options => { :symbolize_names => true })

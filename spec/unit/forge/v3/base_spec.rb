@@ -61,6 +61,7 @@ describe PuppetForge::V3::Base do
   describe 'the host url setting' do
     context 'without a path prefix' do
       before(:each) do
+        PuppetForge::V3::Base.lru_cache.clear # We test the cache later, so clear it now
         @orig_host = PuppetForge.host
         PuppetForge.host = 'https://api.example.com'
 
@@ -83,10 +84,25 @@ describe PuppetForge::V3::Base do
         base = PuppetForge::V3::Base.find 'puppet'
         expect(base.username).to eq('foo')
       end
+
+      it 'caches responses' do
+        stub_api_for(PuppetForge::V3::Base, lru_cache: true) do |stubs|
+          stub_fixture(stubs, :get, '/v3/bases/puppet')
+        end
+        allow(PuppetForge::V3::Base.lru_cache).to receive(:put).and_call_original
+        allow(PuppetForge::V3::Base.lru_cache).to receive(:get).and_call_original
+
+        PuppetForge::V3::Base.find 'puppet'
+        PuppetForge::V3::Base.find 'puppet'
+        PuppetForge::V3::Base.find 'puppet'
+        expect(PuppetForge::V3::Base.lru_cache).to have_received(:put).once
+        expect(PuppetForge::V3::Base.lru_cache).to have_received(:get).exactly(3).times
+      end
     end
 
     context 'with a path prefix' do
       before(:each) do
+        PuppetForge::V3::Base.lru_cache.clear # We test the cache later, so clear it now
         @orig_host = PuppetForge.host
         PuppetForge.host = 'https://api.example.com/uri/prefix'
 
@@ -108,6 +124,20 @@ describe PuppetForge::V3::Base do
 
         base = PuppetForge::V3::Base.find 'puppet'
         expect(base.username).to eq('bar')
+      end
+
+      it 'caches responses' do
+        stub_api_for(PuppetForge::V3::Base, PuppetForge.host, lru_cache: true) do |stubs|
+          stub_fixture(stubs, :get, '/uri/prefix/v3/bases/puppet')
+        end
+        allow(PuppetForge::V3::Base.lru_cache).to receive(:put).and_call_original
+        allow(PuppetForge::V3::Base.lru_cache).to receive(:get).and_call_original
+
+        PuppetForge::V3::Base.find 'puppet'
+        PuppetForge::V3::Base.find 'puppet'
+        PuppetForge::V3::Base.find 'puppet'
+        expect(PuppetForge::V3::Base.lru_cache).to have_received(:put).once
+        expect(PuppetForge::V3::Base.lru_cache).to have_received(:get).exactly(3).times
       end
     end
   end
