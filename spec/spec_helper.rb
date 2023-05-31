@@ -41,7 +41,7 @@ module StubbingFaraday
     [ 404 ].tap do |response|
       local = File.join(PROJECT_ROOT, 'spec', 'fixtures', xplatform_path)
 
-      if File.exists?("#{local}.headers") && File.exists?("#{local}.json")
+      if File.exist?("#{local}.headers") && File.exist?("#{local}.json")
         File.open("#{local}.headers") do |file|
           response[0] = file.readline[/\d{3}/].to_i
           response[1] = headers = {}
