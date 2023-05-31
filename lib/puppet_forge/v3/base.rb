@@ -4,6 +4,7 @@ require 'puppet_forge/error'
 
 require 'puppet_forge/lazy_accessors'
 require 'puppet_forge/lazy_relations'
+require 'puppet_forge/lru_cache'
 
 module PuppetForge
   module V3
@@ -54,7 +55,21 @@ module PuppetForge
         end
 
         # @private
+        def lru_cache
+          @lru_cache ||= PuppetForge::LruCache.new
+        end
+
+        # @private
+        def lru_cache_key(*args)
+          PuppetForge::LruCache.new_key(*args)
+        end
+
+        # @private
         def request(resource, item = nil, params = {}, reset_connection = false, conn_opts = {})
+          cache_key = lru_cache_key(resource, item, params)
+          cached = lru_cache.get(cache_key)
+          return cached unless cached.nil?
+
           conn(reset_connection, conn_opts) if reset_connection
           unless conn.url_prefix.to_s =~ /^#{PuppetForge.host}/
             conn.url_prefix = "#{PuppetForge.host}"
@@ -69,7 +84,9 @@ module PuppetForge
           # The API expects a space separated string. This allows the user to invoke it with a more natural feeling array.
           params['endorsements'] = params['endorsements'].join(' ') if params['endorsements'].is_a? Array
 
-          PuppetForge::V3::Base.conn.get uri_path, params
+          result = PuppetForge::V3::Base.conn.get uri_path, params
+          lru_cache.put(cache_key, result)
+          result
         end
 
         # @private
