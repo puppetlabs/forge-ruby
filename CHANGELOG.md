@@ -3,6 +3,12 @@
 Starting with v2.0.0, all notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## v5.0.0 - 2023-05-07
+
+* Ruby 3.2 support.
+* LRU caching for HTTP response caching.
+* Raise a ModuleNotFound error instead of just nil when a module is not found.
+
 ## v4.1.0 - 2023-02-21
 
 * Add upload method functionality.
