@@ -19,11 +19,11 @@ Or install it yourself as:
 
 ## Requirements
 
-* Ruby >= 1.9.3
+* Ruby >= 2.6.0
 
 ## Dependencies
 
-* [Faraday]() >= 0.9.0 < 0.14.0
+* [Faraday]() 2.x
 * [Typhoeus](https://github.com/typhoeus/typhoeus) ~> 1.0.1 (optional)
 
 Typhoeus will be used as the HTTP adapter if it is available, otherwise
