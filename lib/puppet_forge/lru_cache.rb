@@ -9,7 +9,7 @@ module PuppetForge
     # a convenience method for generating cache keys. Cache keys do not
     # have to be SHA256 hashes, but they must be unique.
     def self.new_key(*string_args)
-      Digest::SHA256.hexdigest(string_args.map(&:to_s).join(':'))
+      Digest(:SHA256).hexdigest(string_args.map(&:to_s).join(':'))
     end
 
     # @return [Integer] the maximum number of items to cache.
