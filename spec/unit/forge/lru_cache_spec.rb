@@ -67,18 +67,26 @@ describe PuppetForge::LruCache do
       expect(cache.send(:lru)).to eq(['foo', 'baz'])
     end
 
-    # The below test is non-deterministic but I'm not sure how to unit
-    # test thread-safety.
-    # it 'is thread-safe' do
-    #   cache = PuppetForge::LruCache.new
-    #   cache.put('foo', 'bar')
-    #   cache.put('baz', 'qux')
-    #   threads = []
-    #   threads << Thread.new { 100.times { cache.get('foo') } }
-    #   threads << Thread.new { 100.times { cache.get('baz') } }
-    #   threads.each(&:join)
-    #   expect(cache.send(:lru)).to eq(['baz', 'foo'])
-    # end
+    it 'is thread-safe for get calls' do
+      cache = PuppetForge::LruCache.new
+    
+      # Populate the cache with initial values
+      cache.put('foo', 'bar')
+      cache.put('baz', 'qux')
+    
+      # Create two threads for concurrent cache get operations
+      thread_one = Thread.new do
+        100.times { expect(cache.get('foo')).to eq('bar') }
+      end
+    
+      thread_two = Thread.new do
+        100.times { expect(cache.get('baz')).to eq('qux') }
+      end
+    
+      # Wait for both threads to complete
+      thread_one.join
+      thread_two.join
+    end    
   end
 
   context '#put' do
@@ -102,16 +110,30 @@ describe PuppetForge::LruCache do
       expect(cache.send(:lru)).to eq(['quux', 'baz'])
     end
 
-    # The below test is non-deterministic but I'm not sure how to unit
-    # test thread-safety.
-    # it 'is thread-safe' do
-    #   cache = PuppetForge::LruCache.new
-    #   threads = []
-    #   threads << Thread.new { 100.times { cache.put('foo', 'bar') } }
-    #   threads << Thread.new { 100.times { cache.put('baz', 'qux') } }
-    #   threads.each(&:join)
-    #   expect(cache.send(:lru)).to eq(['baz', 'foo'])
-    # end
+    it 'is thread-safe' do
+      cache = PuppetForge::LruCache.new
+    
+      # Create two threads for concurrent cache operations
+      thread_one = Thread.new do
+        100.times { cache.put('foo', 'bar') }
+      end
+    
+      thread_two = Thread.new do
+        100.times { cache.put('baz', 'qux') }
+      end
+    
+      # Wait for both threads to complete
+      thread_one.join
+      thread_two.join
+    
+      # At this point, we don't need to compare the LRU list,
+      # because the order may change due to concurrent puts.
+      
+      # Instead, we simply expect the code to run without errors.
+      expect { thread_one.value }.not_to raise_error
+      expect { thread_two.value }.not_to raise_error
+    end
+    
   end
 
   context '#clear' do
