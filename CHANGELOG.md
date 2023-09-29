@@ -3,6 +3,10 @@
 Starting with v2.0.0, all notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## v5.0.2 - 2023-09-29
+* Correct a Digest call making this thread-safe and allowing for concurrent r10k deploys.
+  Thanks to @cmd-ntrf for fixing it and to @baurmatt for tracking it down in the first place.
+
 ## v5.0.1 - 2023-07-10
 * Update README to reflect accurate Ruby requirement and `faraday` gem dependency
 ## v5.0.0 - 2023-05-07
