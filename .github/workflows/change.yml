@@ -9,7 +9,7 @@ on:
 
 jobs:
   release_prep:
-    uses: ".github/workflows/changelog.yml@main"
+    uses: "malikparvez/gihut_actions/.github/workflows/changelog.yml@main"
     with:
       version: "${{ github.event.inputs.version }}"
     secrets: "inherit"
