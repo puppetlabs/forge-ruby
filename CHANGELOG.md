@@ -1,211 +1,363 @@
-# Change Log
+<!-- markdownlint-disable MD024 -->
+# Changelog
 
-Starting with v2.0.0, all notable changes to this project will be documented in this file.
-This project adheres to [Semantic Versioning](http://semver.org/).
+All notable changes to this project will be documented in this file.
 
-## v5.0.2 - 2023-09-29
-* Correct a Digest call making this thread-safe and allowing for concurrent r10k deploys.
-  Thanks to @cmd-ntrf for fixing it and to @baurmatt for tracking it down in the first place.
+The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
-## v5.0.1 - 2023-07-10
-* Update README to reflect accurate Ruby requirement and `faraday` gem dependency
-## v5.0.0 - 2023-05-07
+## [v5.0.3](https://github.com/puppetlabs/forge-ruby/tree/v5.0.3) - 2023-10-12
 
-* Ruby 3.2 support.
-* LRU caching for HTTP response caching.
-* Raise a ModuleNotFound error instead of just nil when a module is not found.
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v5.0.1...v5.0.3)
 
-## v4.1.0 - 2023-02-21
+### Other
 
-* Add upload method functionality.
-* Allows the user to search by an array of endorsements.
+- Adding release automations and labeller [#112](https://github.com/puppetlabs/forge-ruby/pull/112) ([malikparvez](https://github.com/malikparvez))
+- Releasing v5.0.2 with thread safety fix [#111](https://github.com/puppetlabs/forge-ruby/pull/111) ([binford2k](https://github.com/binford2k))
+- Adding spec for thread safety [#110](https://github.com/puppetlabs/forge-ruby/pull/110) ([malikparvez](https://github.com/malikparvez))
+- Make Digest subclass lookup thread-safe in lru_cache [#109](https://github.com/puppetlabs/forge-ruby/pull/109) ([cmd-ntrf](https://github.com/cmd-ntrf))
 
-## v4.0.0 - 2022-11-30
+## [v5.0.1](https://github.com/puppetlabs/forge-ruby/tree/v5.0.1) - 2023-07-10
 
-* Breaking: The `puppet_forge` gem now requires at least Ruby 2.6.0
-* Update `faraday` gem to 2.x series
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v5.0.0...v5.0.1)
 
-## v3.2.0 - 2021-11-09
+### Other
 
-* Allow requests to follow redirects
-* Remove the `gettext-setup` gem dependency, which was unused
+- (PF-2540) Updating changelog to push new version [#108](https://github.com/puppetlabs/forge-ruby/pull/108) ([owenbeckles](https://github.com/owenbeckles))
+- (PF-2540) Updating README [#107](https://github.com/puppetlabs/forge-ruby/pull/107) ([owenbeckles](https://github.com/owenbeckles))
 
-## v3.1.0 - 2021-08-20
+## [v5.0.0](https://github.com/puppetlabs/forge-ruby/tree/v5.0.0) - 2023-06-07
 
-### Changed
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v4.1.0...v5.0.0)
 
-* Update `PuppetForge::Connection.authorization` so that it prepends the
-  required `Bearer ` string automatically to values that look like Forge API
-  keys. This won't affect values that already include `Bearer `.
+### Other
 
-## v3.0.0 - 2021-01-28
+- Update CODEOWNERS [#106](https://github.com/puppetlabs/forge-ruby/pull/106) ([binford2k](https://github.com/binford2k))
+- Add LRU cache for HTTP response caching [#105](https://github.com/puppetlabs/forge-ruby/pull/105) ([hsnodgrass](https://github.com/hsnodgrass))
+- Raise ModuleNotFound if a module is not found [#104](https://github.com/puppetlabs/forge-ruby/pull/104) ([ekohl](https://github.com/ekohl))
+- Ruby 3.2 support [#103](https://github.com/puppetlabs/forge-ruby/pull/103) ([ekohl](https://github.com/ekohl))
 
-* Breaking: The `puppet_forge` gem now requires at least Ruby 2.4.0.
-* Update `faraday` and `faraday_middleware` gem dependencies to 1.x series.
-* Update optional `typhoeus` dependency to `>= 1.4` to maintain compatibility with `faraday`.
+## [v4.1.0](https://github.com/puppetlabs/forge-ruby/tree/v4.1.0) - 2023-02-21
 
-## v2.3.4 - 2020-03-31
-
-* Update the forge API url to `forgeapi.puppet.com` (instead of using the older puppetlabs.com domain).
-* Allow versions of the `faraday_middleware` dependency up to 0.15.
-
-## v2.3.3 - 2020-02-20
-
-### Changed
-
-* Allow versions of faraday up to 0.18
-
-## v2.3.2 - 2020-02-05
-
-### Fixed
-
-* Catch and handle the new `Faraday::TimeoutError`s which are occasionally
-  surfaced by the the typheous adapter with more recent verions of libcurl, and
-  log them the same way that `Faraday::ConnectionFailed` errors are already
-  logged.
-
-### Changed
-
-* Allow for using `faraday_middleware` versions in the 0.13.x series.
-
-## v2.3.1 - 2019-11-15
-
-### Fixed
-
-* Fixed an issue where proxy configurations were being ignored by expanding the range of acceptable versions of the `faraday` gem dependency and specifically excluding the version that was ignoring proxy configuration options.
-
-## v2.3.0 - 2019-07-09
-
-### Changed
-
-* Updated `PuppetForge::V3::Release#verify` method to use `file_sha256` checksum from Forge API when available.
-* Added an `allow_md5` param to `PuppetForge::V3::Release#verify` method to control whether or not fallback to MD5 checksum will be allowed in cases where SHA-256 checksum is not available.
-
-## v2.2.9 - 2017-12-01
-
-### Changed
-
-* Loosened dependency on `faraday` and `faraday_middleware` gems to include recent releases.
-
-## v2.2.8 - 2017-11-09
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v4.0.0...v4.1.0)
 
 ### Added
 
-Created PuppetForge::Util class with a single method, version_valid?, in order to
-drop the r10k dependency on semantic_puppet.
+- (CONT-643) Add upload method functionality [#102](https://github.com/puppetlabs/forge-ruby/pull/102) ([chelnak](https://github.com/chelnak))
 
-## v2.2.7 - 2017-06-30
+### Other
 
-### Changed
+- Allows the user to search by an array of endorsements [#100](https://github.com/puppetlabs/forge-ruby/pull/100) ([binford2k](https://github.com/binford2k))
 
-* Updated dependency on `semantic_puppet` to `~> 1.0`.
+## [v4.0.0](https://github.com/puppetlabs/forge-ruby/tree/v4.0.0) - 2022-12-01
 
-## v2.2.6 - 2017-06-27
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v3.2.0...v4.0.0)
 
-### Fixed
+### Other
 
-* Fixed an issue when attempting to assign a non-String value to `PuppetForge.host`.
+- (maint) Release prep for 4.0.0 [#101](https://github.com/puppetlabs/forge-ruby/pull/101) ([barriserloth](https://github.com/barriserloth))
+- Move to Faraday 2.x, which requires Ruby 2.6+ [#99](https://github.com/puppetlabs/forge-ruby/pull/99) ([ekohl](https://github.com/ekohl))
+- add snyk action [#95](https://github.com/puppetlabs/forge-ruby/pull/95) ([LivingInSyn](https://github.com/LivingInSyn))
 
-## v2.2.5 - 2017-06-26
+## [v3.2.0](https://github.com/puppetlabs/forge-ruby/tree/v3.2.0) - 2021-11-09
 
-### Fixed
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v3.1.0...v3.2.0)
 
-* (FORGE-338) Fixed an issue where `V3::Release.download_url` returned an incorrect value when `PuppetForge.host` included
-  a path prefix. (Thanks to [Jainish Shah](https://github.com/jainishshah17) for the report and initial fix proposal.)
+### Other
 
-## v2.2.4 - 2017-04-17
+- (MAINT) Release prep for 3.2.0 [#94](https://github.com/puppetlabs/forge-ruby/pull/94) ([caseywilliams](https://github.com/caseywilliams))
+- (FORGE-514) Follow redirects from the forge API [#92](https://github.com/puppetlabs/forge-ruby/pull/92) ([binford2k](https://github.com/binford2k))
+- Remove unused gettext-setup dependency [#91](https://github.com/puppetlabs/forge-ruby/pull/91) ([bastelfreak](https://github.com/bastelfreak))
 
-### Added
+## [v3.1.0](https://github.com/puppetlabs/forge-ruby/tree/v3.1.0) - 2021-08-20
 
-* PuppetForge::Connection now has .accept\_language and .accept\_language= class methods providing a way to set the
-  'Accept-Language' header for outbound requests.
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v3.0.0...v3.1.0)
 
-## v2.2.3 - 2017-01-17
+### Other
 
-### Changed
+- (MAINT) Update changelog and version for 3.1.0 [#90](https://github.com/puppetlabs/forge-ruby/pull/90) ([caseywilliams](https://github.com/caseywilliams))
+- (PF-2437) Prepend 'Bearer' string to authorization [#89](https://github.com/puppetlabs/forge-ruby/pull/89) ([caseywilliams](https://github.com/caseywilliams))
+- Purge trailing whitespace from gemspec file [#88](https://github.com/puppetlabs/forge-ruby/pull/88) ([bastelfreak](https://github.com/bastelfreak))
+- (PF-2137) Remove harmful terminology [#87](https://github.com/puppetlabs/forge-ruby/pull/87) ([nkanderson](https://github.com/nkanderson))
 
-* Fixed an issue that was preventing PuppetForge.host from honoring any given path prefix.
-* Upgraded gettext-setup dependency to 0.11 release.
+## [v3.0.0](https://github.com/puppetlabs/forge-ruby/tree/v3.0.0) - 2021-01-28
 
-## v2.2.2 - 2016-07-06
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v2.3.4...v3.0.0)
 
-### Changed
+### Other
 
-* Externalized all user facing strings with gettext to support future localization work.
+- (FORGE-575) Updates for Faraday 1.x [#86](https://github.com/puppetlabs/forge-ruby/pull/86) ([scotje](https://github.com/scotje))
+- (PF-2133) Update action workflow to point to new default branch [#85](https://github.com/puppetlabs/forge-ruby/pull/85) ([nkanderson](https://github.com/nkanderson))
+- (maint) Updated specs to go along with #82 [#84](https://github.com/puppetlabs/forge-ruby/pull/84) ([binford2k](https://github.com/binford2k))
 
-## v2.2.1 - 2016-05-24
+## [v2.3.4](https://github.com/puppetlabs/forge-ruby/tree/v2.3.4) - 2020-03-31
 
-### Changed
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v2.3.3...v2.3.4)
 
-* Fixed an issue where certain types of connection failures raised a spurious "method missing" error instead of the underlying
-  exception.
-* When setting PuppetForge::Connection.proxy, an empty string will now be treated as nil. If no proxy has yet been configured,
-  setting to an empty string will have no effect. If a proxy has already been configured, setting to nil will unset the existing
-  value.
+### Other
 
-## v2.2.0 - 2016-05-10
+- (MAINT) Release prep for v2.3.4 [#83](https://github.com/puppetlabs/forge-ruby/pull/83) ([caseywilliams](https://github.com/caseywilliams))
+- (maint) update the Forge api hostname [#82](https://github.com/puppetlabs/forge-ruby/pull/82) ([binford2k](https://github.com/binford2k))
+- fix ruby 2.7 warning about "deprecated Object#=~" [#81](https://github.com/puppetlabs/forge-ruby/pull/81) ([aerickson](https://github.com/aerickson))
+- (MAINT) Allow newer versions of faraday_middleware [#80](https://github.com/puppetlabs/forge-ruby/pull/80) ([aerickson](https://github.com/aerickson))
 
-### Changed
+## [v2.3.3](https://github.com/puppetlabs/forge-ruby/tree/v2.3.3) - 2020-02-20
 
-* puppet\_forge's optional dependency on Typhoeus now searches for a gem matching '~> 1.0.1' so it will pick up more recent versions.
-  NOTE: This means if you have a version of Typhoeus installed that is less than 1.0.1, puppet\_forge will no longer use the Typhoeus
-  adapter and will fall back to Ruby's Net::HTTP library.
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v2.3.2...v2.3.3)
 
-## v2.1.5 - 2016-04-13
+### Other
 
-### Added
+- (MAINT) Release prep for 2.3.3 [#79](https://github.com/puppetlabs/forge-ruby/pull/79) ([caseywilliams](https://github.com/caseywilliams))
+- (MAINT) Allow newer versions of faraday [#78](https://github.com/puppetlabs/forge-ruby/pull/78) ([caseywilliams](https://github.com/caseywilliams))
 
-* PuppetForge::Connection now has .proxy and .proxy= class methods providing a more reliable way of configuring an HTTP proxy.
+## [v2.3.2](https://github.com/puppetlabs/forge-ruby/tree/v2.3.2) - 2020-02-05
 
-### Changed
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v2.3.1...v2.3.2)
 
-* Cached connection objects will now be automatically discarded when proxy or authorization config has changed.
+### Other
 
-## v2.1.4 - 2016-04-01
+- (MAINT) Release prep for 2.3.2 [#76](https://github.com/puppetlabs/forge-ruby/pull/76) ([caseywilliams](https://github.com/caseywilliams))
+- (RK-358) Handle TimeoutErrors from Faraday [#75](https://github.com/puppetlabs/forge-ruby/pull/75) ([Magisus](https://github.com/Magisus))
+- Add Ruby 2.7 to GitHub Actions testmatrix [#74](https://github.com/puppetlabs/forge-ruby/pull/74) ([bastelfreak](https://github.com/bastelfreak))
+- (MAINT) Remove ruby 2.3 github checks [#72](https://github.com/puppetlabs/forge-ruby/pull/72) ([caseywilliams](https://github.com/caseywilliams))
+- allow faraday_middleware 0.13.X [#71](https://github.com/puppetlabs/forge-ruby/pull/71) ([bastelfreak](https://github.com/bastelfreak))
 
-### Changed
+## [v2.3.1](https://github.com/puppetlabs/forge-ruby/tree/v2.3.1) - 2019-11-15
 
-* Bug in usage of minitar filenames led to ignored tar files with tar file length of >100 chars.
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v2.3.0...v2.3.1)
 
-## v2.1.3 - 2016-01-25
+### Other
 
-### Changed
+- (MAINT) Release prep for 2.3.1 [#70](https://github.com/puppetlabs/forge-ruby/pull/70) ([scotje](https://github.com/scotje))
+- (PE-27712) Allow faraday to go to version 0.14.0 [#69](https://github.com/puppetlabs/forge-ruby/pull/69) ([Magisus](https://github.com/Magisus))
+- (MAINT) Switch to Github Actions based CI config [#68](https://github.com/puppetlabs/forge-ruby/pull/68) ([scotje](https://github.com/scotje))
+- (MAINT) Add CODEOWNERS and remove MAINTAINERS [#64](https://github.com/puppetlabs/forge-ruby/pull/64) ([nkanderson](https://github.com/nkanderson))
+- (MAINT) Add Slack notifications to #prod-forge channel [#63](https://github.com/puppetlabs/forge-ruby/pull/63) ([scotje](https://github.com/scotje))
 
-* PuppetForge::V3::Release.download will now use the "file\_uri" field of the Release API response to calculate the URI to download from. (Thanks to [ericparton](https://github.com/ericparton) for the contribution.)
+## [v2.3.0](https://github.com/puppetlabs/forge-ruby/tree/v2.3.0) - 2019-07-10
 
-## v2.1.2 - 2015-12-16
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v2.3.0.rc1...v2.3.0)
 
-### Changed
+## [v2.3.0.rc1](https://github.com/puppetlabs/forge-ruby/tree/v2.3.0.rc1) - 2019-07-10
 
-* Runtime dependency on "faraday\_middleware" gem updated to allow 0.10.x releases.
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v2.2.9...v2.3.0.rc1)
 
-## v2.1.1 - 2015-10-06
+### Other
 
-### Changed
+- (MAINT) Move deploy to distinct build stage and update api_key [#62](https://github.com/puppetlabs/forge-ruby/pull/62) ([scotje](https://github.com/scotje))
+- (MAINT) Release prep for 2.3.0 [#61](https://github.com/puppetlabs/forge-ruby/pull/61) ([scotje](https://github.com/scotje))
+- (FORGE-360) Add `allow_md5` param to Release#verify method [#60](https://github.com/puppetlabs/forge-ruby/pull/60) ([scotje](https://github.com/scotje))
+- (MAINT) Add deploy step to travis config [#59](https://github.com/puppetlabs/forge-ruby/pull/59) ([scotje](https://github.com/scotje))
+- (MAINT) Add .travis.yml config [#58](https://github.com/puppetlabs/forge-ruby/pull/58) ([scotje](https://github.com/scotje))
+- (FORGE-360) Verify downloads using file_sha256 if available [#57](https://github.com/puppetlabs/forge-ruby/pull/57) ([scotje](https://github.com/scotje))
 
-* Bug in error message around missing release on forge caused inappropriate error.
+## [v2.2.9](https://github.com/puppetlabs/forge-ruby/tree/v2.2.9) - 2017-12-01
 
-## v2.1.0 - 2015-08-20
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v2.2.8...v2.2.9)
 
-### Added
+### Other
 
-* PuppetForge::ReleaseForbidden added to acknowledge 403 status returned from release download request
+- (MAINT) Release prep for 2.2.9 [#56](https://github.com/puppetlabs/forge-ruby/pull/56) ([scotje](https://github.com/scotje))
+- (MAINT) Make spec tests backwards compatible with old faraday versions [#55](https://github.com/puppetlabs/forge-ruby/pull/55) ([scotje](https://github.com/scotje))
+- (MAINT) Fix up usage of deprecated Faraday method in spec tests [#54](https://github.com/puppetlabs/forge-ruby/pull/54) ([scotje](https://github.com/scotje))
+- Allow for higher versions of faraday [#53](https://github.com/puppetlabs/forge-ruby/pull/53) ([charlesdunbar](https://github.com/charlesdunbar))
 
-## v2.0.0 - 2015-08-13
+## [v2.2.8](https://github.com/puppetlabs/forge-ruby/tree/v2.2.8) - 2017-11-09
 
-### Added
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v2.2.7...v2.2.8)
 
-* PuppetForge::V3::Release can now verify the md5, unpack, and install a release tarball.
-* PuppetForge::Middleware::SymbolifyJson to change Faraday response hash keys into symbols.
-* PuppetForge::V3::Metadata to represent a release's metadata as an object.
-* PuppetForge::Connection to provide Faraday connections.
+### Other
 
-### Changed
+- (MAINT) Prepare for 2.2.8. [#52](https://github.com/puppetlabs/forge-ruby/pull/52) ([andersonmills](https://github.com/andersonmills))
+- (RK-306) Add helper method in puppet_forge for valid semantic version. [#51](https://github.com/puppetlabs/forge-ruby/pull/51) ([andersonmills](https://github.com/andersonmills))
 
-* Failed API requests, such as those for a module that doesn't exist, throw a Faraday::ResourceNotFound error.
-* API requests are sent through Faraday directly rather than through Her.
-* PuppetForge::V3::Base#where and PuppetForge::V3::Base#all now send an API request immediately and return a paginated collection.
+## [v2.2.7](https://github.com/puppetlabs/forge-ruby/tree/v2.2.7) - 2017-06-30
 
-### Removed
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v2.2.6...v2.2.7)
 
-* Dependency on Her (also removes dependency on ActiveSupport).
+### Other
+
+- (MAINT) Release prep for 2.2.7. [#49](https://github.com/puppetlabs/forge-ruby/pull/49) ([scotje](https://github.com/scotje))
+- Use SemanticPuppet v1.0 [#48](https://github.com/puppetlabs/forge-ruby/pull/48) ([austb](https://github.com/austb))
+
+## [v2.2.6](https://github.com/puppetlabs/forge-ruby/tree/v2.2.6) - 2017-06-27
+
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v2.2.5...v2.2.6)
+
+### Other
+
+- Coerce PuppetForge.host to String [#47](https://github.com/puppetlabs/forge-ruby/pull/47) ([scotje](https://github.com/scotje))
+
+## [v2.2.5](https://github.com/puppetlabs/forge-ruby/tree/v2.2.5) - 2017-06-26
+
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v2.2.4...v2.2.5)
+
+### Other
+
+- (FORGE-383) Fix release download_url calculation for hosts with a path prefix [#45](https://github.com/puppetlabs/forge-ruby/pull/45) ([scotje](https://github.com/scotje))
+
+## [v2.2.4](https://github.com/puppetlabs/forge-ruby/tree/v2.2.4) - 2017-04-17
+
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v2.2.3...v2.2.4)
+
+### Other
+
+- (MAINT) Add ability to set Accept-Language header for API requests. [#43](https://github.com/puppetlabs/forge-ruby/pull/43) ([scotje](https://github.com/scotje))
+
+## [v2.2.3](https://github.com/puppetlabs/forge-ruby/tree/v2.2.3) - 2017-01-17
+
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v1.0.6...v2.2.3)
+
+### Other
+
+- (MAINT) Bump gettext-setup to latest. [#42](https://github.com/puppetlabs/forge-ruby/pull/42) ([scotje](https://github.com/scotje))
+- Prefix support [#41](https://github.com/puppetlabs/forge-ruby/pull/41) ([scotje](https://github.com/scotje))
+- Fix connection test for some random orders [#39](https://github.com/puppetlabs/forge-ruby/pull/39) ([austb](https://github.com/austb))
+
+## [v1.0.6](https://github.com/puppetlabs/forge-ruby/tree/v1.0.6) - 2016-07-25
+
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v2.2.2...v1.0.6)
+
+### Other
+
+- Specify activesupport version more granularly. [#37](https://github.com/puppetlabs/forge-ruby/pull/37) ([austb](https://github.com/austb))
+
+## [v2.2.2](https://github.com/puppetlabs/forge-ruby/tree/v2.2.2) - 2016-07-06
+
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v2.2.1...v2.2.2)
+
+### Other
+
+- (CODEMGMT-725) Externalize strings for i18n [#35](https://github.com/puppetlabs/forge-ruby/pull/35) ([austb](https://github.com/austb))
+- (CODEMGMT-731) Add maintainers to README [#34](https://github.com/puppetlabs/forge-ruby/pull/34) ([austb](https://github.com/austb))
+
+## [v2.2.1](https://github.com/puppetlabs/forge-ruby/tree/v2.2.1) - 2016-05-24
+
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v2.2.0...v2.2.1)
+
+### Other
+
+- (MAINT) Release prep for 2.2.1. [#33](https://github.com/puppetlabs/forge-ruby/pull/33) ([scotje](https://github.com/scotje))
+- (RK-245) Treat proxy value of empty string as nil. [#32](https://github.com/puppetlabs/forge-ruby/pull/32) ([scotje](https://github.com/scotje))
+- (CODEMGMT-718) Safely handle Faraday::ClientError with a nil response. [#31](https://github.com/puppetlabs/forge-ruby/pull/31) ([scotje](https://github.com/scotje))
+
+## [v2.2.0](https://github.com/puppetlabs/forge-ruby/tree/v2.2.0) - 2016-05-10
+
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v2.1.5...v2.2.0)
+
+### Other
+
+- (MAINT) Release prep for 2.2.0. [#30](https://github.com/puppetlabs/forge-ruby/pull/30) ([scotje](https://github.com/scotje))
+
+## [v2.1.5](https://github.com/puppetlabs/forge-ruby/tree/v2.1.5) - 2016-04-13
+
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v2.1.4...v2.1.5)
+
+### Other
+
+- Improve proxy configuration method [#29](https://github.com/puppetlabs/forge-ruby/pull/29) ([scotje](https://github.com/scotje))
+
+## [v2.1.4](https://github.com/puppetlabs/forge-ruby/tree/v2.1.4) - 2016-04-01
+
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v2.1.3...v2.1.4)
+
+### Other
+
+- (maint) Version update [#28](https://github.com/puppetlabs/forge-ruby/pull/28) ([andersonmills](https://github.com/andersonmills))
+- (CODEMGMT-659) Change to use minitar entry's full_name [#27](https://github.com/puppetlabs/forge-ruby/pull/27) ([andersonmills](https://github.com/andersonmills))
+- (RK-218) stateless connection opts [#26](https://github.com/puppetlabs/forge-ruby/pull/26) ([andersonmills](https://github.com/andersonmills))
+
+## [v2.1.3](https://github.com/puppetlabs/forge-ruby/tree/v2.1.3) - 2016-01-25
+
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v2.1.2...v2.1.3)
+
+### Other
+
+- Use release.file_uri to download releases instead of hard-coded path. [#25](https://github.com/puppetlabs/forge-ruby/pull/25) ([scotje](https://github.com/scotje))
+
+## [v2.1.2](https://github.com/puppetlabs/forge-ruby/tree/v2.1.2) - 2015-12-17
+
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v2.1.1...v2.1.2)
+
+### Other
+
+- (FORGE-297) Update gemspec dependency for faraday_middleware 0.10.x. [#23](https://github.com/puppetlabs/forge-ruby/pull/23) ([scotje](https://github.com/scotje))
+
+## [v2.1.1](https://github.com/puppetlabs/forge-ruby/tree/v2.1.1) - 2015-10-06
+
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v2.1.0...v2.1.1)
+
+### Other
+
+- (maint) Publishing v2.1.1 [#22](https://github.com/puppetlabs/forge-ruby/pull/22) ([andersonmills](https://github.com/andersonmills))
+- (RK-170) Bad error on missing release. [#21](https://github.com/puppetlabs/forge-ruby/pull/21) ([andersonmills](https://github.com/andersonmills))
+- (CODEMGMT-307) Update puppet_forge gem for use with r10k [#20](https://github.com/puppetlabs/forge-ruby/pull/20) ([andersonmills](https://github.com/andersonmills))
+
+## [v2.1.0](https://github.com/puppetlabs/forge-ruby/tree/v2.1.0) - 2015-08-27
+
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v2.0.0...v2.1.0)
+
+### Other
+
+- (CODEMGMT-307) Update puppet_forge gem for use with r10k [#20](https://github.com/puppetlabs/forge-ruby/pull/20) ([andersonmills](https://github.com/andersonmills))
+- (maint) Merge 2.0.x branch onto master [#18](https://github.com/puppetlabs/forge-ruby/pull/18) ([andersonmills](https://github.com/andersonmills))
+
+## [v2.0.0](https://github.com/puppetlabs/forge-ruby/tree/v2.0.0) - 2015-08-14
+
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v1.0.5...v2.0.0)
+
+### Other
+
+- Add Changelog and update the README [#17](https://github.com/puppetlabs/forge-ruby/pull/17) ([austb](https://github.com/austb))
+- Fix functionality for puppet-forge-web [#16](https://github.com/puppetlabs/forge-ruby/pull/16) ([austb](https://github.com/austb))
+- (CODEMGMT-309) Add MAINTAINERS file to the project. [#15](https://github.com/puppetlabs/forge-ruby/pull/15) ([austb](https://github.com/austb))
+- (CODEMGMT-308) Add hash keys to symbols middleware [#14](https://github.com/puppetlabs/forge-ruby/pull/14) ([austb](https://github.com/austb))
+- Lazy access for missing information [#13](https://github.com/puppetlabs/forge-ruby/pull/13) ([austb](https://github.com/austb))
+- (CODEMGMT-297) Integrate ModuleRelease from r10k [#12](https://github.com/puppetlabs/forge-ruby/pull/12) ([austb](https://github.com/austb))
+- (CODEMGMT-296) Add PaginatedCollection ORM for where request [#11](https://github.com/puppetlabs/forge-ruby/pull/11) ([austb](https://github.com/austb))
+- Add ORM for individual item (User/Module/Release) [#10](https://github.com/puppetlabs/forge-ruby/pull/10) ([austb](https://github.com/austb))
+- Remove Her and issue simple find/where requests [#9](https://github.com/puppetlabs/forge-ruby/pull/9) ([austb](https://github.com/austb))
+
+## [v1.0.5](https://github.com/puppetlabs/forge-ruby/tree/v1.0.5) - 2015-07-23
+
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v1.0.4...v1.0.5)
+
+### Other
+
+- (CODEMGMT-279) Specify versions for Her and Rspec. [#7](https://github.com/puppetlabs/forge-ruby/pull/7) ([austb](https://github.com/austb))
+- Use SPDX License format [#5](https://github.com/puppetlabs/forge-ruby/pull/5) ([tampakrap](https://github.com/tampakrap))
+
+## [v1.0.4](https://github.com/puppetlabs/forge-ruby/tree/v1.0.4) - 2014-12-17
+
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v1.0.3...v1.0.4)
+
+### Other
+
+- Remove "require 'bundler/setup'" [#4](https://github.com/puppetlabs/forge-ruby/pull/4) ([voidus](https://github.com/voidus))
+
+## [v1.0.3](https://github.com/puppetlabs/forge-ruby/tree/v1.0.3) - 2014-06-24
+
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v1.0.2...v1.0.3)
+
+### Other
+
+- Make fixture filenames Windows compatible. [#3](https://github.com/puppetlabs/forge-ruby/pull/3) ([scotje](https://github.com/scotje))
+
+## [v1.0.2](https://github.com/puppetlabs/forge-ruby/tree/v1.0.2) - 2014-06-16
+
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v1.0.1...v1.0.2)
+
+### Other
+
+- Only require bundler/setup if Bundler is installed. [#2](https://github.com/puppetlabs/forge-ruby/pull/2) ([scotje](https://github.com/scotje))
+
+## [v1.0.1](https://github.com/puppetlabs/forge-ruby/tree/v1.0.1) - 2014-06-02
+
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v1.0.0...v1.0.1)
+
+### Other
+
+- Improve handling of error responses from Forge API [#1](https://github.com/puppetlabs/forge-ruby/pull/1) ([scotje](https://github.com/scotje))
+
+## [v1.0.0](https://github.com/puppetlabs/forge-ruby/tree/v1.0.0) - 2014-05-16
+
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/2f052f220f0b3f4e135d930491edecf222fc059f...v1.0.0)
