@@ -244,10 +244,8 @@ to create a free account to add new tickets.
 
 ## Releasing
 
-1. Make sure version, changelog, etc. have been updated.
-1. Commit and tag with new version number: e.g. `v1.2.3`
-1. Push tag to Github: `git push upstream --tags` (where `upstream` is the remote name of the puppetlabs fork of this repo)
-1. Wait for Travis CI to test and push new release to Rubygems.
+1. Run the release_prep GitHub Action with the new version number, for example, 1.2.3. It will create a new pull request and merge it
+2. Run the GitHub Actions release workflow, and it will publish a new version on RubyGems
 
 ## Contributors
 
