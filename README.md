@@ -244,8 +244,9 @@ to create a free account to add new tickets.
 
 ## Releasing
 
-1. Run the release_prep GitHub Action with the new version number, for example, 1.2.3. It will create a new pull request and merge it
-2. Run the GitHub Actions release workflow, and it will publish a new version on RubyGems
+1. Run the release_prep GitHub Action with the new version number, for example, 1.2.3. It will create a new pull request
+2. please check the changelog and ensure all issues/prs have correct labels
+3. Run the GitHub Actions release workflow, and it will publish a new version on RubyGems
 
 ## Contributors
 
