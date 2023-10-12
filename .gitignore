@@ -20,3 +20,4 @@ _yardoc
 *.o
 *.a
 mkmf.log
+/vendor/
