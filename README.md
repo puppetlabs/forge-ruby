@@ -248,7 +248,7 @@ to create a free account to add new tickets.
 2. Please check the changelog and ensure all issues/prs have correct labels
 3. Run the GitHub Actions [release] workflow, and it will publish a new version on RubyGems
 
-[release_prep]: https://tickets.puppetlabs.com/browse/FORGE
+[release_prep]: https://github.com/puppetlabs/forge-ruby/actions/workflows/release_prep.yml
 [release]: https://github.com/puppetlabs/forge-ruby/actions/workflows/release.yml
 
 ## Contributors
