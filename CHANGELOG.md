@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v5.0.4](https://github.com/puppetlabs/forge-ruby/tree/v5.0.4) - 2024-08-13
+
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v5.0.3...v5.0.4)
+
+### Fixed
+
+- Pin minitar version to < 1.0.0 to keep project working [#119](https://github.com/puppetlabs/forge-ruby/pull/119) ([der-eismann](https://github.com/der-eismann))
+
 ## [v5.0.3](https://github.com/puppetlabs/forge-ruby/tree/v5.0.3) - 2023-10-13
 
 [Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v5.0.1...v5.0.3)
