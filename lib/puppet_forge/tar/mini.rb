@@ -1,5 +1,5 @@
 require 'zlib'
-require 'archive/tar/minitar'
+require 'minitar'
 
 module PuppetForge
   class Tar
@@ -15,7 +15,7 @@ module PuppetForge
         file_lists = {}
         Zlib::GzipReader.open(sourcefile) do |reader|
           file_lists = validate_files(reader)
-          Archive::Tar::Minitar.unpack(reader, destdir, file_lists[:valid]) do |action, name, stats|
+          Minitar.unpack(reader, destdir, file_lists[:valid]) do |action, name, stats|
             case action
             when :file_done
               FileUtils.chmod('u+rw,g+r,a-st', "#{destdir}/#{name}")
@@ -33,7 +33,7 @@ module PuppetForge
 
       def pack(sourcedir, destfile)
         Zlib::GzipWriter.open(destfile) do |writer|
-          Archive::Tar::Minitar.pack(sourcedir, writer)
+          Minitar.pack(sourcedir, writer)
         end
       end
 
@@ -50,7 +50,7 @@ module PuppetForge
       # @return [Hash{:symbol => Array<String>}] a hash with file-category keys pointing to lists of filenames.
       def validate_files(tarfile)
         file_lists = {:valid => [], :invalid => [], :symlinks => []}
-        Archive::Tar::Minitar.open(tarfile).each do |entry|
+        Minitar.open(tarfile).each do |entry|
           flag = entry.typeflag
           if flag.nil? || flag =~ /[[:digit:]]/ && SYMLINK_FLAGS.include?(flag.to_i)
             file_lists[:symlinks] << entry.full_name
