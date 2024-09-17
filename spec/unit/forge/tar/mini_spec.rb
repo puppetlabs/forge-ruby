@@ -57,7 +57,7 @@ describe PuppetForge::Tar::Mini do
     writer = double('GzipWriter')
 
     expect(Zlib::GzipWriter).to receive(:open).with(destfile).and_yield(writer)
-    expect(Archive::Tar::Minitar).to receive(:pack).with(sourcedir, writer)
+    expect(Minitar).to receive(:pack).with(sourcedir, writer)
 
     minitar.pack(sourcedir, destfile)
   end
@@ -66,8 +66,8 @@ describe PuppetForge::Tar::Mini do
     reader = double('GzipReader')
 
     expect(Zlib::GzipReader).to receive(:open).with(sourcefile).and_yield(reader)
-    expect(Archive::Tar::Minitar).to receive(:open).with(reader).and_return(tarfile_contents)
-    expect(Archive::Tar::Minitar).to receive(:unpack).with(reader, destdir, ['full_file']).and_yield(:file_start, 'thefile', nil)
+    expect(Minitar).to receive(:open).with(reader).and_return(tarfile_contents)
+    expect(Minitar).to receive(:unpack).with(reader, destdir, ['full_file']).and_yield(:file_start, 'thefile', nil)
 
     file_lists = minitar.unpack(sourcefile, destdir)
 
@@ -81,6 +81,6 @@ describe PuppetForge::Tar::Mini do
 
     expect(Zlib::GzipReader).to receive(:open).with(sourcefile).and_yield(reader)
     expect(minitar).to receive(:validate_files).with(reader).and_return({:valid => [name]})
-    expect(Archive::Tar::Minitar).to receive(:unpack).with(reader, destdir, [name]).and_yield(type, name, nil)
+    expect(Minitar).to receive(:unpack).with(reader, destdir, [name]).and_yield(type, name, nil)
   end
 end
