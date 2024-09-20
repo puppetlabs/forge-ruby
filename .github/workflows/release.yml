@@ -7,10 +7,15 @@ on:
       description: "The target for the release. This can be a commit sha or a branch."
       required: false
       default: "main"
+    ruby-version:
+      description: "Ruby version to use."
+      required: false
+      default: "3.1"
 
 jobs:
   release:
     uses: "puppetlabs/cat-github-actions/.github/workflows/gem_release.yml@main"
     with:
       target: "${{ github.event.inputs.target }}"
+      ruby-version: "${{ github.event.inputs.ruby-version }}"
     secrets: "inherit"
