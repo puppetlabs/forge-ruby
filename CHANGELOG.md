@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v6.0.0](https://github.com/puppetlabs/forge-ruby/tree/v6.0.0) - 2024-09-20
+
+[Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v5.0.4...v6.0.0)
+
+### Fixed
+
+- remove ruby 2.6, 2.7 and 3.0 [#124](https://github.com/puppetlabs/forge-ruby/pull/124) ([malikparvez](https://github.com/malikparvez))
+- Removing Archive::Tar::Minitar [#122](https://github.com/puppetlabs/forge-ruby/pull/122) ([malikparvez](https://github.com/malikparvez))
+
 ## [v5.0.4](https://github.com/puppetlabs/forge-ruby/tree/v5.0.4) - 2024-08-13
 
 [Full Changelog](https://github.com/puppetlabs/forge-ruby/compare/v5.0.3...v5.0.4)
