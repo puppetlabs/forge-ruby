@@ -13,4 +13,5 @@ jobs:
     uses: "puppetlabs/cat-github-actions/.github/workflows/gem_release.yml@main"
     with:
       target: "${{ github.event.inputs.target }}"
+      ruby-version: "3.1"
     secrets: "inherit"
