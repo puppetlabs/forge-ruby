@@ -20,7 +20,6 @@ module PuppetForge
   #
   # @api private
   module Connection
-
     attr_writer :conn
 
     AUTHORIZATION_TOKEN_REGEX = /^[a-f0-9]{64}$/
@@ -32,11 +31,10 @@ module PuppetForge
 
       # RK-229 Specific Workaround
       # Capture instance specific proxy setting if defined.
-      if defined?(PuppetForge::V3::Base)
-        if old_conn = PuppetForge::V3::Base.instance_variable_get(:@conn)
-          self.proxy = old_conn.proxy.uri.to_s if old_conn.proxy
-        end
-      end
+      return unless defined?(PuppetForge::V3::Base)
+      return unless old_conn = PuppetForge::V3::Base.instance_variable_get(:@conn)
+
+      self.proxy = old_conn.proxy.uri.to_s if old_conn.proxy
     end
 
     def self.authorization
@@ -79,7 +77,6 @@ module PuppetForge
 
     # @param opts [Hash] Hash of connection options for Faraday
     def default_connection(opts = {})
-
       begin
         # Use Typhoeus if available.
         Gem::Specification.find_by_name('typhoeus', '~> 1.4')
@@ -100,10 +97,10 @@ module PuppetForge
     # @return [Faraday::Connection]
     def make_connection(url, adapter_args = nil, opts = {})
       adapter_args ||= [Faraday.default_adapter]
-      options = { :headers => { :user_agent => USER_AGENT } }.merge(opts)
+      options = { headers: { user_agent: USER_AGENT } }.merge(opts)
 
       if token = PuppetForge::Connection.authorization
-        options[:headers][:authorization] = token =~ AUTHORIZATION_TOKEN_REGEX ? "Bearer #{token}" : token
+        options[:headers][:authorization] = AUTHORIZATION_TOKEN_REGEX.match?(token) ? "Bearer #{token}" : token
       end
 
       if lang = PuppetForge::Connection.accept_language
@@ -116,7 +113,7 @@ module PuppetForge
 
       Faraday.new(url, options) do |builder|
         builder.use Faraday::FollowRedirects::Middleware
-        builder.response(:json, :content_type => /\bjson$/, :parser_options => { :symbolize_names => true })
+        builder.response(:json, content_type: /\bjson$/, parser_options: { symbolize_names: true })
         builder.response(:raise_error)
         builder.use(:connection_failure)
 

@@ -1,10 +1,8 @@
 module PuppetForge
   module V3
     class Base
-
       # Enables navigation of the Forge API's paginated datasets.
       class PaginatedCollection < Array
-
         # Default pagination limit for API request
         LIMIT = 20
 
@@ -13,7 +11,7 @@ module PuppetForge
         # @param data [Array] the current data page
         # @param metadata [Hash<(:limit, :total, :offset)>] page metadata
         # @param errors [Object] errors for the page request
-        def initialize(klass, data = [], metadata = {:total => 0, :offset => 0, :limit => LIMIT}, errors = nil)
+        def initialize(klass, data = [], metadata = { total: 0, offset: 0, limit: LIMIT }, errors = nil)
           super()
           @metadata = metadata
           @errors = errors
@@ -50,11 +48,11 @@ module PuppetForge
         #   @return [Integer] the maximum size of any page in this dataset
         # @!method offset
         #   @return [Integer] the offset for the current page
-        [ :total, :limit, :offset ].each do |info|
+        %i[total limit offset].each do |info|
           define_method(info) { @metadata[info] }
         end
 
-        [ :next, :previous ].each do |link|
+        %i[next previous].each do |link|
           # @!method next
           #   Returns the next page if a next page exists.
           #   @return [PaginatedCollection, nil] the next page
@@ -63,6 +61,7 @@ module PuppetForge
           #   @return [PaginatedCollection, nil] the previous page
           define_method(link) do
             return unless path = @metadata[link]
+
             @klass.get_collection(path)
           end
 
@@ -72,7 +71,7 @@ module PuppetForge
           # @!method previous_url
           #   Returns the url of the previous page if a previous page exists.
           #   @return [String, nil] the previous page's url
-          define_method("#{link}_url") do
+          define_method(:"#{link}_url") do
             @metadata[link]
           end
         end

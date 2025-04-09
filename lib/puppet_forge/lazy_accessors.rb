@@ -1,5 +1,4 @@
 module PuppetForge
-
   # When dealing with a remote service, it's reasonably common to receive only
   # a partial representation of the underlying object, with additional data
   # available upon request. PuppetForge, by default, provides a convenient interface
@@ -8,7 +7,6 @@ module PuppetForge
   # interface for both local and remote attriibutes, this module replaces the
   # default behavior with an "updatable" interface.
   module LazyAccessors
-
     # Callback for module inclusion.
     #
     # On each lazy class we'll store a reference to a Module, which will act as
@@ -25,7 +23,7 @@ module PuppetForge
     # Provide class name for object
     #
     def class_name
-      self.class.name.split("::").last.downcase
+      self.class.name.split('::').last.downcase
     end
 
     # Override the default #inspect behavior.
@@ -35,7 +33,7 @@ module PuppetForge
     # implementation simply reports the contents of the attributes hash.
     def inspect
       attrs = attributes.map do |x, y|
-        [ x, y ].join('=')
+        [x, y].join('=')
       end
       "#<#{self.class}(#{uri}) #{attrs.join(' ')}>"
     end
@@ -82,17 +80,14 @@ module PuppetForge
 
       klass = self.class
 
-      response = klass.request("#{self.class_name}s/#{self.slug}")
-      if @_fetch = response.success?
-        self.send(:initialize, response.body)
-      end
+      response = klass.request("#{class_name}s/#{slug}")
+      send(:initialize, response.body) if @_fetch = response.success?
 
-      return self
+      self
     end
 
     # A Module subclass for attribute accessors.
     class AccessorContainer < Module
-
       # Creating a new instance of this class will automatically include itself
       # into the provided class.
       #
@@ -112,17 +107,17 @@ module PuppetForge
         keys.each do |key|
           next if methods.include?(name = key)
 
-          define_method("#{name}") do
+          define_method(:"#{name}") do
             fetch unless has_attribute?(name)
             attribute(name)
           end
 
-          define_method("#{name}?") do
+          define_method(:"#{name}?") do
             fetch unless has_attribute?(name)
             has_attribute?(name)
           end
 
-          define_method("#{name}=") do |value|
+          define_method(:"#{name}=") do |value|
             fetch unless has_attribute?(name)
             attributes[name] = value
           end

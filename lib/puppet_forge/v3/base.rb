@@ -8,7 +8,6 @@ require 'puppet_forge/lru_cache'
 
 module PuppetForge
   module V3
-
     # Acts as the base class for all PuppetForge::V3::* models.
     #
     # @api private
@@ -22,10 +21,10 @@ module PuppetForge
       end
 
       def orm_resp_item(json_response)
-        json_response.each do |key, value|
+        json_response.each do |key, _value|
           unless respond_to? key
-            define_singleton_method("#{key}") { @attributes[key] }
-            define_singleton_method("#{key}=") { |val| @attributes[key] = val }
+            define_singleton_method(:"#{key}") { @attributes[key] }
+            define_singleton_method(:"#{key}=") { |val| @attributes[key] = val }
           end
         end
       end
@@ -40,15 +39,12 @@ module PuppetForge
         @attributes[:"#{name}"]
       end
 
-      def attributes
-        @attributes
-      end
+      attr_reader :attributes
 
       class << self
-
         include PuppetForge::Connection
 
-        API_VERSION = "v3"
+        API_VERSION = 'v3'
 
         def api_version
           API_VERSION
@@ -71,15 +67,13 @@ module PuppetForge
           return cached unless cached.nil?
 
           conn(reset_connection, conn_opts) if reset_connection
-          unless conn.url_prefix.to_s =~ /^#{PuppetForge.host}/
-            conn.url_prefix = "#{PuppetForge.host}"
-          end
+          conn.url_prefix = "#{PuppetForge.host}" unless /^#{PuppetForge.host}/.match?(conn.url_prefix.to_s)
 
-          if item.nil?
-            uri_path = "v3/#{resource}"
-          else
-            uri_path = "v3/#{resource}/#{item}"
-          end
+          uri_path = if item.nil?
+                       "v3/#{resource}"
+                     else
+                       "v3/#{resource}/#{item}"
+                     end
 
           # The API expects a space separated string. This allows the user to invoke it with a more natural feeling array.
           params['endorsements'] = params['endorsements'].join(' ') if params['endorsements'].is_a? Array
@@ -93,9 +87,9 @@ module PuppetForge
         def find_request(slug, reset_connection = false, conn_opts = {})
           return nil if slug.nil?
 
-          resp = request("#{self.name.split("::").last.downcase}s", slug, {}, reset_connection, conn_opts)
+          resp = request("#{name.split('::').last.downcase}s", slug, {}, reset_connection, conn_opts)
 
-          self.new(resp.body)
+          new(resp.body)
         end
 
         def find(slug)
@@ -108,7 +102,7 @@ module PuppetForge
 
         # @private
         def where_request(params, reset_connection = false, conn_opts = {})
-          resp = request("#{self.name.split("::").last.downcase}s", nil, params, reset_connection, conn_opts)
+          resp = request("#{name.split('::').last.downcase}s", nil, params, reset_connection, conn_opts)
 
           new_collection(resp)
         end
@@ -156,11 +150,11 @@ module PuppetForge
 
         # @private
         def split_uri_path(uri_path)
-          all, resource, params = /(?:\/v3\/)([^\/]+)(?:\?)(.*)/.match(uri_path).to_a
+          _, resource, params = %r{(?:/v3/)([^/]+)(?:\?)(.*)}.match(uri_path).to_a
 
           params = convert_plus_to_space(params).split('&')
 
-          param_hash = Hash.new
+          param_hash = {}
           params.each do |param|
             key, val = param.split('=')
             param_hash[key] = val

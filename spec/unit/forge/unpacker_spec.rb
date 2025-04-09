@@ -2,19 +2,17 @@ require 'tmpdir'
 require 'spec_helper'
 
 describe PuppetForge::Unpacker do
-
-  let(:source)      { Dir.mktmpdir("source") }
-  let(:target)      { Dir.mktmpdir("unpacker") }
+  let(:source)      { Dir.mktmpdir('source') }
+  let(:target)      { Dir.mktmpdir('unpacker') }
   let(:module_name) { 'myusername-mytarball' }
-  let(:filename)    { Dir.mktmpdir("module") + "/module.tar.gz" }
-  let(:working_dir) { Dir.mktmpdir("working_dir") }
-  let(:trash_dir)   { Dir.mktmpdir("trash_dir") }
+  let(:filename)    { Dir.mktmpdir('module') + '/module.tar.gz' }
+  let(:working_dir) { Dir.mktmpdir('working_dir') }
+  let(:trash_dir)   { Dir.mktmpdir('trash_dir') }
 
-  it "attempts to untar file to temporary location" do
-
+  it 'attempts to untar file to temporary location' do
     minitar = double('PuppetForge::Tar::Mini')
 
-    expect(minitar).to receive(:unpack).with(filename, anything()) do |src, dest|
+    expect(minitar).to receive(:unpack).with(filename, anything) do |_src, dest|
       FileUtils.mkdir(File.join(dest, 'extractedmodule'))
       File.open(File.join(dest, 'extractedmodule', 'metadata.json'), 'w+') do |file|
         file.puts JSON.generate('name' => module_name, 'version' => '1.0.0')
@@ -27,26 +25,24 @@ describe PuppetForge::Unpacker do
     expect(File).to be_directory(target)
   end
 
-  it "returns the appropriate categories of the contents of the tar file from the tar implementation" do
-
+  it 'returns the appropriate categories of the contents of the tar file from the tar implementation' do
     minitar = double('PuppetForge::Tar::Mini')
 
-    expect(minitar).to receive(:unpack).with(filename, anything()) do |src, dest|
+    expect(minitar).to receive(:unpack).with(filename, anything) do |_src, dest|
       FileUtils.mkdir(File.join(dest, 'extractedmodule'))
       File.open(File.join(dest, 'extractedmodule', 'metadata.json'), 'w+') do |file|
         file.puts JSON.generate('name' => module_name, 'version' => '1.0.0')
       end
-      { :valid => [File.join('extractedmodule', 'metadata.json')], :invalid => [], :symlinks => [] }
+      { valid: [File.join('extractedmodule', 'metadata.json')], invalid: [], symlinks: [] }
     end
 
     expect(PuppetForge::Tar).to receive(:instance).and_return(minitar)
     file_lists = PuppetForge::Unpacker.unpack(filename, target, trash_dir)
-    expect(file_lists).to eq({:valid=>["extractedmodule/metadata.json"], :invalid=>[], :symlinks=>[]})
+    expect(file_lists).to eq({ valid: ['extractedmodule/metadata.json'], invalid: [], symlinks: [] })
     expect(File).to be_directory(target)
   end
 
   it "attempts to set the ownership of a target dir to a source dir's owner" do
-
     source_path = Pathname.new(source)
     target_path = Pathname.new(target)
 
@@ -54,5 +50,4 @@ describe PuppetForge::Unpacker do
 
     PuppetForge::Unpacker.harmonize_ownership(source_path, target_path)
   end
-
 end

@@ -19,7 +19,7 @@ module PuppetForge
     #   be overridden by setting the PUPPET_FORGE_MAX_CACHE_SIZE environment
     #   variable.
     def initialize(max_size = 30)
-      raise ArgumentError, "max_size must be a positive integer" unless max_size.is_a?(Integer) && max_size > 0
+      raise ArgumentError, 'max_size must be a positive integer' unless max_size.is_a?(Integer) && max_size > 0
 
       @max_size = ENV['PUPPET_FORGE_MAX_CACHE_SIZE'] ? ENV['PUPPET_FORGE_MAX_CACHE_SIZE'].to_i : max_size
       @cache = {}
@@ -32,15 +32,15 @@ module PuppetForge
     # @return [Object] the cached value for the given key, or nil if
     #   the key is not present in the cache.
     def get(key)
-      if cache.key?(key)
-        semaphore.synchronize do
-          # If the key is present, move it to the front of the LRU
-          # list.
-          lru.delete(key)
-          lru.unshift(key)
-        end
-        cache[key]
+      return unless cache.key?(key)
+
+      semaphore.synchronize do
+        # If the key is present, move it to the front of the LRU
+        # list.
+        lru.delete(key)
+        lru.unshift(key)
       end
+      cache[key]
     end
 
     # Adds a value to the cache.

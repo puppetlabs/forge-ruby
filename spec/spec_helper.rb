@@ -3,7 +3,7 @@ PROJECT_ROOT = File.join(File.dirname(__FILE__), '..')
 if ENV['COVERAGE']
   require 'simplecov'
   SimpleCov.start do
-    add_filter "/spec/"
+    add_filter '/spec/'
   end
 
 end
@@ -11,34 +11,34 @@ end
 require 'puppet_forge'
 
 module StubbingFaraday
-
-  def stub_api_for(klass, base_url = "http://api.example.com", lru_cache: false)
+  def stub_api_for(klass, base_url = 'http://api.example.com', lru_cache: false, &block)
     unless lru_cache # Disable LRU cache by default
-      allow(klass).to receive(:lru_cache).and_return(instance_double('PuppetForge::LruCache', get: nil, put: nil, clear: nil))
+      allow(klass).to receive(:lru_cache).and_return(instance_double('PuppetForge::LruCache', get: nil, put: nil,
+                                                                                              clear: nil))
     end
     allow(klass).to receive(:conn) do
-      Faraday.new :url => base_url do |builder|
-        builder.response(:json, :content_type => /\bjson$/, :parser_options => { :symbolize_names => true })
+      Faraday.new url: base_url do |builder|
+        builder.response(:json, content_type: /\bjson$/, parser_options: { symbolize_names: true })
         builder.response(:raise_error)
         builder.use(:connection_failure)
 
-        builder.adapter(:test) { |s| yield(s) }
+        builder.adapter(:test, &block)
       end
     end
 
-    stubs = Faraday::Adapter::Test::Stubs.new
+    Faraday::Adapter::Test::Stubs.new
   end
 
   def stub_fixture(stubs, method, path)
     stubs.send(method, path) do |env|
-      load_fixture([ env[:url].path, env[:url].query ].compact.join('?'))
+      load_fixture([env[:url].path, env[:url].query].compact.join('?'))
     end
   end
 
   def load_fixture(path)
     xplatform_path = path.to_s.gsub('?', '__')
 
-    [ 404 ].tap do |response|
+    [404].tap do |response|
       local = File.join(PROJECT_ROOT, 'spec', 'fixtures', xplatform_path)
 
       if File.exist?("#{local}.headers") && File.exist?("#{local}.json")
@@ -68,11 +68,11 @@ RSpec.configure do |config|
   #     --seed 1234
   config.order = 'random'
 
-  config.before(:example) do
+  config.before do
     @old_host = PuppetForge.host
   end
 
-  config.after(:example) do
+  config.after do
     PuppetForge.host = @old_host
   end
 end

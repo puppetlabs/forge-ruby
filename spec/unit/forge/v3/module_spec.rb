@@ -37,7 +37,7 @@ describe PuppetForge::V3::Module do
     let(:mod) { PuppetForge::V3::Module.find('puppetlabs-apache') }
 
     it 'exposes the related module as a property' do
-      expect(mod.owner).to_not be nil
+      expect(mod.owner).not_to be_nil
     end
 
     it 'grants access to module attributes without an API call' do
@@ -47,7 +47,7 @@ describe PuppetForge::V3::Module do
 
     it 'transparently makes API calls for other attributes' do
       expect(PuppetForge::V3::User).to receive(:request).once.and_call_original
-      expect(mod.owner.created_at).to_not be nil
+      expect(mod.owner.created_at).not_to be_nil
     end
   end
 
@@ -55,14 +55,13 @@ describe PuppetForge::V3::Module do
     let(:mod) { PuppetForge::V3::Module.find('puppetlabs-apache') }
 
     it 'exposes the current_release as a property' do
-      expect(mod.current_release).to_not be nil
+      expect(mod.current_release).not_to be_nil
     end
 
     it 'grants access to release attributes without an API call' do
       expect(PuppetForge::V3::Release).not_to receive(:request)
-      expect(mod.current_release.version).to_not be nil
+      expect(mod.current_release.version).not_to be_nil
     end
-
   end
 
   describe '#releases' do
@@ -73,21 +72,21 @@ describe PuppetForge::V3::Module do
     end
 
     it 'knows the size of the collection' do
-      expect(mod.releases).to_not be_empty
+      expect(mod.releases).not_to be_empty
     end
 
     it 'grants access to release attributes without an API call' do
       expect(PuppetForge::V3::Release).not_to receive(:request)
-      expect(mod.releases.map(&:version)).to_not include nil
+      expect(mod.releases.map(&:version)).not_to include nil
     end
 
     it 'loads releases lazily' do
-      versions = %w[ 0.0.1 0.0.2 0.0.3 0.0.4 0.1.1 ]
+      versions = %w[0.0.1 0.0.2 0.0.3 0.0.4 0.1.1]
       releases = mod.releases.select { |x| versions.include? x.version }
 
       expect(PuppetForge::V3::Base).to receive(:request).exactly(5).times.and_call_original
 
-      expect(releases.map(&:downloads)).to_not include nil
+      expect(releases.map(&:downloads)).not_to include nil
     end
   end
 
@@ -95,7 +94,7 @@ describe PuppetForge::V3::Module do
     let(:mod) { PuppetForge::V3::Module.find('puppetlabs-apache') }
 
     example 'are easily accessible' do
-      expect(mod.created_at).to_not be nil
+      expect(mod.created_at).not_to be_nil
     end
   end
 end

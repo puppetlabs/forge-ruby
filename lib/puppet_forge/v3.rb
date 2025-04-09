@@ -1,5 +1,4 @@
 module PuppetForge
-
   # Models specific to the Puppet Forge's v3 API.
   module V3
     # Normalize a module name to use a hyphen as the separator between the

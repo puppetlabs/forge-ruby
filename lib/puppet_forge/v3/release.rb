@@ -6,7 +6,6 @@ require 'base64'
 
 module PuppetForge
   module V3
-
     # Models a specific release version of a Puppet Module on the Forge.
     class Release < Base
       lazy :module, 'Module'
@@ -30,13 +29,12 @@ module PuppetForge
         resp = self.class.conn.get(download_url)
         path.open('wb') { |fh| fh.write(resp.body) }
       rescue Faraday::ResourceNotFound => e
-        raise PuppetForge::ReleaseNotFound, "The module release #{slug} does not exist on #{self.class.conn.url_prefix}.", e.backtrace
+        raise PuppetForge::ReleaseNotFound,
+              "The module release #{slug} does not exist on #{self.class.conn.url_prefix}.", e.backtrace
       rescue Faraday::ClientError => e
-        if e.response && e.response[:status] == 403
-          raise PuppetForge::ReleaseForbidden.from_response(e.response)
-        else
-          raise e
-        end
+        raise PuppetForge::ReleaseForbidden.from_response(e.response) if e.response && e.response[:status] == 403
+
+        raise e
       end
 
       # Uploads the tarbarll to the forge
@@ -78,20 +76,20 @@ module PuppetForge
       # @return [void]
       def verify(path, allow_md5 = true)
         checksum =
-          if self.respond_to?(:file_sha256) && !self.file_sha256.nil? && !self.file_sha256.size.zero?
+          if respond_to?(:file_sha256) && !file_sha256.nil? && !file_sha256.size.zero?
             {
-              type: "SHA-256",
-              expected: self.file_sha256,
+              type: 'SHA-256',
+              expected: file_sha256,
               actual: Digest::SHA256.file(path).hexdigest,
             }
           elsif allow_md5
             {
-              type: "MD5",
-              expected: self.file_md5,
+              type: 'MD5',
+              expected: file_md5,
               actual: Digest::MD5.file(path).hexdigest,
             }
           else
-            raise PuppetForge::Error.new("Cannot verify module release: SHA-256 checksum is not available in API response and fallback to MD5 has been forbidden.")
+            raise PuppetForge::Error.new('Cannot verify module release: SHA-256 checksum is not available in API response and fallback to MD5 has been forbidden.')
           end
 
         return if checksum[:expected] == checksum[:actual]

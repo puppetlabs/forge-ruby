@@ -3,39 +3,39 @@ require 'fileutils'
 
 describe PuppetForge::V3::Release do
   context 'connection management' do
-    before(:each) do
+    before do
       PuppetForge::Connection.authorization = nil
       PuppetForge::Connection.proxy = nil
       described_class.conn = PuppetForge::V3::Base.conn(true)
     end
 
-    after(:each) do
+    after do
       PuppetForge::Connection.authorization = nil
       PuppetForge::Connection.proxy = nil
       described_class.conn = nil
     end
 
     describe 'setting authorization value after a connection is created' do
-      it 'should reset connection' do
+      it 'resets connection' do
         old_conn = described_class.conn
 
         PuppetForge::Connection.authorization = 'post-init auth value'
         new_conn = described_class.conn
 
-        expect(new_conn).to_not eq(old_conn)
-        expect(new_conn.headers).to include(:authorization => 'post-init auth value')
+        expect(new_conn).not_to eq(old_conn)
+        expect(new_conn.headers).to include(authorization: 'post-init auth value')
       end
     end
 
     describe 'setting proxy value after a connection is created' do
-      it 'should reset connection' do
+      it 'resets connection' do
         old_conn = described_class.conn
 
         PuppetForge::Connection.proxy = 'http://proxy.example.com:8888'
         new_conn = described_class.conn
 
-        expect(new_conn).to_not eq(old_conn)
-        expect(new_conn.proxy).to_not be_nil
+        expect(new_conn).not_to eq(old_conn)
+        expect(new_conn.proxy).not_to be_nil
         expect(new_conn.proxy.uri.to_s).to eq('http://proxy.example.com:8888')
       end
     end
@@ -69,7 +69,7 @@ describe PuppetForge::V3::Release do
       let(:release) { PuppetForge::V3::Release.find('puppetlabs-apache-0.0.1') }
 
       it 'exposes the related module as a property' do
-        expect(release.module).to_not be nil
+        expect(release.module).not_to be_nil
       end
 
       it 'grants access to module attributes without an API call' do
@@ -79,7 +79,7 @@ describe PuppetForge::V3::Release do
 
       it 'transparently makes API calls for other attributes' do
         expect(PuppetForge::V3::Module).to receive(:request).once.and_call_original
-        expect(release.module.created_at).to_not be nil
+        expect(release.module.created_at).not_to be_nil
       end
     end
 
@@ -98,7 +98,7 @@ describe PuppetForge::V3::Release do
       end
 
       context 'when PuppetForge.host has a path prefix' do
-        around(:each) do |spec|
+        around do |spec|
           old_host = PuppetForge.host
           PuppetForge.host = 'http://example.com/forge/api/'
 
@@ -117,8 +117,17 @@ describe PuppetForge::V3::Release do
       let(:release) { PuppetForge::V3::Release.find('puppetlabs-apache-0.0.1') }
       let(:tarball) { "#{PROJECT_ROOT}/spec/tmp/module.tgz" }
 
-      before { FileUtils.rm tarball rescue nil }
-      after  { FileUtils.rm tarball rescue nil }
+      before do
+        FileUtils.rm tarball
+      rescue StandardError
+        nil
+      end
+
+      after do
+        FileUtils.rm tarball
+      rescue StandardError
+        nil
+      end
 
       it 'downloads the file to the specified location' do
         expect(File.exist?(tarball)).to be false
@@ -127,24 +136,28 @@ describe PuppetForge::V3::Release do
       end
 
       context 'when response is 403' do
-        it "raises PuppetForge::ReleaseForbidden" do
-          mock_conn = instance_double("PuppetForge::V3::Connection", :url_prefix => PuppetForge.host)
+        it 'raises PuppetForge::ReleaseForbidden' do
+          mock_conn = instance_double('PuppetForge::V3::Connection', url_prefix: PuppetForge.host)
           allow(described_class).to receive(:conn).and_return(mock_conn)
 
-          expect(mock_conn).to receive(:get).and_raise(Faraday::ClientError.new("403", {:status => 403, :body => ({:message => "Forbidden"}.to_json)}))
+          expect(mock_conn).to receive(:get).and_raise(Faraday::ClientError.new('403',
+                                                                                { status: 403,
+                                                                                  body: ({ message: 'Forbidden' }.to_json), }))
 
           expect { release.download(Pathname.new(tarball)) }.to raise_error(PuppetForge::ReleaseForbidden)
         end
       end
 
       context 'when connection fails' do
-        it "re-raises original error" do
-          mock_conn = instance_double("PuppetForge::V3::Connection", :url_prefix => PuppetForge.host)
+        it 're-raises original error' do
+          mock_conn = instance_double('PuppetForge::V3::Connection', url_prefix: PuppetForge.host)
           allow(described_class).to receive(:conn).and_return(mock_conn)
 
-          expect(mock_conn).to receive(:get).and_raise(Faraday::ConnectionFailed.new("connection failed"))
+          expect(mock_conn).to receive(:get).and_raise(Faraday::ConnectionFailed.new('connection failed'))
 
-          expect { release.download(Pathname.new(tarball)) }.to raise_error(Faraday::ConnectionFailed, /connection failed/)
+          expect do
+            release.download(Pathname.new(tarball))
+          end.to raise_error(Faraday::ConnectionFailed, /connection failed/)
         end
       end
     end
@@ -154,16 +167,24 @@ describe PuppetForge::V3::Release do
       let(:tarball) { "#{PROJECT_ROOT}/spec/tmp/module.tgz" }
       let(:allow_md5) { true }
 
-      before(:each) do
-        FileUtils.rm tarball rescue nil
+      before do
+        begin
+          FileUtils.rm tarball
+        rescue StandardError
+          nil
+        end
         release.download(Pathname.new(tarball))
       end
 
-      after(:each) { FileUtils.rm tarball rescue nil }
+      after do
+        FileUtils.rm tarball
+      rescue StandardError
+        nil
+      end
 
       context 'file_sha256 is available' do
-        before(:each) do
-          allow(release).to receive(:file_sha256).and_return("810ff2fb242a5dee4220f2cb0e6a519891fb67f2f828a6cab4ef8894633b1f50")
+        before do
+          allow(release).to receive(:file_sha256).and_return('810ff2fb242a5dee4220f2cb0e6a519891fb67f2f828a6cab4ef8894633b1f50')
         end
 
         let(:mock_sha256) { double(Digest::SHA256, hexdigest: release.file_sha256) }
@@ -195,7 +216,10 @@ describe PuppetForge::V3::Release do
             expect(Digest::SHA256).not_to receive(:file)
             expect(Digest::MD5).not_to receive(:file)
 
-            expect { release.verify(tarball, allow_md5) }.to raise_error(PuppetForge::Error, /cannot verify module release.*md5.*forbidden/i)
+            expect do
+              release.verify(tarball,
+                             allow_md5)
+            end.to raise_error(PuppetForge::Error, /cannot verify module release.*md5.*forbidden/i)
           end
         end
       end
@@ -206,7 +230,7 @@ describe PuppetForge::V3::Release do
 
       it 'is lazy and repeatable' do
         3.times do
-          expect(release.module.releases.last.metadata).to_not be_nil
+          expect(release.module.releases.last.metadata).not_to be_nil
         end
       end
     end
@@ -215,7 +239,7 @@ describe PuppetForge::V3::Release do
       let(:release) { PuppetForge::V3::Release.find('puppetlabs-apache-0.0.1') }
 
       example 'are easily accessible' do
-        expect(release.created_at).to_not be nil
+        expect(release.created_at).not_to be_nil
       end
     end
 

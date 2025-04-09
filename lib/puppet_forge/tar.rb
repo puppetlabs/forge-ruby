@@ -1,4 +1,3 @@
-
 module PuppetForge
   class Tar
     require 'puppet_forge/tar/mini'
