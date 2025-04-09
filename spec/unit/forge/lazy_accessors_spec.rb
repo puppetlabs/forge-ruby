@@ -1,21 +1,22 @@
 require 'spec_helper'
 
 describe PuppetForge::LazyAccessors do
+  subject { klass.new(local_data) }
+
   let(:klass) do
     class PuppetForge::V3::Thing < PuppetForge::V3::Base
-
       # Needed for #inspect
       def uri
-        "/things/1"
+        '/things/1'
       end
 
       # Needed for fetch
       def slug
-        "1"
+        '1'
       end
 
       def standalone_method
-        "a/b/c"
+        'a/b/c'
       end
 
       def satisified_dependent_method
@@ -33,17 +34,14 @@ describe PuppetForge::LazyAccessors do
       def remote_shadow
         "-#{super}-"
       end
-
     end
 
     PuppetForge::V3::Thing
   end
 
   let(:base_class) { PuppetForge::V3::Base }
-  let(:local_data)  { { :id => 1, :local => 'data', :shadow => 'x' } }
-  let(:remote_data) { local_data.merge(:remote => 'DATA', :remote_shadow => 'X') }
-
-  subject { klass.new(local_data) }
+  let(:local_data)  { { id: 1, local: 'data', shadow: 'x' } }
+  let(:remote_data) { local_data.merge(remote: 'DATA', remote_shadow: 'X') }
 
   it 'does not call methods to #inspect' do
     expect(subject).not_to receive(:shadow)
@@ -79,9 +77,13 @@ describe PuppetForge::LazyAccessors do
     end
 
     example 'do not create accessors on the base class itself' do
-      expect(klass.instance_methods(false)).to_not include(:local)
-      subject.local rescue nil
-      expect(klass.instance_methods(false)).to_not include(:local)
+      expect(klass.instance_methods(false)).not_to include(:local)
+      begin
+        subject.local
+      rescue StandardError
+        nil
+      end
+      expect(klass.instance_methods(false)).not_to include(:local)
     end
   end
 
@@ -89,7 +91,7 @@ describe PuppetForge::LazyAccessors do
     before do
       stub_api_for(base_class) do |api|
         api.get('/v3/things/1') do
-          [ 200, { 'Content-Type' => 'json' }, remote_data ]
+          [200, { 'Content-Type' => 'json' }, remote_data]
         end
       end
     end
@@ -121,9 +123,13 @@ describe PuppetForge::LazyAccessors do
     end
 
     example 'do not create accessors on the base class itself' do
-      expect(klass.instance_methods(false)).to_not include(:remote)
-      subject.remote rescue nil
-      expect(klass.instance_methods(false)).to_not include(:remote)
+      expect(klass.instance_methods(false)).not_to include(:remote)
+      begin
+        subject.remote
+      rescue StandardError
+        nil
+      end
+      expect(klass.instance_methods(false)).not_to include(:remote)
     end
   end
 
@@ -131,7 +137,7 @@ describe PuppetForge::LazyAccessors do
     before do
       stub_api_for(base_class) do |api|
         api.get('/v3/things/1') do
-          [ 200, { 'Content-Type' => 'json' }, remote_data ]
+          [200, { 'Content-Type' => 'json' }, remote_data]
         end
       end
     end
@@ -141,9 +147,13 @@ describe PuppetForge::LazyAccessors do
     end
 
     example 'do not create accessors on the base class itself' do
-      expect(klass.instance_methods(false)).to_not include(:local)
-      subject.unknown_attribute rescue nil
-      expect(klass.instance_methods(false)).to_not include(:local)
+      expect(klass.instance_methods(false)).not_to include(:local)
+      begin
+        subject.unknown_attribute
+      rescue StandardError
+        nil
+      end
+      expect(klass.instance_methods(false)).not_to include(:local)
     end
   end
 end

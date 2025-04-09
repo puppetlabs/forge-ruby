@@ -1,35 +1,34 @@
-# coding: utf-8
-lib = File.expand_path('../lib', __FILE__)
+lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'puppet_forge/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "puppet_forge"
+  spec.name          = 'puppet_forge'
   spec.version       = PuppetForge::VERSION
-  spec.authors       = ["Puppet Labs"]
-  spec.email         = ["forge-team+api@puppetlabs.com"]
-  spec.summary       = "Access the Puppet Forge API from Ruby for resource information and to download releases."
-  spec.description   = %q{Tools that can be used to access Forge API information on Modules, Users, and Releases. As well as download, unpack, and install Releases to a directory.}
-  spec.homepage      = "https://github.com/puppetlabs/forge-ruby"
-  spec.license       = "Apache-2.0"
+  spec.authors       = ['Puppet Labs']
+  spec.email         = ['forge-team+api@puppetlabs.com']
+  spec.summary       = 'Access the Puppet Forge API from Ruby for resource information and to download releases.'
+  spec.description   = 'Tools that can be used to access Forge API information on Modules, Users, and Releases. As well as download, unpack, and install Releases to a directory.'
+  spec.homepage      = 'https://github.com/puppetlabs/forge-ruby'
+  spec.license       = 'Apache-2.0'
 
   spec.files         = `git ls-files -z`.split("\x0")
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
-  spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
-  spec.require_paths = ["lib"]
+  spec.require_paths = ['lib']
 
   spec.required_ruby_version = '>= 3.1.0'
 
-  spec.add_runtime_dependency "faraday", "~> 2.0"
-  spec.add_runtime_dependency "faraday-follow_redirects", "~> 0.3.0"
-  spec.add_dependency "semantic_puppet", "~> 1.0"
-  spec.add_dependency "minitar",  '~> 1.0', '>= 1.0.2'
+  spec.add_dependency 'faraday', '~> 2.0'
+  spec.add_dependency 'faraday-follow_redirects', '~> 0.3.0'
+  spec.add_dependency 'minitar', '~> 1.0', '>= 1.0.2'
+  spec.add_dependency 'semantic_puppet', '~> 1.0'
 
-  spec.add_development_dependency "rake"
-  spec.add_development_dependency "rspec", "~> 3.0"
-  spec.add_development_dependency "simplecov"
-  spec.add_development_dependency "cane"
-  spec.add_development_dependency "yard"
-  spec.add_development_dependency "redcarpet"
-  spec.add_development_dependency "pry-byebug"
+  spec.add_development_dependency 'cane'
+  spec.add_development_dependency 'pry-byebug'
+  spec.add_development_dependency 'rake'
+  spec.add_development_dependency 'redcarpet'
+  spec.add_development_dependency 'rspec', '~> 3.0'
+  spec.add_development_dependency 'simplecov'
+  spec.add_development_dependency 'voxpupuli-rubocop', '~> 3.0.0'
+  spec.add_development_dependency 'yard'
 end

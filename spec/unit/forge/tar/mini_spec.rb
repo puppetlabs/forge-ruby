@@ -4,6 +4,7 @@ describe PuppetForge::Tar::Mini do
   let(:entry_class) do
     Class.new do
       attr_accessor :typeflag, :name, :full_name
+
       def initialize(name, full_name, typeflag)
         @name = name
         @full_name = full_name
@@ -16,44 +17,46 @@ describe PuppetForge::Tar::Mini do
   let(:sourcedir)  { '/the/src/dir' }
   let(:destfile)   { '/the/dest/file.tar.gz' }
   let(:minitar)    { described_class.new }
-  let(:tarfile_contents) { [entry_class.new('file', 'full_file', '0'), \
-                            entry_class.new('symlink', 'full_symlink', '2'), \
-                            entry_class.new('invalid', 'full_invalid', 'F')] }
+  let(:tarfile_contents) do
+    [entry_class.new('file', 'full_file', '0'),
+     entry_class.new('symlink', 'full_symlink', '2'),
+     entry_class.new('invalid', 'full_invalid', 'F'),]
+  end
 
-  it "unpacks a tar file" do
+  it 'unpacks a tar file' do
     unpacks_the_entry(:file_start, 'thefile')
 
     minitar.unpack(sourcefile, destdir)
   end
 
-  it "does not allow an absolute path" do
+  it 'does not allow an absolute path' do
     unpacks_the_entry(:file_start, '/thefile')
 
-    expect {
+    expect do
       minitar.unpack(sourcefile, destdir)
-    }.to raise_error(PuppetForge::InvalidPathInPackageError,
-                     "Attempt to install file into \"/thefile\" under \"#{destdir}\"")
+    end.to raise_error(PuppetForge::InvalidPathInPackageError,
+                       "Attempt to install file into \"/thefile\" under \"#{destdir}\"")
   end
 
-  it "does not allow a file to be written outside the destination directory" do
+  it 'does not allow a file to be written outside the destination directory' do
     unpacks_the_entry(:file_start, '../../thefile')
 
-    expect {
+    expect do
       minitar.unpack(sourcefile, destdir)
-    }.to raise_error(PuppetForge::InvalidPathInPackageError,
-                     "Attempt to install file into \"#{File.expand_path('/the/thefile')}\" under \"#{destdir}\"")
+    end.to raise_error(PuppetForge::InvalidPathInPackageError,
+                       "Attempt to install file into \"#{File.expand_path('/the/thefile')}\" under \"#{destdir}\"")
   end
 
-  it "does not allow a directory to be written outside the destination directory" do
+  it 'does not allow a directory to be written outside the destination directory' do
     unpacks_the_entry(:dir, '../../thedir')
 
-    expect {
+    expect do
       minitar.unpack(sourcefile, destdir)
-    }.to raise_error(PuppetForge::InvalidPathInPackageError,
-                     "Attempt to install file into \"#{File.expand_path('/the/thedir')}\" under \"#{destdir}\"")
+    end.to raise_error(PuppetForge::InvalidPathInPackageError,
+                       "Attempt to install file into \"#{File.expand_path('/the/thedir')}\" under \"#{destdir}\"")
   end
 
-  it "packs a tar file" do
+  it 'packs a tar file' do
     writer = double('GzipWriter')
 
     expect(Zlib::GzipWriter).to receive(:open).with(destfile).and_yield(writer)
@@ -62,7 +65,7 @@ describe PuppetForge::Tar::Mini do
     minitar.pack(sourcedir, destfile)
   end
 
-  it "returns filenames in a tar separated into correct categories" do
+  it 'returns filenames in a tar separated into correct categories' do
     reader = double('GzipReader')
 
     expect(Zlib::GzipReader).to receive(:open).with(sourcefile).and_yield(reader)
@@ -80,7 +83,7 @@ describe PuppetForge::Tar::Mini do
     reader = double('GzipReader')
 
     expect(Zlib::GzipReader).to receive(:open).with(sourcefile).and_yield(reader)
-    expect(minitar).to receive(:validate_files).with(reader).and_return({:valid => [name]})
+    expect(minitar).to receive(:validate_files).with(reader).and_return({ valid: [name] })
     expect(Minitar).to receive(:unpack).with(reader, destdir, [name]).and_yield(type, name, nil)
   end
 end

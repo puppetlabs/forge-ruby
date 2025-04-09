@@ -1,12 +1,10 @@
 module PuppetForge
-
   # This module provides convenience accessors for related resources. Related
   # classes will include {LazyAccessors}, allowing them to transparently fetch
   # fetch more complete representations from the API.
   #
   # @see LazyAccessors
   module LazyRelations
-
     # Mask mistaken `include` calls by transparently extending this class.
     # @private
     def self.included(base)
@@ -14,21 +12,20 @@ module PuppetForge
     end
 
     def parent
-      if self.is_a? Class
-        class_name = self.name
-      else
-        class_name = self.class.name
-      end
+      class_name = if is_a? Class
+                     name
+                   else
+                     self.class.name
+                   end
 
       # Get the name of the version module
-      version = class_name.split("::")[-2]
+      version = class_name.split('::')[-2]
 
-      if version.nil?
-        raise RuntimeError, "Unable to determine the parent PuppetForge version module"
-      end
+      raise 'Unable to determine the parent PuppetForge version module' if version.nil?
 
       PuppetForge.const_get(version)
     end
+
     # @!macro [attach] lazy
     #   @!method $1
     #     Returns a lazily-loaded $1 proxy. To eagerly load this $1, call
@@ -54,7 +51,6 @@ module PuppetForge
         @_lazy ||= {}
 
         @_lazy[name] ||= begin
-
           klass ||= parent.const_get(class_name)
 
           klass.send(:include, PuppetForge::LazyAccessors)

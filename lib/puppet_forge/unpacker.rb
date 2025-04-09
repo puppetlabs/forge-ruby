@@ -11,7 +11,7 @@ module PuppetForge
     # @return [Hash{:symbol => Array<String>}] a hash with file-category keys pointing to lists of filenames.
     #   The categories are :valid, :invalid and :symlink
     def self.unpack(filename, target, tmpdir)
-      inst = self.new(filename, target, tmpdir)
+      inst = new(filename, target, tmpdir)
       file_lists = inst.unpack
       inst.move_into(Pathname.new(target))
       file_lists
@@ -23,7 +23,7 @@ module PuppetForge
     # @param source [Pathname] source of the permissions
     # @param target [Pathname] target of the permissions change
     def self.harmonize_ownership(source, target)
-        FileUtils.chown_R(source.stat.uid, source.stat.gid, target)
+      FileUtils.chown_R(source.stat.uid, source.stat.gid, target)
     end
 
     # @param filename [String] the file to unpack
@@ -36,11 +36,9 @@ module PuppetForge
 
     # @api private
     def unpack
-      begin
-        PuppetForge::Tar.instance.unpack(@filename, @tmpdir)
-      rescue PuppetForge::ExecutionFailure => e
-        raise RuntimeError, "Could not extract contents of module archive: #{e.message}"
-      end
+      PuppetForge::Tar.instance.unpack(@filename, @tmpdir)
+    rescue PuppetForge::ExecutionFailure => e
+      raise "Could not extract contents of module archive: #{e.message}"
     end
 
     # @api private
@@ -58,11 +56,9 @@ module PuppetForge
       # Grab the first directory containing a metadata.json file
       metadata_file = Dir["#{@tmpdir}/**/metadata.json"].sort_by(&:length)[0]
 
-      if metadata_file
-        @root_dir = Pathname.new(metadata_file).dirname
-      else
-        raise "No valid metadata.json found!"
-      end
+      raise 'No valid metadata.json found!' unless metadata_file
+
+      @root_dir = Pathname.new(metadata_file).dirname
     end
   end
 end

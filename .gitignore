@@ -21,3 +21,4 @@ _yardoc
 *.a
 mkmf.log
 /vendor/
+/.vendor/

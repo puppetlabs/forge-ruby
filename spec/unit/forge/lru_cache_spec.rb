@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe PuppetForge::LruCache do
   it 'creates a cache key from a list of strings' do
-    expect { subject.class.new_key('foo', 'bar', 'baz') }.not_to raise_error 
+    expect { subject.class.new_key('foo', 'bar', 'baz') }.not_to raise_error
   end
 
   it 'creates a new instance' do
@@ -36,8 +36,8 @@ describe PuppetForge::LruCache do
   end
 
   context 'with environment variables' do
-    around(:each) do |example|
-      @old_max_size = ENV['PUPPET_FORGE_MAX_CACHE_SIZE']
+    around do |example|
+      @old_max_size = ENV.fetch('PUPPET_FORGE_MAX_CACHE_SIZE', nil)
       ENV['PUPPET_FORGE_MAX_CACHE_SIZE'] = '42'
       example.run
       ENV['PUPPET_FORGE_MAX_CACHE_SIZE'] = @old_max_size
@@ -48,7 +48,7 @@ describe PuppetForge::LruCache do
     end
   end
 
-  context '#get' do
+  describe '#get' do
     it 'returns nil if the key is not present in the cache' do
       expect(PuppetForge::LruCache.new.get('foo')).to be_nil
     end
@@ -64,32 +64,32 @@ describe PuppetForge::LruCache do
       cache.put('foo', 'bar')
       cache.put('baz', 'qux')
       cache.get('foo')
-      expect(cache.send(:lru)).to eq(['foo', 'baz'])
+      expect(cache.send(:lru)).to eq(%w[foo baz])
     end
 
     it 'is thread-safe for get calls' do
       cache = PuppetForge::LruCache.new
-    
+
       # Populate the cache with initial values
       cache.put('foo', 'bar')
       cache.put('baz', 'qux')
-    
+
       # Create two threads for concurrent cache get operations
       thread_one = Thread.new do
         100.times { expect(cache.get('foo')).to eq('bar') }
       end
-    
+
       thread_two = Thread.new do
         100.times { expect(cache.get('baz')).to eq('qux') }
       end
-    
+
       # Wait for both threads to complete
       thread_one.join
       thread_two.join
-    end    
+    end
   end
 
-  context '#put' do
+  describe '#put' do
     it 'adds the key to the front of the LRU list' do
       cache = PuppetForge::LruCache.new
       cache.put('foo', 'bar')
@@ -107,36 +107,35 @@ describe PuppetForge::LruCache do
       cache.put('foo', 'bar')
       cache.put('baz', 'qux')
       cache.put('quux', 'corge')
-      expect(cache.send(:lru)).to eq(['quux', 'baz'])
+      expect(cache.send(:lru)).to eq(%w[quux baz])
     end
 
     it 'is thread-safe' do
       cache = PuppetForge::LruCache.new
-    
+
       # Create two threads for concurrent cache operations
       thread_one = Thread.new do
         100.times { cache.put('foo', 'bar') }
       end
-    
+
       thread_two = Thread.new do
         100.times { cache.put('baz', 'qux') }
       end
-    
+
       # Wait for both threads to complete
       thread_one.join
       thread_two.join
-    
+
       # At this point, we don't need to compare the LRU list,
       # because the order may change due to concurrent puts.
-      
+
       # Instead, we simply expect the code to run without errors.
       expect { thread_one.value }.not_to raise_error
       expect { thread_two.value }.not_to raise_error
     end
-    
   end
 
-  context '#clear' do
+  describe '#clear' do
     it 'clears the cache' do
       cache = PuppetForge::LruCache.new
       cache.put('foo', 'bar')

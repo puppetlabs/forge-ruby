@@ -4,7 +4,6 @@ require 'minitar'
 module PuppetForge
   class Tar
     class Mini
-
       SYMLINK_FLAGS = [2]
       VALID_TAR_FLAGS = (0..7)
 
@@ -15,7 +14,7 @@ module PuppetForge
         file_lists = {}
         Zlib::GzipReader.open(sourcefile) do |reader|
           file_lists = validate_files(reader)
-          Minitar.unpack(reader, destdir, file_lists[:valid]) do |action, name, stats|
+          Minitar.unpack(reader, destdir, file_lists[:valid]) do |action, name, _stats|
             case action
             when :file_done
               FileUtils.chmod('u+rw,g+r,a-st', "#{destdir}/#{name}")
@@ -27,7 +26,7 @@ module PuppetForge
             end
           end
         end
-        dirlist.each {|d| File.chmod(0755, d)}
+        dirlist.each { |d| File.chmod(0o755, d) }
         file_lists
       end
 
@@ -49,12 +48,12 @@ module PuppetForge
       # @param tarfile name of the tarfile
       # @return [Hash{:symbol => Array<String>}] a hash with file-category keys pointing to lists of filenames.
       def validate_files(tarfile)
-        file_lists = {:valid => [], :invalid => [], :symlinks => []}
+        file_lists = { valid: [], invalid: [], symlinks: [] }
         Minitar.open(tarfile).each do |entry|
           flag = entry.typeflag
-          if flag.nil? || flag =~ /[[:digit:]]/ && SYMLINK_FLAGS.include?(flag.to_i)
+          if flag.nil? || (flag =~ /[[:digit:]]/ && SYMLINK_FLAGS.include?(flag.to_i))
             file_lists[:symlinks] << entry.full_name
-          elsif flag.nil? || flag =~ /[[:digit:]]/ && VALID_TAR_FLAGS.include?(flag.to_i)
+          elsif flag.nil? || (flag =~ /[[:digit:]]/ && VALID_TAR_FLAGS.include?(flag.to_i))
             file_lists[:valid] << entry.full_name
           else
             file_lists[:invalid] << entry.full_name
@@ -65,17 +64,15 @@ module PuppetForge
 
       def validate_entry(destdir, path)
         if Pathname.new(path).absolute?
-          raise PuppetForge::InvalidPathInPackageError, :entry_path => path, :directory => destdir
+          raise PuppetForge::InvalidPathInPackageError, entry_path: path, directory: destdir
         end
 
         path = File.expand_path File.join(destdir, path)
 
-        if path !~ /\A#{Regexp.escape destdir}/
-          raise PuppetForge::InvalidPathInPackageError, :entry_path => path, :directory => destdir
-        end
+        return if /\A#{Regexp.escape destdir}/.match?(path)
+
+        raise PuppetForge::InvalidPathInPackageError, entry_path: path, directory: destdir
       end
     end
   end
-
 end
-

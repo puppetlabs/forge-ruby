@@ -30,11 +30,11 @@ describe PuppetForge::V3::User do
 
     let(:user) { PuppetForge::V3::User.find('puppetlabs') }
 
-    it 'should return a PaginatedCollection' do
+    it 'returns a PaginatedCollection' do
       expect(user.modules).to be_a PuppetForge::V3::Base::PaginatedCollection
     end
 
-    it 'should only return modules for the current user' do
+    it 'onlies return modules for the current user' do
       module_owners = user.modules.map(&:owner)
       expect(module_owners.group_by(&:username).keys).to eql(['puppetlabs'])
     end
@@ -44,7 +44,7 @@ describe PuppetForge::V3::User do
     let(:user) { PuppetForge::V3::User.find('puppetlabs') }
 
     example 'are easily accessible' do
-      expect(user.created_at).to_not be nil
+      expect(user.created_at).not_to be_nil
     end
   end
 end
