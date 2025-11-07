@@ -20,16 +20,17 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = '>= 3.1.0'
 
+  spec.add_runtime_dependency "base64", '~> 0.2.0'
   spec.add_runtime_dependency "faraday", "~> 2.0"
   spec.add_runtime_dependency "faraday-follow_redirects", "~> 0.3.0"
-  spec.add_dependency "semantic_puppet", "~> 1.0"
   spec.add_dependency "minitar",  '~> 1.0', '>= 1.0.2'
+  spec.add_dependency "semantic_puppet", "~> 1.0"
 
+  spec.add_development_dependency "cane"
+  spec.add_development_dependency "pry-byebug"
   spec.add_development_dependency "rake"
+  spec.add_development_dependency "redcarpet"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "simplecov"
-  spec.add_development_dependency "cane"
   spec.add_development_dependency "yard"
-  spec.add_development_dependency "redcarpet"
-  spec.add_development_dependency "pry-byebug"
 end
